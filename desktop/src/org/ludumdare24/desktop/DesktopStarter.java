@@ -14,7 +14,7 @@ public class DesktopStarter {
         cfg.title = "GameFlow Example";
         cfg.useGL20 = false;
         cfg.width = 800;
-        cfg.height = 600;
+        cfg.height = 480;
 
         new LwjglApplication(new MainGame(), cfg);
     }

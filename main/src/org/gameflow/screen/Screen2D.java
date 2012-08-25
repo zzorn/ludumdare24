@@ -63,6 +63,10 @@ public abstract class Screen2D extends ScreenBase {
         return entityActors;
     }
 
+    public TextureAtlas getAtlas() {
+        return atlas;
+    }
+
     public void setEntityActors(ObjectMap<Entity, Actor> entityActors) {
         this.entityActors = entityActors;
     }
