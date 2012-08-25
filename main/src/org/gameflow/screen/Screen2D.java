@@ -193,7 +193,7 @@ public abstract class Screen2D extends ScreenBase {
 
     protected abstract void onDispose();
 
-    protected Skin getSkin() {
+    public Skin getSkin() {
         if( skin == null ) {
             skin = new Skin( Gdx.files.internal( "uiskin.json" ), Gdx.files.internal( "uiskin.png" ) );
         }
@@ -202,7 +202,7 @@ public abstract class Screen2D extends ScreenBase {
 
 
 
-    protected TextButton createButton(String text, ClickListener listener) {
+    public TextButton createButton(String text, ClickListener listener) {
         TextButton button = new TextButton(getSkin());
         button.setText(text);
         button.setClickListener(listener);
@@ -212,7 +212,7 @@ public abstract class Screen2D extends ScreenBase {
 
     private void createEntity(Entity entity) {
         if (isSceneCreated()) {
-            Actor actor = entity.create();
+            Actor actor = entity.create(this);
             if (actor != null) {
                 entityActors.put(entity, actor);
                 stage.addActor(actor);

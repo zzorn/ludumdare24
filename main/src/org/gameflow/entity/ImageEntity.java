@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
+import org.gameflow.screen.Screen2D;
 
 
 /**
@@ -31,7 +32,7 @@ public class ImageEntity extends Image implements Entity {
         super(region, scaling, align, name);
     }
 
-    public Actor create() {
+    public Actor create(Screen2D screen2D) {
         return this;
     }
 

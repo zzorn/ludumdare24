@@ -28,6 +28,7 @@ public class MainMenuScreen extends Screen2D {
 
         table.add(createButton("Start game", new ClickListener() {
             public void click(Actor actor, float x, float y) {
+                game.setScreen(new GameScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);
             }
         })).fillX().padBottom(10);

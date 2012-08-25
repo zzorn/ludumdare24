@@ -27,17 +27,14 @@ public abstract class LevelBase implements Level {
     }
 
 
-    @Override
     public final String getLevelId() {
         return levelId;
     }
 
-    @Override
     public Array<String> getNextLevels() {
         return nextLevels;
     }
 
-    @Override
     public Screen getScreen() {
         if (levelScreen == null) {
             levelScreen = createLevelScreen();
