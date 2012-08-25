@@ -9,6 +9,7 @@ public enum Tool {
     LOVE,
     MOVE,
     RAGE,
-    TOTEM,
+    FEED,
+
 
 }

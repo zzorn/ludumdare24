@@ -5,49 +5,56 @@ filter: Nearest,Nearest
 repeat: none
 heart
   rotate: false
-  xy: 1, 1
+  xy: 1, 133
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 skull
   rotate: false
-  xy: 67, 1
+  xy: 1, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 foot
   rotate: false
-  xy: 133, 1
+  xy: 67, 133
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smiteExplo
   rotate: false
-  xy: 199, 1
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+food
+  rotate: false
+  xy: 67, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smite
   rotate: false
-  xy: 265, 1
+  xy: 133, 133
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 rage
   rotate: false
-  xy: 331, 1
+  xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 blood
   rotate: false
-  xy: 397, 1
+  xy: 133, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

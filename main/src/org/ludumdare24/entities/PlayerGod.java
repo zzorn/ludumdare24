@@ -40,9 +40,19 @@ public class PlayerGod extends God {
         Table hud = new Table();
         hud.setFillParent(true);
 
+        hud.add(screen2D.createButton("Menu", new ClickListener() {
+            public void click(Actor actor, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+                game.soundService.play(Sounds.UI_ACCEPT);
+            }
+        })).expand().top().left();
+
+
         // Mana gauge
         manaLabel = new Label("Mana", screen2D.getSkin());
         hud.add(manaLabel).expand().top().right();
+
+
 
         hud.row();
 
@@ -73,17 +83,18 @@ public class PlayerGod extends God {
             }
         }));
 
-
-
-
-        buttons.add(screen2D.createButton("Menu", new ClickListener() {
+        buttons.add(screen2D.createButton("Feed", new ClickListener() {
             public void click(Actor actor, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-                game.soundService.play(Sounds.UI_ACCEPT);
+                changeTool(Tool.FEED);
             }
-        })).colspan(2);
+        }));
 
-        hud.add(buttons).expand().bottom();
+
+
+
+
+
+        hud.add(buttons).expand().bottom().colspan(2);
 
         changeTool(null);
 
@@ -121,10 +132,12 @@ public class PlayerGod extends God {
                     cursorEffect.load(Gdx.files.internal("particles/moveSelect.particle"), atlas);
                     cursorEffect.start();
                     break;
-                case TOTEM:
-                    break;
                 case RAGE:
                     cursorEffect.load(Gdx.files.internal("particles/rageSelect.particle"), atlas);
+                    cursorEffect.start();
+                    break;
+                case FEED:
+                    cursorEffect.load(Gdx.files.internal("particles/feedSelect.particle"), atlas);
                     cursorEffect.start();
                     break;
                 default :
