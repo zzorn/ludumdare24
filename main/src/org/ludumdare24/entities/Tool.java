@@ -8,6 +8,7 @@ public enum Tool {
     SMITE,
     LOVE,
     MOVE,
+    RAGE,
     TOTEM,
 
 }

@@ -11,7 +11,7 @@ import org.gameflow.screen.Screen2D;
  */
 public class Creature implements Entity {
 
-    public Actor create(Screen2D screen2D) {
+    public Actor create(TextureAtlas atlas, Screen2D screen2D) {
 
         return null;
     }

@@ -20,7 +20,7 @@ public class GameScreen extends Screen2D {
     @Override
     protected void onCreate() {
         // Create player
-        player = new PlayerGod();
+        player = new PlayerGod(game);
         addEntity(player);
     }
 

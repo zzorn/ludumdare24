@@ -33,7 +33,7 @@ public class ImageEntity extends Image implements Entity {
         super(region, scaling, align, name);
     }
 
-    public Actor create(Screen2D screen2D) {
+    public Actor create(TextureAtlas atlas, Screen2D screen2D) {
         return this;
     }
 

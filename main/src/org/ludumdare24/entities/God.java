@@ -34,7 +34,7 @@ public class God implements Entity {
         }
     }
 
-    public Actor create(Screen2D screen2D) {
+    public Actor create(TextureAtlas atlas, Screen2D screen2D) {
         return null;
     }
 

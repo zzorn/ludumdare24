@@ -10,7 +10,7 @@ import org.gameflow.screen.Screen2D;
  */
 public interface Entity {
 
-    Actor create(Screen2D screen2D);
+    Actor create(TextureAtlas atlas, Screen2D screen2D);
 
     void update(float timeDelta);
 
