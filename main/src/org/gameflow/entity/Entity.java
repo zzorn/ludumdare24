@@ -1,6 +1,7 @@
 package org.gameflow.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import org.gameflow.screen.Screen2D;
 
@@ -13,7 +14,7 @@ public interface Entity {
 
     void update(float timeDelta);
 
-    void render(SpriteBatch spriteBatch);
+    void render(TextureAtlas atlas, SpriteBatch spriteBatch);
 
     void dispose();
 

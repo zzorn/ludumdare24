@@ -1,6 +1,7 @@
 package org.gameflow.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -38,7 +39,8 @@ public class ImageEntity extends Image implements Entity {
 
     public void update(float timeDelta) {}
 
-    public void render(SpriteBatch spriteBatch) {}
+    public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
+    }
 
     public void dispose() {}
 

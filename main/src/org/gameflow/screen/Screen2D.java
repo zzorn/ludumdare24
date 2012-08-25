@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -29,17 +30,22 @@ public abstract class Screen2D extends ScreenBase {
     private final Array<Entity> entities = new Array<Entity>();
     private ObjectMap<Entity, Actor> entityActors = new ObjectMap<Entity, Actor>();
 
-    public Screen2D() {
+    private final TextureAtlas atlas;
+
+    public Screen2D(TextureAtlas atlas) {
         super(null);
+        this.atlas = atlas;
     }
 
-    public Screen2D(double screenSizeScale) {
+    public Screen2D(TextureAtlas atlas, double screenSizeScale) {
         super(null);
         this.screenSizeScale = screenSizeScale;
+        this.atlas = atlas;
     }
 
-    public Screen2D(String id) {
+    public Screen2D(TextureAtlas atlas, String id) {
         super(id);
+        this.atlas = atlas;
     }
 
     public double getScreenSizeScale() {
@@ -142,7 +148,7 @@ public abstract class Screen2D extends ScreenBase {
 
         // Render entities
         for (Entity entity : entities) {
-            entity.render(batch);
+            entity.render(atlas, batch);
         }
 
         // Render screen

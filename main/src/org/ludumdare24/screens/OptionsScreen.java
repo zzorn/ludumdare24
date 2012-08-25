@@ -19,7 +19,7 @@ public class OptionsScreen extends Screen2D {
     private final MainGame game;
 
     public OptionsScreen(MainGame game) {
-        super(game.getUiScale());
+        super(game.getAtlas(), game.getUiScale());
         this.game = game;
     }
 

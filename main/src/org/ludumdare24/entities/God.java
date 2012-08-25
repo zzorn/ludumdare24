@@ -1,6 +1,7 @@
 package org.ludumdare24.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import org.gameflow.entity.Entity;
 import org.gameflow.screen.Screen2D;
@@ -41,7 +42,7 @@ public class God implements Entity {
         updateMana(timeDelta);
     }
 
-    public void render(SpriteBatch spriteBatch) {
+    public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
     }
 
     public void dispose() {

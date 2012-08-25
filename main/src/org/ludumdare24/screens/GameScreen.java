@@ -13,7 +13,7 @@ public class GameScreen extends Screen2D {
     private PlayerGod player;
 
     public GameScreen(MainGame game) {
-        super(game.getUiScale());
+        super(game.getAtlas(), game.getUiScale());
         this.game = game;
     }
 

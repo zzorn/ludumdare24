@@ -2,6 +2,7 @@ package org.ludumdare24.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -63,9 +64,7 @@ public class PlayerGod extends God {
 
     }
 
-    @Override
-    public void render(SpriteBatch spriteBatch) {
-        // Show mana
+    public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
 
     }
 
