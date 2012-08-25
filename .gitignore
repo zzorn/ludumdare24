@@ -1,0 +1,23 @@
+*.class
+*.log
+
+# Package Files #
+*.war
+*.ear
+
+# Gedit temp files
+*.*~
+
+# Android stuff
+android/gen/
+
+# Build dirs
+out/
+
+# Project files
+.idea/workspace.xml
+.idea/uiDesigner.xml
+.idea/ant.xml
+.idea/copyright/
+.idea/encodings.xml
+.idea/scopes/
