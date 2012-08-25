@@ -17,4 +17,9 @@ GameFlow Tasks
   * Game menu screen
   * Game over screen
 
+  TODO
+  fix bugs:
+  *when u go from game to menu and then back, the pictures are boxes
+  "toolchoosing particles on wrong plase when fullscreen in desktop
+
 
