@@ -1,0 +1,20 @@
+
+GameFlow Tasks
+==============
+
+* Environment
+  * Tile map rendering
+* Being
+  * Creature
+  * Plant
+* God
+  * Player God
+  * Ai God
+* Screens
+  * Main Screen
+  * Game Screen - god perspective
+  * Game Screen - creature perspective
+  * Game menu screen
+  * Game over screen
+
+
