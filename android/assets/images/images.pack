@@ -3,51 +3,79 @@ images.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-heart
+potato1_hair1
   rotate: false
-  xy: 1, 1
+  xy: 0, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 skull
   rotate: false
-  xy: 67, 1
+  xy: 64, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 foot
   rotate: false
-  xy: 133, 1
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-smiteExplo
-  rotate: false
-  xy: 199, 1
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-smite
-  rotate: false
-  xy: 265, 1
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-rage
-  rotate: false
-  xy: 331, 1
+  xy: 128, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 blood
   rotate: false
-  xy: 397, 1
+  xy: 192, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+potato1_hair2
+  rotate: false
+  xy: 256, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+potato1_hair3
+  rotate: false
+  xy: 320, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+smiteExplo
+  rotate: false
+  xy: 384, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+rage
+  rotate: false
+  xy: 448, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+smite
+  rotate: false
+  xy: 512, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+potato1
+  rotate: false
+  xy: 576, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+heart
+  rotate: false
+  xy: 640, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

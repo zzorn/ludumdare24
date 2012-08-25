@@ -18,7 +18,7 @@ public class Creature implements Entity {
     public Vector2 pos = new Vector2();
     public float angle = 0;
 
-    public Actor create(Screen2D screen2D) {
+    public Actor create(TextureAtlas atlas, Screen2D screen2D) {
         Color c = new Color();
 
         parts.add(new CreaturePart(BodyPartShape.POTATO, 1, 1, 0.5, 0, Color.RED, Color.YELLOW, Color.WHITE, new Vector2(0,0), 0));
