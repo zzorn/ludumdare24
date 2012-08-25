@@ -39,12 +39,10 @@ public class SoundServiceImpl extends ServiceBase implements SoundService {
         });
     }
 
-    @Override
     public void play(SoundResourceHandle sound) {
         play(sound.getFileName());
     }
 
-    @Override
     public void play(String soundFileName)
     {
         // Check if the sound is enabled
@@ -63,7 +61,6 @@ public class SoundServiceImpl extends ServiceBase implements SoundService {
         soundToPlay.play( volume );
     }
 
-    @Override
     public void setVolume(float volume) {
         logDebug("Adjusting sound volume to: " + volume);
 
@@ -74,7 +71,6 @@ public class SoundServiceImpl extends ServiceBase implements SoundService {
         this.volume = volume;
     }
 
-    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
