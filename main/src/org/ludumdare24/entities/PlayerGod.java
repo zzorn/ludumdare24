@@ -59,31 +59,31 @@ public class PlayerGod extends God {
         // Action buttons
         Table buttons = new Table();
 
-        buttons.add(screen2D.createButton("Smite", new ClickListener() {
+        buttons.add(screen2D.createImageButton("smiteButton", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 changeTool(Tool.SMITE);
             }
         }));
 
-        buttons.add(screen2D.createButton("Love", new ClickListener() {
+        buttons.add(screen2D.createImageButton("heartButton", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 changeTool(Tool.LOVE );
             }
         }));
 
-        buttons.add(screen2D.createButton("Move", new ClickListener() {
+        buttons.add(screen2D.createImageButton("moveButton", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 changeTool(Tool.MOVE);
             }
         }));
 
-        buttons.add(screen2D.createButton("Rage", new ClickListener() {
+        buttons.add(screen2D.createImageButton("rageButton", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 changeTool(Tool.RAGE);
             }
         }));
 
-        buttons.add(screen2D.createButton("Feed", new ClickListener() {
+        buttons.add(screen2D.createImageButton("foodButton", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 changeTool(Tool.FEED);
             }

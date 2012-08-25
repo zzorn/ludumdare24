@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
@@ -212,6 +213,13 @@ public abstract class Screen2D extends ScreenBase {
         button.setText(text);
         button.setClickListener(listener);
         return button;
+    }
+
+    public ImageButton createImageButton(String icon,ClickListener listener){
+        ImageButton imageButton = new ImageButton(atlas.findRegion(icon+"NotPressScaled"),atlas.findRegion(icon+"PressScaled") );
+
+        imageButton.setClickListener(listener);
+        return imageButton;
     }
 
 

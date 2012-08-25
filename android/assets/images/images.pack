@@ -3,59 +3,227 @@ images.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+rageButtonPress
+  rotate: false
+  xy: 1, 377
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+foodButtonNotPress
+  rotate: false
+  xy: 1, 247
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+rageButtonNotPress
+  rotate: false
+  xy: 131, 377
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+smiteButtonPress
+  rotate: false
+  xy: 1, 117
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+buttonNotPress
+  rotate: false
+  xy: 131, 247
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+foodButtonPress
+  rotate: false
+  xy: 261, 377
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+smiteIcon
+  rotate: false
+  xy: 131, 117
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+moveButtonPress
+  rotate: false
+  xy: 261, 247
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+heartButtonPress
+  rotate: false
+  xy: 391, 377
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+buttonPress
+  rotate: false
+  xy: 261, 117
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+heartButtonNotPress
+  rotate: false
+  xy: 391, 247
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+smiteButtonNotPress
+  rotate: false
+  xy: 521, 377
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+moveButtonNotPress
+  rotate: false
+  xy: 391, 117
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 heart
   rotate: false
-  xy: 1, 133
+  xy: 1, 51
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 skull
   rotate: false
-  xy: 1, 67
+  xy: 521, 311
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 foot
   rotate: false
-  xy: 67, 133
+  xy: 651, 441
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smiteExplo
   rotate: false
-  xy: 1, 1
+  xy: 67, 51
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 food
   rotate: false
-  xy: 67, 67
+  xy: 521, 245
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smite
   rotate: false
-  xy: 133, 133
+  xy: 717, 441
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 rage
   rotate: false
-  xy: 67, 1
+  xy: 133, 51
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+eatenFood
+  rotate: false
+  xy: 521, 179
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 blood
   rotate: false
-  xy: 133, 67
+  xy: 783, 441
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+moveButtonPressScaled
+  rotate: false
+  xy: 1, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+smiteButtonPressScaled
+  rotate: false
+  xy: 587, 327
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+heartButtonNotPressScaled
+  rotate: false
+  xy: 651, 391
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+smiteButtonNotPressScaled
+  rotate: false
+  xy: 199, 67
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+heartButtonPressScaled
+  rotate: false
+  xy: 521, 129
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+rageButtonNotPressScaled
+  rotate: false
+  xy: 849, 457
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+moveButtonNotPressScaled
+  rotate: false
+  xy: 51, 1
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+foodButtonPressScaled
+  rotate: false
+  xy: 587, 277
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+foodButtonNotPressScaled
+  rotate: false
+  xy: 701, 391
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+rageButtonPressScaled
+  rotate: false
+  xy: 249, 67
+  size: 48, 48
+  orig: 48, 48
   offset: 0, 0
   index: -1
