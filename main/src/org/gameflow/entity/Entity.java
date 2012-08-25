@@ -8,14 +8,43 @@ import org.gameflow.screen.Screen2D;
 /**
  *
  */
-public interface Entity {
+public abstract class Entity {
 
-    Actor create(TextureAtlas atlas, Screen2D screen2D);
+    private boolean created = false;
+    private boolean disposed = false;
 
-    void update(float timeDelta);
+    public boolean isCreated() {
+        return created;
+    }
 
-    void render(TextureAtlas atlas, SpriteBatch spriteBatch);
+    public boolean isDisposed() {
+        return disposed;
+    }
 
-    void dispose();
+    public final void create(TextureAtlas atlas) {
+        //if (disposed) throw new IllegalStateException("Can not create an entity after disposing it.");
+        if (!created) {
+            created = true;
+            onCreate(atlas);
+        }
+    }
 
+    public void showOnScreen(Screen2D screen2D) {};
+
+    protected abstract void onCreate(TextureAtlas atlas);
+
+    public void update(float timeDelta) {}
+
+    public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {}
+
+    public final void dispose() {
+        if (created && !disposed) {
+            disposed = true;
+            onDispose();
+        }
+    }
+
+    public abstract void onDispose();
+
+    public void topLayerRender(TextureAtlas atlas, SpriteBatch batch) {}
 }

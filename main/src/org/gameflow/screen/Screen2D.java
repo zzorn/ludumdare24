@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -28,7 +29,6 @@ public abstract class Screen2D extends ScreenBase {
     private Skin skin;
 
     private final Array<Entity> entities = new Array<Entity>();
-    private ObjectMap<Entity, Actor> entityActors = new ObjectMap<Entity, Actor>();
 
     private final TextureAtlas atlas;
 
@@ -59,16 +59,8 @@ public abstract class Screen2D extends ScreenBase {
         }
     }
 
-    public ObjectMap<Entity, Actor> getEntityActors() {
-        return entityActors;
-    }
-
     public TextureAtlas getAtlas() {
         return atlas;
-    }
-
-    public void setEntityActors(ObjectMap<Entity, Actor> entityActors) {
-        this.entityActors = entityActors;
     }
 
     public BitmapFont getFont() {
@@ -83,7 +75,7 @@ public abstract class Screen2D extends ScreenBase {
         return stage;
     }
 
-    public final void create() {
+    public final void doCreate() {
         font = new BitmapFont();
         batch = new SpriteBatch();
         stage = new Stage(0, 0, true);
@@ -110,14 +102,8 @@ public abstract class Screen2D extends ScreenBase {
     public void removeEntity(Entity entity) {
         if (entities.contains(entity,  true)) {
             entities.removeValue(entity, true);
-            Actor actor = entityActors.get(entity);
-            if (actor != null) {
-                entityActors.remove(entity);
-
-                if (isSceneCreated()) {
-                    stage.removeActor(actor);
-                    entity.dispose();
-                }
+            if (isSceneCreated()) {
+                entity.dispose();
             }
         }
     }
@@ -145,11 +131,7 @@ public abstract class Screen2D extends ScreenBase {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Draw the stage actors
-        stage.draw();
-
         batch.begin();
-
         // Render entities
         for (Entity entity : entities) {
             entity.render(atlas, batch);
@@ -157,7 +139,16 @@ public abstract class Screen2D extends ScreenBase {
 
         // Render screen
         onRender();
+        batch.end();
 
+        // Draw the stage actors
+        stage.draw();
+
+        // Render anything that needs to be on top of the ui
+        batch.begin();
+        for (Entity entity : entities) {
+            entity.topLayerRender(atlas, batch);
+        }
         batch.end();
     }
 
@@ -185,13 +176,14 @@ public abstract class Screen2D extends ScreenBase {
 
     protected void onResize(int width, int height) {}
 
-    public final void dispose() {
+    public final void doDispose() {
         onDispose();
 
         // Dispose entities
         for (Entity entity : entities) {
             entity.dispose();
         }
+        entities.clear();
 
         font.dispose();
         batch.dispose();
@@ -220,8 +212,10 @@ public abstract class Screen2D extends ScreenBase {
     }
 
     public ImageButton createImageButton(String icon,ClickListener listener){
-        ImageButton imageButton = new ImageButton(atlas.findRegion(icon+"NotPressScaled"),atlas.findRegion(icon+"PressScaled") );
-
+        ImageButton imageButton = new ImageButton(
+                atlas.findRegion(icon + "NotPressScaled"),
+                atlas.findRegion(icon+"PressScaled"),
+                atlas.findRegion(icon+"PressScaled"));
         imageButton.setClickListener(listener);
         return imageButton;
     }
@@ -229,11 +223,8 @@ public abstract class Screen2D extends ScreenBase {
 
     private void createEntity(TextureAtlas atlas, Entity entity) {
         if (isSceneCreated()) {
-            Actor actor = entity.create(atlas, this);
-            if (actor != null) {
-                entityActors.put(entity, actor);
-                stage.addActor(actor);
-            }
+            entity.create(atlas);
+            entity.showOnScreen(this);
         }
     }
 

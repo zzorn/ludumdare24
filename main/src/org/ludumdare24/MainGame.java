@@ -11,6 +11,7 @@ import org.gameflow.services.options.OptionsService;
 import org.gameflow.services.sound.SoundResourceHandle;
 import org.gameflow.services.sound.SoundService;
 import org.gameflow.services.sound.SoundServiceImpl;
+import org.ludumdare24.screens.GameScreen;
 import org.ludumdare24.screens.MainMenuScreen;
 
 /**
@@ -22,10 +23,22 @@ public class MainGame extends GameBase {
     public final SoundService soundService = addService(new SoundServiceImpl());
 
     private TextureAtlas atlas;
-
+    private GameWorld gameWorld = null;
 
     public TextureAtlas getAtlas() {
         return atlas;
+    }
+
+    public GameWorld getGameWorld() {
+        if (gameWorld == null) {
+            gameWorld = new GameWorld();
+            gameWorld.create(this);
+        }
+        return gameWorld;
+    }
+
+    public boolean isGameWorldCreated() {
+        return gameWorld != null;
     }
 
     public double getUiScale() {
@@ -41,5 +54,9 @@ public class MainGame extends GameBase {
     @Override
     protected void onShutdownStarted() {
         atlas.dispose();
+    }
+
+    public void clearGameWorld() {
+        gameWorld = null;
     }
 }

@@ -1,5 +1,6 @@
 package org.ludumdare24.screens;
 
+import com.badlogic.gdx.utils.Array;
 import org.gameflow.screen.Screen2D;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.entities.creature.Creature;
@@ -11,9 +12,6 @@ import org.ludumdare24.entities.PlayerGod;
 public class GameScreen extends Screen2D {
 
     private final MainGame game;
-    private PlayerGod player;
-
-    private Creature creature;
 
     public GameScreen(MainGame game) {
         super(game.getAtlas(), game.getUiScale());
@@ -22,12 +20,7 @@ public class GameScreen extends Screen2D {
 
     @Override
     protected void onCreate() {
-        // Create player
-        player = new PlayerGod(game);
-        addEntity(player);
-
-        creature = new Creature();
-        addEntity(creature);
+        game.getGameWorld().showOnScreen(this);
     }
 
     @Override

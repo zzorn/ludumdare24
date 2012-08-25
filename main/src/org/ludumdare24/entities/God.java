@@ -9,7 +9,7 @@ import org.gameflow.screen.Screen2D;
 /**
  *
  */
-public class God implements Entity {
+public class God extends Entity {
 
     private double maxMana = 100;
     private double mana = 50;
@@ -34,8 +34,7 @@ public class God implements Entity {
         }
     }
 
-    public Actor create(TextureAtlas atlas, Screen2D screen2D) {
-        return null;
+    public void onCreate(TextureAtlas atlas) {
     }
 
     public void update(float timeDelta) {
@@ -45,6 +44,6 @@ public class God implements Entity {
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
     }
 
-    public void dispose() {
+    public void onDispose() {
     }
 }

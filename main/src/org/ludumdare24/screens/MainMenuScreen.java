@@ -3,6 +3,7 @@ package org.ludumdare24.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import org.gameflow.screen.Screen2D;
 import org.ludumdare24.MainGame;
@@ -26,17 +27,20 @@ public class MainMenuScreen extends Screen2D {
 
         Table table = new Table(getSkin());
 
-        table.add(createButton("Start game", new ClickListener() {
+        // Start game
+        String gameButtonName = "Start game";
+        if (game.isGameWorldCreated()) {
+            gameButtonName = "Resume game";
+        }
+        table.add(createButton(gameButtonName, new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 game.setScreen(new GameScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);
             }
         })).fillX().padBottom(10);
 
-
+        // Options
         table.row();
-
-
         table.add(createButton("Options", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 game.setScreen(new OptionsScreen(game));
@@ -44,8 +48,8 @@ public class MainMenuScreen extends Screen2D {
             }
         })).fillX().padBottom(10);
 
+        // Help
         table.row();
-
         table.add(createButton("Instruction", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 game.setScreen(new InstructionChooseScreen(game) );
@@ -53,8 +57,20 @@ public class MainMenuScreen extends Screen2D {
             }
         })).fillX().padBottom(10);
 
-        table.row();
+        // New game world
+        if (game.isGameWorldCreated()) {
+            table.row();
+            table.add(createButton("New game", new ClickListener() {
+                public void click(Actor actor, float x, float y) {
+                    game.clearGameWorld();
+                    game.setScreen(new GameScreen(game));
+                    game.soundService.play(Sounds.UI_CLICK);
+                }
+            })).fillX().padBottom(10);
+        }
 
+        // Quit
+        table.row();
         table.add(createButton("Quit game", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 game.soundService.play(Sounds.QUIT);

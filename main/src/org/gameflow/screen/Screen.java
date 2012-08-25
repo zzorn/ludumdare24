@@ -7,6 +7,8 @@ import com.badlogic.gdx.ApplicationListener;
  */
 public interface Screen extends ApplicationListener  {
 
+    boolean isCreated();
+
     /**
      * @return name of this screen.  Used e.g. when switching screens.
      */

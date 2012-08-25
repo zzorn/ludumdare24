@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import org.gameflow.screen.Screen2D;
 import org.ludumdare24.MainGame;
@@ -33,10 +31,14 @@ public class PlayerGod extends God {
     }
 
     @Override
-    public Actor create(TextureAtlas atlas, Screen2D screen2D) {
+    public void onCreate(TextureAtlas atlas) {
         this.atlas = atlas;
         cursorEffect = new ParticleEffect();
+        changeTool(null);
+    }
 
+    @Override
+    public void showOnScreen(Screen2D screen2D) {
         Table hud = new Table();
         hud.setFillParent(true);
 
@@ -52,65 +54,44 @@ public class PlayerGod extends God {
         manaLabel = new Label("Mana", screen2D.getSkin());
         hud.add(manaLabel).expand().top().right();
 
-
-
         hud.row();
 
         // Action buttons
         Table buttons = new Table();
-
-        buttons.add(screen2D.createImageButton("smiteButton", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                changeTool(Tool.SMITE);
-            }
-        }));
-
-        buttons.add(screen2D.createImageButton("heartButton", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                changeTool(Tool.LOVE );
-            }
-        }));
-
-        buttons.add(screen2D.createImageButton("moveButton", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                changeTool(Tool.MOVE);
-            }
-        }));
-
-        buttons.add(screen2D.createImageButton("rageButton", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                changeTool(Tool.RAGE);
-            }
-        }));
-
-        buttons.add(screen2D.createImageButton("foodButton", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                changeTool(Tool.FEED);
-            }
-        }));
-
-
-
-
-
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.setMinCheckCount(0);
+        buttons.add(createToolButton(Tool.SMITE, "smiteButton", buttonGroup, screen2D));
+        buttons.add(createToolButton(Tool.LOVE, "heartButton", buttonGroup, screen2D));
+        buttons.add(createToolButton(Tool.MOVE, "moveButton", buttonGroup, screen2D));
+        buttons.add(createToolButton(Tool.RAGE, "rageButton", buttonGroup, screen2D));
+        buttons.add(createToolButton(Tool.FEED, "foodButton", buttonGroup, screen2D));
 
         hud.add(buttons).expand().bottom().colspan(2);
 
-        changeTool(null);
-
-
         // Add HUD to screen
         screen2D.getStage().addActor(hud);
+    }
 
-        return super.create(atlas, screen2D);
+    private ImageButton createToolButton(final Tool tool, String imageName, ButtonGroup buttonGroup, Screen2D screen2D) {
+        ImageButton button = screen2D.createImageButton(imageName, new ClickListener() {
+            public void click(Actor actor, float x, float y) {
+                game.soundService.play(Sounds.UI_CLICK);
+                ((Button)actor).setChecked(true);
+                changeTool(tool);
+            }
+        });
+        buttonGroup.add(button);
+
+        if (currentTool == tool) {
+            button.setChecked(true);
+        }
+
+        return button;
     }
 
     private void changeTool(Tool tool) {
         currentTool = tool;
-        if (currentTool ==null){
-
-        }
-        else{
+        if (currentTool != null) {
             /*
             if (cursorEffect != null){
                 cursorEffect.dispose();
@@ -168,7 +149,7 @@ public class PlayerGod extends God {
 
     }
 
-    public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
+    public void topLayerRender(TextureAtlas atlas, SpriteBatch spriteBatch) {
         if (cursorEffect != null){
             cursorEffect.draw(spriteBatch);
         }
@@ -177,9 +158,11 @@ public class PlayerGod extends God {
     }
 
     @Override
-    public void dispose() {
+    public void onDispose() {
+        /* This frees the image atlas, can't do that..
         if (cursorEffect != null){
             cursorEffect.dispose();
         }
+        */
     }
 }
