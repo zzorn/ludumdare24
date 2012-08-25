@@ -1,7 +1,7 @@
 name=images
 filename=
-input=originals/images
-output=android/assets/images
+input=../ludumdare24.test/libgdxbasecode/original/images
+output=../ludumdare24.test/libgdxbasecode/android/assets/images
 
 alias=true
 alphaThreshold=0
@@ -20,7 +20,7 @@ minHeight=16
 minWidth=16
 outputFormat=png
 paddingX=0
-paddingY=0
+paddingY=2
 pot=true
 rotation=false
 stripWhitespaceX=false
