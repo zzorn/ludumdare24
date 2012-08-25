@@ -3,9 +3,30 @@ images.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-heart
+potato1_hair1
   rotate: false
-  xy: 0, 1
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+potato1_hair2
+  rotate: false
+  xy: 67, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+potato1_hair3
+  rotate: false
+  xy: 133, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+potato1
+  rotate: false
+  xy: 199, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

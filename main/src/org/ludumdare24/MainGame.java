@@ -37,4 +37,9 @@ public class MainGame extends GameBase {
         atlas = new TextureAtlas(Gdx.files.internal("images/images.pack"));
         setScreen(new MainMenuScreen(this));
     }
+
+    @Override
+    protected void onShutdownStarted() {
+        atlas.dispose();
+    }
 }

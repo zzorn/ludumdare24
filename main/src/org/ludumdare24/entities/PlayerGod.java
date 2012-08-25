@@ -61,9 +61,10 @@ public class PlayerGod extends God {
     }
 
     private void changeTool(Tool tool) {
+        /*
         currentTool = tool;
         cursorEffect = new ParticleEffect();
-        cursorEffect.load(Gdx.files.internal("particles/smitSelect.particle"),);
+        //cursorEffect.load(Gdx.files.internal("particles/smitSelect.particle"),);
         switch (currentTool ){
             case SMITE:
 
@@ -80,6 +81,7 @@ public class PlayerGod extends God {
 
 
         }
+        */
     }
 
     @Override
