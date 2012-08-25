@@ -19,7 +19,7 @@ import org.gameflow.entity.Entity;
  */
 public abstract class Screen2D extends ScreenBase {
 
-    public final static int SCREEN_SIZE_SCALE = 2;
+    private double screenSizeScale = 1.0;
 
     private BitmapFont font;
     private SpriteBatch batch;
@@ -33,8 +33,32 @@ public abstract class Screen2D extends ScreenBase {
         super(null);
     }
 
+    public Screen2D(double screenSizeScale) {
+        super(null);
+        this.screenSizeScale = screenSizeScale;
+    }
+
     public Screen2D(String id) {
         super(id);
+    }
+
+    public double getScreenSizeScale() {
+        return screenSizeScale;
+    }
+
+    public void setScreenSizeScale(double screenSizeScale) {
+        this.screenSizeScale = screenSizeScale;
+        if (stage != null) {
+            resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+    }
+
+    public ObjectMap<Entity, Actor> getEntityActors() {
+        return entityActors;
+    }
+
+    public void setEntityActors(ObjectMap<Entity, Actor> entityActors) {
+        this.entityActors = entityActors;
     }
 
     public BitmapFont getFont() {
@@ -141,9 +165,10 @@ public abstract class Screen2D extends ScreenBase {
     @Override
     public void resize(int width, int height) {
         // Resize the stage
-        stage.setViewport(width / SCREEN_SIZE_SCALE,
-                          height / SCREEN_SIZE_SCALE,
-                          true);
+        stage.setViewport(
+                (int)(width / screenSizeScale),
+                (int)(height / screenSizeScale),
+                true);
 
         onResize(width, height);
     }

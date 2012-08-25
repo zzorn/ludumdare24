@@ -11,18 +11,15 @@ public class InMemoryOptionsService extends ServiceBase implements OptionsServic
     private final ObjectMap<String, Object> properties = new ObjectMap<String, Object>();
 
 
-    @Override
     public void set(String key, Object value) {
         properties.put(key, value);
     }
 
-    @Override
     public <T> T get(String key, T defaultValue) {
         if (!properties.containsKey(key)) return defaultValue;
         else return (T) properties.get(key);
     }
 
-    @Override
     public boolean has(String key) {
         return properties.containsKey(key);
     }
