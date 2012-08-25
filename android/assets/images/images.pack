@@ -3,30 +3,51 @@ images.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-potato1_hair1
+heart
   rotate: false
   xy: 1, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1_hair2
+skull
   rotate: false
   xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1_hair3
+foot
   rotate: false
   xy: 133, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1
+smiteExplo
   rotate: false
   xy: 199, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+smite
+  rotate: false
+  xy: 265, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+rage
+  rotate: false
+  xy: 331, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+blood
+  rotate: false
+  xy: 397, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

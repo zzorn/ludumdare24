@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import org.gameflow.Service;
 import org.gameflow.entity.Entity;
 
 /**
@@ -86,7 +85,7 @@ public abstract class Screen2D extends ScreenBase {
 
         // Create actors for entities that were added earlier
         for (Entity entity : entities) {
-            createEntity(entity);
+            createEntity(atlas, entity);
         }
 
         onCreate();
@@ -97,7 +96,7 @@ public abstract class Screen2D extends ScreenBase {
      */
     public void addEntity(Entity entity) {
         entities.add(entity);
-        createEntity(entity);
+        createEntity(atlas, entity);
     }
 
     /**
@@ -216,9 +215,9 @@ public abstract class Screen2D extends ScreenBase {
     }
 
 
-    private void createEntity(Entity entity) {
+    private void createEntity(TextureAtlas atlas, Entity entity) {
         if (isSceneCreated()) {
-            Actor actor = entity.create(this);
+            Actor actor = entity.create(atlas, this);
             if (actor != null) {
                 entityActors.put(entity, actor);
                 stage.addActor(actor);
