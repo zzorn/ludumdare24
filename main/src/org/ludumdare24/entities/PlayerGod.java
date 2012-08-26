@@ -256,7 +256,7 @@ public class PlayerGod extends God {
                         changeMana(-Tool.FEED.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
                         toolEffect.start();
-                        game.getGameWorld().spawnFood(FoodType.APPLE, x, y,60  );
+                        game.getGameWorld().spawnFood(FoodType.APPLE, x, y,400  );
                         break;
 
                     case WATCH:

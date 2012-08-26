@@ -5,8 +5,8 @@ package org.ludumdare24.world;
  */
 public enum FoodType {
 
-    APPLE(15, "food", 1, 15, 0.3),
-    MEAT(80, "meatFood", 1, 20, 0.5),
+    APPLE(40, "food", 1, 15, 0.3),
+    MEAT(100, "meatFood", 1, 20, 0.5),
     ;
 
     private final double energyInOne;

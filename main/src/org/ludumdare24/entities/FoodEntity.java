@@ -75,7 +75,7 @@ public class FoodEntity extends SimpleWorldEntity {
             return energyLeft;
         }
         else {
-            energyLeft -= energyLeft;
+            energyLeft -= energyEaten;
             return energyEaten;
         }
     }

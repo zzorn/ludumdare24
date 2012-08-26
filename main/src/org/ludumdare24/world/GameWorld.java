@@ -6,10 +6,7 @@ import org.gameflow.entity.Entity;
 import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Mutator;
-import org.ludumdare24.entities.AppleTree;
-import org.ludumdare24.entities.FoodEntity;
-import org.ludumdare24.entities.God;
-import org.ludumdare24.entities.PlayerGod;
+import org.ludumdare24.entities.*;
 import org.ludumdare24.entities.creature.Creature;
 import org.ludumdare24.screens.GameScreen;
 
@@ -159,18 +156,29 @@ public class GameWorld {
     }
 
     public Creature getClosestCreature(float x, float y) {
+        return (Creature) findClosestEntity(x, y, creatures);
+    }
+
+    public FoodEntity getClosestFood(float x, float y) {
+        return (FoodEntity) findClosestEntity(x, y, foodEntities);
+    }
+
+    public AppleTree getClosestAppleTree(float x, float y) {
+        return (AppleTree) findClosestEntity(x, y, appleTrees);
+    }
+
+    private WorldEntity findClosestEntity(float x, float y, Array<? extends WorldEntity> entities) {
         float closestDistance = Float.POSITIVE_INFINITY;
-        Creature closestCreature = null;
-        for (Creature creature : creatures) {
-            Vector2 worldPos = creature.getWorldPos();
+        WorldEntity closestEntity = null;
+        for (WorldEntity entity : entities) {
+            Vector2 worldPos = entity.getWorldPos();
             float distance = MathTools.distanceSquared(worldPos.x, worldPos.y, x, y);
             if (distance < closestDistance) {
                 closestDistance = distance;
-                closestCreature = creature;
+                closestEntity = entity;
             }
         }
-
-        return closestCreature;
+        return closestEntity;
     }
 
     public void removeEntity(Entity entity) {
