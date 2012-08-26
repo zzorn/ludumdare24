@@ -24,8 +24,8 @@ timeline2: 0.43150684
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1500.0
-highMax: 2000.0
+highMin: 2000.0
+highMax: 1500.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
@@ -66,7 +66,7 @@ timeline0: 0.0
 - Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 60.0
+highMin: 80.0
 highMax: 32.0
 relative: false
 scalingCount: 2
@@ -107,23 +107,23 @@ timeline3: 1.0
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: -90.0
-highMax: 90.0
-relative: true
+highMin: 180.0
+highMax: -180.0
+relative: false
 scalingCount: 2
 scaling0: 1.0
-scaling1: 0.020408163
+scaling1: 0.10204082
 timelineCount: 2
 timeline0: 0.0
-timeline1: 0.9931507
+timeline1: 0.9726027
 - Wind - 
 active: false
 - Gravity - 
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: -80.0
-highMax: -80.0
+highMin: -50.0
+highMax: -100.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -159,4 +159,4 @@ aligned: false
 additive: true
 behind: false
 - Image Path -
-/home/cesse/projekteja/ludumdare/ludumdare24/orginal/images/eatenFood.png
+/home/cesse/projekteja/ludumdare/ludumdare24/android/orginal_assets/images/bone.png

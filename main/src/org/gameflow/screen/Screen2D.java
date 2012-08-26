@@ -172,7 +172,13 @@ public abstract class Screen2D extends ScreenBase {
         for (Entity entity : entities) {
             entity.topLayerRender(atlas, batch);
         }
+        onTopLayerRender();
+
         batch.end();
+    }
+
+    protected void onTopLayerRender() {
+
     }
 
     @Override
