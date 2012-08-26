@@ -15,6 +15,11 @@ public enum Tool {
 
     private Tool(double manaCost) {
         this.manaCost = manaCost;
+
+    }
+
+    public double getManaCost() {
+        return manaCost;
     }
 }
 
