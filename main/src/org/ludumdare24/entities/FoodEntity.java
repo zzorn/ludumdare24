@@ -10,7 +10,7 @@ import java.util.Random;
  *
  */
 public class FoodEntity extends SimpleWorldEntity {
-    private static final double START_FADE_IN_TIME = 2;
+    private static final double START_FADE_IN_TIME = 1;
 
     private final GameWorld gameWorld;
     private final FoodType foodType;

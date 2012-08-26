@@ -1,6 +1,8 @@
 package org.ludumdare24.entities.creature;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import org.gameflow.entity.Entity;
 import org.gameflow.utils.ColorUtils;
 import org.gameflow.utils.MathTools;
+import org.ludumdare24.entities.God;
 import org.ludumdare24.entities.WorldEntity;
 import org.ludumdare24.world.GameWorld;
 
@@ -56,9 +59,13 @@ public class Creature extends WorldEntity {
     private CreaturePart leftEye;
     private CreaturePart rightEye;
     private final GameWorld gameWorld;
+    private God god;
+    private ParticleEffect ownerGodColour=null;
 
-    public Creature(GameWorld gameWorld) {
+
+    public Creature(GameWorld gameWorld, God god) {
         this.gameWorld = gameWorld;
+        this.god = god;
     }
 
     public void onCreate(TextureAtlas atlas) {
@@ -75,6 +82,8 @@ public class Creature extends WorldEntity {
         rightArm = createBodyPart(BodyPartShape.ARM, true, skinColor, basicShape);
         leftEye = createBodyPart(BodyPartShape.EYE, false, Color.WHITE, basicShape);
         rightEye = createBodyPart(BodyPartShape.EYE, true, Color.WHITE, basicShape);
+        ownerGodColour = new ParticleEffect();
+
 
         float headCenterY = torso.getVisibleH() / 2 + head.getVisibleH() / 2;
         addPart(head, 0, headCenterY);
@@ -155,9 +164,16 @@ public class Creature extends WorldEntity {
     }
 
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
+        if (god!=null) {
+            g
+        }
+        ownerGodColour.load(Gdx.files.internal("particles/move.particle"), atlas);
+        ownerGodColour.start();
+        ownerGodColour .setPosition(x,y);
         for (CreaturePart part : parts) {
             part.draw(atlas, spriteBatch, getWorldPos(), angle);
         }
+
     }
 
     public void onDispose() {

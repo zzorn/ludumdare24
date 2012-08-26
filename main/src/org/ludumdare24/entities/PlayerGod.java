@@ -33,6 +33,7 @@ public class PlayerGod extends God {
     private final MainGame game;
 
     public PlayerGod(MainGame game) {
+        super("particles/ownGlow.particles");
         this.game = game;
     }
 
@@ -248,12 +249,9 @@ public class PlayerGod extends God {
                         changeMana(-Tool.FEED.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
                         toolEffect.start();
-                        game.getGameWorld().spawnFood(FoodType.APPLE, x, y,15  );
-                        //TODO get nearby creatures to attack this creature
-                       // toolEffect.load(Gdx.files.internal(TODO add apple image ), atlas);
-                        //toolEffect.start();
-                        //toolEffect.setPosition(x, y);
+                        game.getGameWorld().spawnFood(FoodType.APPLE, x, y,60  );
                         break;
+
                     case WATCH:
                         selectedCreature =closestCreature;
                         System.out.println("Tell me about yourself"+closestCreature+" at " + x + ", " + y);

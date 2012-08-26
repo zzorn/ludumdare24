@@ -14,6 +14,15 @@ public class God extends Entity {
     private double maxMana = 100;
     private double mana = 50;
     private double manaRegenerationPerSecond = 2;
+    private final String GlowEffectName;
+
+    public God(String glowEffectName) {
+        GlowEffectName = glowEffectName;
+    }
+
+    public String getGlowEffectName() {
+        return GlowEffectName;
+    }
 
     public double getMaxMana() {
         return maxMana;

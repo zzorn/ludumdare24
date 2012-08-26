@@ -21,7 +21,8 @@ public class GameWorld {
 
     private static final int FOOD_SPREAD = 15;
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
-    private final int initialCreatureCountPerGod = 30;
+    private final int initialPlayerCreatureCount = 8;
+    private final int initialUngodlyCreatureCount =15;
     private final int initialTreeCount = 30;
 
     private PlayerGod player;
@@ -40,10 +41,14 @@ public class GameWorld {
         // Create player
         player = new PlayerGod(game);
 
-        // Create players creatures
-        for (int i = 0; i < initialCreatureCountPerGod; i++) {
-            createCreature(player);
-        }
+
+
+        createTribe(400, 200, player, initialPlayerCreatureCount);
+        createTribe(1000, 200, null, initialUngodlyCreatureCount);
+        createTribe(0, 200, null, initialUngodlyCreatureCount);
+        createTribe(400, 0, null, initialUngodlyCreatureCount);
+        createTribe(400, 400, null, initialUngodlyCreatureCount);
+
 
         // Create some trees
         for (int i = 0; i < initialTreeCount; i++) {
@@ -53,12 +58,20 @@ public class GameWorld {
         }
     }
 
-    private void createCreature(God god) {
-        Creature creature = new Creature(this);
+    private void createTribe(int x, int y, God god, int tribeSize) {
+        for (int i = 0; i < tribeSize; i++) {
+            createCreature(god, x, y);
+        }
+    }
+
+    private void createCreature(God god, float x, float y) {
+        Creature creature = new Creature(this, god );
 
         creature.randomize(random);
 
-        creature.setWorldPos(random.nextFloat() * 1000, random.nextFloat() * 1000);
+        float x2 = x + (float)(random.nextGaussian() * 10);
+        float y2 = y + (float )(random.nextGaussian() * 10);
+        creature.setWorldPos(x2, y2);
 
         addEntity(creature);
     }
