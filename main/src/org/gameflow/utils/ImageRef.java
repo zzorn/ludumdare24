@@ -142,19 +142,21 @@ public class ImageRef {
         if (imageName != null) {
             if (image == null) image = atlas.findRegion(imageName, imageIndex);
 
-            float w = image.getRegionWidth();
-            float h = image.getRegionHeight();
-            float originY = (float) (h * turnPointY);
-            float originX = (float) (w * turnPointX);
-            spriteBatch.draw(
-                    image.getTexture(),
-                    x, y,
-                    originX, originY,
-                    w, h,
-                    (float) scaleX, (float) scaleY,
-                    MathTools.toDegrees(angleTurns * MathTools.Tau),
-                    image.getRegionX(), image.getRegionY(), image.getRegionWidth(), image.getRegionHeight(),
-                    isMirrorX(), isMirrorY());
+            if (image != null) {
+                float w = image.getRegionWidth();
+                float h = image.getRegionHeight();
+                float originY = (float) (h * turnPointY);
+                float originX = (float) (w * turnPointX);
+                spriteBatch.draw(
+                        image.getTexture(),
+                        x, y,
+                        originX, originY,
+                        w, h,
+                        (float) scaleX, (float) scaleY,
+                        MathTools.toDegrees(angleTurns * MathTools.Tau),
+                        image.getRegionX(), image.getRegionY(), image.getRegionWidth(), image.getRegionHeight(),
+                        isMirrorX(), isMirrorY());
+            }
         }
     }
 
