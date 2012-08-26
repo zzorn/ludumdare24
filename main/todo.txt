@@ -103,6 +103,7 @@ GameFlow Tasks
   TODO
   fix bugs:
   *when u go from game to menu and then back, the pictures are boxes
-  "toolchoosing particles on wrong plase when fullscreen in desktop
+  *toolchoosing particles on wrong plase when fullscreen in desktop
+  * cant see move.particle on map where creatures should move
 
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import org.gameflow.screen.Screen2D;
+import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Sounds;
 import org.ludumdare24.entities.creature.Creature;
@@ -22,8 +23,10 @@ public class PlayerGod extends God {
     private Label manaLabel;
 
     private Tool currentTool;
+    private Creature selectedCreature=null;
 
     private ParticleEffect cursorEffect=null;
+    private ParticleEffect toolEffect=null;
     private TextureAtlas atlas;
 
     private final MainGame game;
@@ -36,6 +39,7 @@ public class PlayerGod extends God {
     public void onCreate(TextureAtlas atlas) {
         this.atlas = atlas;
         cursorEffect = new ParticleEffect();
+        toolEffect = new ParticleEffect();
         changeTool(null);
     }
 
@@ -78,7 +82,7 @@ public class PlayerGod extends God {
         screen2D.getInputMultiplexer().addProcessor(new GestureDetector(new GestureDetector.GestureAdapter() {
             @Override
             public boolean touchDown(int x, int y, int pointer) {
-                if (cursorEffect != null){
+                if (cursorEffect != null) {
                     cursorEffect.setPosition(x, y);
                 }
                 return false;
@@ -88,7 +92,7 @@ public class PlayerGod extends God {
             public boolean tap(int x, int y, int count) {
                 // TODO: Convert to world coordiantes
                 float worldX = x;
-                float worldY = y;
+                float worldY = Gdx.graphics.getHeight() - y;
 
                 useTool(worldX, worldY);
                 return true;
@@ -171,35 +175,96 @@ public class PlayerGod extends God {
 
 
     private void useTool(float x, float y) {
+
+
         if (currentTool != null) {
-            switch (currentTool ){
 
-                case SMITE:
-                    Creature closestCreature = game.getGameWorld().getClosestCreature(x, y);
 
-                    if (closestCreature != null) {
-                        System.out.println("Ha Haa!  I smite you, creature "+closestCreature+" at " + x + ", " + y);
+             if (currentTool.getManaCost() <= getMana() ){
+                 selectedCreature = null;
+                 Creature closestCreature = game.getGameWorld().getClosestCreature(x, y);
 
-                        closestCreature.damage(100);
+
+                 switch (currentTool ){
+
+                    case SMITE:
+                            if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
+                                if (closestCreature != null) {
+                                    selectedCreature =closestCreature ;
+                                    System.out.println("Ha Haa!  I smite you, creature "+closestCreature+" at " + x + ", " + y);
+                                    closestCreature.damage(1000);
+                                    changeMana(-Tool.SMITE.getManaCost());
+                                    toolEffect.load(Gdx.files.internal("particles/smite.particle"), atlas);
+                                    toolEffect.start();
+
+
+                                }
+                            }
+                        break;
+
+                    case LOVE:
+                        if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
+                            if (closestCreature != null) {
+                                selectedCreature = closestCreature ;
+                                System.out.println("I want you to fall in love "+closestCreature+" at " + x + ", " + y);
+                                changeMana(-Tool.LOVE.getManaCost());
+                                //TODO boost falling in love
+                                toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
+                                toolEffect.start();
+                            }
+                        }
+                        break;
+
+                    case MOVE:
+                        System.out.println("Go here"+closestCreature+" at " + x + ", " + y);
+                        changeMana(-Tool.MOVE.getManaCost());
+
+
+                        toolEffect.load(Gdx.files.internal("particles/move.particle"), atlas);
+                        toolEffect.start();
+                        toolEffect.setPosition(x,y);
+                      // TODO creatures in an area around the place will go in this direction
+                        break;
+
+                    case RAGE:
+                        if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
+                            if (closestCreature != null) {
+                                selectedCreature = closestCreature ;
+                                System.out.println("ATTACK THIS TROLL"+closestCreature+" at " + x + ", " + y);
+                                changeMana(-Tool.RAGE.getManaCost());
+                                //TODO get nearby creatures to attack this creature
+                                toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
+                                toolEffect.start();
+                            }
+                        }
+                        break;
+                    case FEED:
+                        System.out.println("Here you have food"+closestCreature+" at " + x + ", " + y);
+                        changeMana(-Tool.FEED.getManaCost());
+                        toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
+                        toolEffect.start();
+
+                        //TODO get nearby creatures to attack this creature
+                       // toolEffect.load(Gdx.files.internal(TODO add apple image ), atlas);
+                        //toolEffect.start();
+                        //toolEffect.setPosition(x, y);
+                        break;
+                    case WATCH:
+                        selectedCreature =closestCreature;
+                        System.out.println("Tell me about yourself"+closestCreature+" at " + x + ", " + y);
+                        changeMana(-Tool.WATCH.getManaCost());
+                        toolEffect.load(Gdx.files.internal("particles/watchSelect.particle"), atlas);
+                        toolEffect.start();
+                        //TODO observe this creature
+                        break;
+                    default :
+                        break;
+
                     }
-
-                    break;
-
-                case LOVE:
-                    break;
-
-                case MOVE:
-                    break;
-                case RAGE:
-                    break;
-                case FEED:
-                    break;
-                default :
-                    break;
-
+                }
             }
         }
-    }
+
 
     @Override
     public void update(float timeDelta) {
@@ -209,10 +274,17 @@ public class PlayerGod extends God {
         manaLabel.setText("Mana: " + (int)getMana());
 
         if (cursorEffect != null){
-            cursorEffect.update(timeDelta );
             cursorEffect.setPosition(Gdx.input.getX(), (Gdx.graphics.getHeight()-Gdx.input.getY()));
+            cursorEffect.update(timeDelta );
         }
 
+
+        if (toolEffect != null) {
+            if (selectedCreature != null){
+               toolEffect.setPosition(selectedCreature.getWorldPos().x, selectedCreature.getWorldPos().y);
+            }
+            toolEffect.update(timeDelta );
+        }
         // listen for presses
         //Gdx.input.
 
@@ -222,6 +294,9 @@ public class PlayerGod extends God {
     public void topLayerRender(TextureAtlas atlas, SpriteBatch spriteBatch) {
         if (cursorEffect != null){
             cursorEffect.draw(spriteBatch);
+        }
+        if (toolEffect != null){
+            toolEffect.draw(spriteBatch);
         }
 
 
