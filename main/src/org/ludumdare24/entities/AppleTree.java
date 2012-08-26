@@ -25,10 +25,16 @@ public class AppleTree extends SimpleWorldEntity {
     }
 
     public AppleTree(GameWorld gameWorld, Random random) {
-        super(new ImageRef("appleTree", random.nextInt(4) + 1));
+        super(createImage(random));
         this.gameWorld = gameWorld;
 
         timeUntilSpawn = spawnInterval * random.nextDouble();
+    }
+
+    private static ImageRef createImage(Random random) {
+        ImageRef image = new ImageRef("appleTree", random.nextInt(4) + 1);
+        image.setMirrorX(random.nextBoolean());
+        return image;
     }
 
     @Override

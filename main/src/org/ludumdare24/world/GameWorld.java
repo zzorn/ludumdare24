@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import org.gameflow.entity.Entity;
 import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
+import org.ludumdare24.Mutator;
 import org.ludumdare24.entities.AppleTree;
 import org.ludumdare24.entities.FoodEntity;
 import org.ludumdare24.entities.God;
@@ -37,6 +38,8 @@ public class GameWorld {
     private Array<WorldListener> worldListeners = new Array<WorldListener>();
     private Random random = new Random();
 
+    private Mutator mutator = new Mutator(random);
+
     public void create(MainGame game) {
         // Create player
         player = new PlayerGod(game);
@@ -59,21 +62,33 @@ public class GameWorld {
     }
 
     private void createTribe(int x, int y, God god, int tribeSize) {
+
+        // Tribe mother
+        Creature tribeMother = createCreature(god, x, y, null);
+
+        // Spawn members based on mother
         for (int i = 0; i < tribeSize; i++) {
-            createCreature(god, x, y);
+            createCreature(god, x, y, tribeMother);
         }
     }
 
-    private void createCreature(God god, float x, float y) {
-        Creature creature = new Creature(this, god );
+    private Creature createCreature(God god, float x, float y, Creature mother) {
 
-        creature.randomize(random);
+        Creature creature;
+        if (mother != null) {
+            creature = new Creature(this, mutator, mother);
+        }
+        else {
+            creature = new Creature(this, god, mutator);
+        }
 
         float x2 = x + (float)(random.nextGaussian() * 10);
         float y2 = y + (float )(random.nextGaussian() * 10);
         creature.setWorldPos(x2, y2);
 
         addEntity(creature);
+
+        return creature;
     }
 
     /**

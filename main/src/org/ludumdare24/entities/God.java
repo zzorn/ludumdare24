@@ -1,5 +1,6 @@
 package org.ludumdare24.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,12 +17,19 @@ public class God extends Entity {
     private double manaRegenerationPerSecond = 2;
     private final String GlowEffectName;
 
-    public God(String glowEffectName) {
+    private final Color color;
+
+    public God(String glowEffectName, Color color) {
         GlowEffectName = glowEffectName;
+        this.color = color;
     }
 
     public String getGlowEffectName() {
         return GlowEffectName;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public double getMaxMana() {
