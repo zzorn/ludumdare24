@@ -87,6 +87,7 @@ public class GameWorld {
      */
     public void onCreatureDied(Creature creature) {
         for (WorldListener listener : worldListeners) {
+            creatures.removeValue(creature, true);
             listener.onEntityRemoved(creature);
         }
     }
