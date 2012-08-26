@@ -12,31 +12,24 @@ public abstract class ServiceBase implements Service {
         return getClass().getSimpleName();
     }
 
-    @Override
     public void create() {
     }
 
-    @Override
     public void resize(int width, int height) {
     }
 
-    @Override
     public void render() {
     }
 
-    @Override
     public void update(float deltaSeconds) {
     }
 
-    @Override
     public void pause() {
     }
 
-    @Override
     public void resume() {
     }
 
-    @Override
     public void dispose() {
     }
 

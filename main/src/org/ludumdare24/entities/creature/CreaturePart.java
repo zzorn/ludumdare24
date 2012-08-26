@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import org.gameflow.utils.MathUtils;
+import org.gameflow.utils.MathTools;
 
 /**
  *
@@ -92,8 +92,8 @@ public class CreaturePart {
 
     public void addPart(CreaturePart part, float direction, float angle) {
         // Add the part to the edge of this part at the specified direction
-        float x = visibleW * 0.5f + scale * (float)(Math.cos(direction + baseAngle + MathUtils.TauFloat/4) * visibleW * 0.5 * FIXED_PART_DISTANCE_SCALE);
-        float y = visibleH * 0.5f + scale * (float)(Math.sin(direction + baseAngle + MathUtils.TauFloat/4) * visibleH * 0.5 * FIXED_PART_DISTANCE_SCALE);
+        float x = visibleW * 0.5f + scale * (float)(Math.cos(direction + baseAngle + MathTools.TauFloat/4) * visibleW * 0.5 * FIXED_PART_DISTANCE_SCALE);
+        float y = visibleH * 0.5f + scale * (float)(Math.sin(direction + baseAngle + MathTools.TauFloat/4) * visibleH * 0.5 * FIXED_PART_DISTANCE_SCALE);
         part.basePos.set(x, y);
         part.basePos.rotate(baseAngle);
         part.basePos.add(basePos);
@@ -140,7 +140,7 @@ public class CreaturePart {
             float h = image.getRegionHeight() * length;
             float x = pos.x + xOffs ;
             float y = pos.y;
-            spriteBatch.draw(image, x, y, w*originX, h*originY, w, h, scale, scale, MathUtils.toDegrees(angle));
+            spriteBatch.draw(image, x, y, w*originX, h*originY, w, h, scale, scale, MathTools.toDegrees(angle));
             spriteBatch.setColor(Color.WHITE);
         }
     }

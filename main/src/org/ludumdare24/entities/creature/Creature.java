@@ -7,48 +7,62 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import org.gameflow.entity.Entity;
 import org.gameflow.utils.ColorUtils;
-import org.gameflow.utils.MathUtils;
+import org.gameflow.utils.MathTools;
+import org.ludumdare24.entities.WorldEntity;
+import org.ludumdare24.world.GameWorld;
 
 import java.util.Random;
 
 /**
  *
  */
-public class Creature extends Entity {
+public class Creature extends WorldEntity {
 
+    private static final double MAX_ARMOR_PROTECTION = 0.5;
     private Array<CreaturePart> parts = new Array<CreaturePart>();
-    public Vector2 pos = new Vector2();
-    public Vector2 velocity = new Vector2();
-    public float angle = 0;
+    private float angle = 0;
 
     public static final int BODY_IMAGE_SIZE = 64;
 
     private double armWaveSpeed = 1.5;
     private double armWaveSize = 0.5;
     private double totalTime = 0;
-    public CreaturePart leftArm;
-    public CreaturePart rightArm;
-    public double basicShape = 0.5;
-    public double hair = 0.5;
-    public double armor = 0;
-    public double spikes = 0;
-    public double fatness = 0.8;
-    public double length = 1;
-    public Color skinColor = new Color(0.3f, 0.4f, 0.7f, 1f);
-    public Color hairColor = Color.YELLOW.cpy();
-    public Color armorColor = Color.WHITE.cpy();
-    public Color spikesColor = Color.WHITE.cpy();
-    public float SCALE = 1f;
-    public CreaturePart rightLeg;
+    private CreaturePart leftArm;
+    private CreaturePart rightArm;
+
+    private double basicShape = 0.5;
+    private double hair = 0.5;
+    private double armor = 0;
+    private double spikes = 0;
+    private double fatness = 0.8;
+    private double length = 1;
+
+
+    private double maxHealth = 100;
+    private double health = 100;
+
+
+
+    private Color skinColor = new Color(0.3f, 0.4f, 0.7f, 1f);
+    private Color hairColor = Color.YELLOW.cpy();
+    private Color armorColor = Color.WHITE.cpy();
+    private Color spikesColor = Color.WHITE.cpy();
+    private float SCALE = 1f;
+    private CreaturePart rightLeg;
     private CreaturePart leftLeg;
     private CreaturePart abdomen;
     private CreaturePart torso;
     private CreaturePart head;
     private CreaturePart leftEye;
     private CreaturePart rightEye;
+    private final GameWorld gameWorld;
+
+    public Creature(GameWorld gameWorld) {
+        this.gameWorld = gameWorld;
+    }
 
     public void onCreate(TextureAtlas atlas) {
-        float tau = MathUtils.TauFloat;
+        float tau = MathTools.TauFloat;
 
 
 
@@ -104,102 +118,11 @@ public class Creature extends Entity {
     }
 
 
-    public void setPos(float x, float y) {
-        pos.set(x, y);
-    }
-
     private CreaturePart createBodyPart(BodyPartShape shape, boolean mirror, Color skinColor, double basicShape) {
         return new CreaturePart(shape, mirror, fatness, length, hair, armor, spikes, skinColor, hairColor, armorColor, spikesColor, basicShape, SCALE);
     }
 
 
-    public double getArmWaveSpeed() {
-        return armWaveSpeed;
-    }
-
-    public void setArmWaveSpeed(double armWaveSpeed) {
-        this.armWaveSpeed = armWaveSpeed;
-    }
-
-    public double getArmWaveSize() {
-        return armWaveSize;
-    }
-
-    public void setArmWaveSize(double armWaveSize) {
-        this.armWaveSize = armWaveSize;
-    }
-
-    public double getHair() {
-        return hair;
-    }
-
-    public void setHair(double hair) {
-        this.hair = hair;
-    }
-
-    public double getArmor() {
-        return armor;
-    }
-
-    public void setArmor(double armor) {
-        this.armor = armor;
-    }
-
-    public double getFatness() {
-        return fatness;
-    }
-
-    public void setFatness(double fatness) {
-        this.fatness = fatness;
-    }
-
-    public double getLength() {
-        return length;
-    }
-
-    public void setLength(double length) {
-        this.length = length;
-    }
-
-    public Color getSkinColor() {
-        return skinColor;
-    }
-
-    public void setSkinColor(Color skinColor) {
-        this.skinColor = skinColor;
-    }
-
-    public Color getHairColor() {
-        return hairColor;
-    }
-
-    public void setHairColor(Color hairColor) {
-        this.hairColor = hairColor;
-    }
-
-    public Color getArmorColor() {
-        return armorColor;
-    }
-
-    public void setArmorColor(Color armorColor) {
-        this.armorColor = armorColor;
-    }
-
-    public Color getSpikesColor() {
-        return spikesColor;
-    }
-
-    public void setSpikesColor(Color spikesColor) {
-        this.spikesColor = spikesColor;
-    }
-
-    public double getSpikes() {
-        return spikes;
-    }
-
-    public void setSpikes(double spikes) {
-        this.spikes = spikes;
-    }
 
     private void addPart(CreaturePart part) {
         addPart(part, 0, 0, 0);
@@ -215,29 +138,57 @@ public class Creature extends Entity {
         parts.add(part);
     }
 
-    public void update(float timeDelta) {
+    public void onUpdate(float timeDelta) {
         // Flap your arms if you are a crazy creature
         totalTime += timeDelta;
-        double armPos = (Math.sin(totalTime * armWaveSpeed * MathUtils.Tau) * 0.5 + 0.5) * armWaveSize;
-        double armAngle = MathUtils.mix(armPos, (0.25+0.75) * MathUtils.Tau, (0.25+0.35) * MathUtils.Tau);
+        double armPos = (Math.sin(totalTime * armWaveSpeed * MathTools.Tau) * 0.5 + 0.5) * armWaveSize;
+        double armAngle = MathTools.mix(armPos, (0.25 + 0.75) * MathTools.Tau, (0.25 + 0.35) * MathTools.Tau);
         leftArm.setAngle(armAngle);
-        rightArm.setAngle(MathUtils.Tau - armAngle);
+        rightArm.setAngle(MathTools.Tau - armAngle);
 
         // Random walk
+        Vector2 velocity = getVelocity();
         velocity.x += timeDelta * (Math.random() - 0.5) * 100;
         velocity.y += timeDelta * (Math.random() - 0.5) * 100;
-        velocity.x = MathUtils.clamp(velocity.x, -100, 100);
-        velocity.y = MathUtils.clamp(velocity.y, -100, 100);
-        pos.x += velocity.x * timeDelta;
-        pos.y += velocity.y * timeDelta;
+        velocity.x = MathTools.clamp(velocity.x, -100, 100);
+        velocity.y = MathTools.clamp(velocity.y, -100, 100);
     }
 
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
         for (CreaturePart part : parts) {
-            part.draw(atlas, spriteBatch, pos, angle);
+            part.draw(atlas, spriteBatch, getWorldPos(), angle);
         }
     }
 
     public void onDispose() {
+    }
+
+    /**
+     * Damages a creature
+     * @param amount
+     */
+    public void damage(float amount) {
+        // Armor protects
+        double damageThrough = MathTools.mix(armor, amount, amount * MAX_ARMOR_PROTECTION);
+
+        trueDamage(damageThrough);
+    }
+
+    /**
+     * Gives damage without using armor to defend.
+     */
+    private void trueDamage(double damageThrough) {
+
+        // Change health
+        health -= damageThrough;
+
+        // Check if dies
+        if (health <= 0) {
+            // Dead, remove from game
+            gameWorld.onCreatureDied(this);
+
+            // Spawn some meat there, depending on body size
+            // TODO
+        }
     }
 }

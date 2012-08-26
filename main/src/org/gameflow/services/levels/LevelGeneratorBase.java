@@ -24,20 +24,16 @@ public abstract class LevelGeneratorBase implements LevelGenerator {
         initiallyUnlockedLevels.add(levelId);
     }
 
-    @Override
     public void startup() {}
 
-    @Override
     public String getStartLevel() {
         return initiallyUnlockedLevels.size <= 0 ? null : initiallyUnlockedLevels.get(0);
     }
 
-    @Override
     public final Array<String> getInitiallyUnlockedLevels() {
         return initiallyUnlockedLevels;
     }
 
-    @Override
     public Level getLevel(String levelId) {
         // TODO: Do caching if needed
         return createLevel(levelId);
@@ -45,7 +41,6 @@ public abstract class LevelGeneratorBase implements LevelGenerator {
 
     protected abstract Level createLevel(String levelId);
 
-    @Override
     public void shutdown() {}
 
 }

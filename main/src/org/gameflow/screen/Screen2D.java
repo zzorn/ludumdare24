@@ -1,6 +1,7 @@
 package org.gameflow.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,6 +32,9 @@ public abstract class Screen2D extends ScreenBase {
     private final Array<Entity> entities = new Array<Entity>();
 
     private final TextureAtlas atlas;
+
+    private InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
 
     public Screen2D(TextureAtlas atlas) {
         super(null);
@@ -75,10 +79,15 @@ public abstract class Screen2D extends ScreenBase {
         return stage;
     }
 
+    public InputMultiplexer getInputMultiplexer() {
+        return inputMultiplexer;
+    }
+
     public final void doCreate() {
         font = new BitmapFont();
         batch = new SpriteBatch();
         stage = new Stage(0, 0, true);
+        inputMultiplexer.addProcessor(stage);
 
         // Create actors for entities that were added earlier
         for (Entity entity : entities) {
@@ -154,11 +163,12 @@ public abstract class Screen2D extends ScreenBase {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 
     protected void onRender() {}

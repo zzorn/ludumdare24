@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import org.gameflow.screen.Screen2D;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Sounds;
+import org.ludumdare24.entities.creature.Creature;
 import org.ludumdare24.screens.MainMenuScreen;
 
 /**
@@ -70,6 +72,39 @@ public class PlayerGod extends God {
 
         // Add HUD to screen
         screen2D.getStage().addActor(hud);
+
+        // Listen to user input
+        screen2D.getInputMultiplexer().addProcessor(new GestureDetector(new GestureDetector.GestureAdapter() {
+            @Override
+            public boolean touchDown(int x, int y, int pointer) {
+                if (cursorEffect != null){
+                    cursorEffect.setPosition(x, y);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean tap(int x, int y, int count) {
+                // TODO: Convert to world coordiantes
+                float worldX = x;
+                float worldY = y;
+
+                useTool(worldX, worldY);
+                return true;
+            }
+
+            @Override
+            public boolean pan(int x, int y, int deltaX, int deltaY) {
+                // TODO: Move camera
+                return true;
+            }
+
+            @Override
+            public boolean zoom(float originalDistance, float currentDistance) {
+                // TODO: Zoom camera up to max zoom and down to min zoom
+                return true;
+            }
+        }));
     }
 
     private ImageButton createToolButton(final Tool tool, String imageName, ButtonGroup buttonGroup, Screen2D screen2D) {
@@ -124,11 +159,41 @@ public class PlayerGod extends God {
                 default :
                     break;
 
-
-
             }
         }
 
+    }
+
+
+    private void useTool(float x, float y) {
+        if (currentTool != null) {
+            switch (currentTool ){
+
+                case SMITE:
+                    Creature closestCreature = game.getGameWorld().getClosestCreature(x, y);
+
+                    if (closestCreature != null) {
+                        System.out.println("Ha Haa!  I smite you, creature "+closestCreature+" at " + x + ", " + y);
+
+                        closestCreature.damage(100);
+                    }
+
+                    break;
+
+                case LOVE:
+                    break;
+
+                case MOVE:
+                    break;
+                case RAGE:
+                    break;
+                case FEED:
+                    break;
+                default :
+                    break;
+
+            }
+        }
     }
 
     @Override

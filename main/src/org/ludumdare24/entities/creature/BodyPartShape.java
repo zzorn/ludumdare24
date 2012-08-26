@@ -1,6 +1,6 @@
 package org.ludumdare24.entities.creature;
 
-import org.gameflow.utils.MathUtils;
+import org.gameflow.utils.MathTools;
 
 /**
  * Shapes that a creatures body part can have
@@ -47,25 +47,25 @@ public enum BodyPartShape {
     }
 
     public String getBasicImageName(double basic) {
-        int image = (int) MathUtils.mix(basic, 0, basicCount);
+        int image = (int) MathTools.mix(basic, 0, basicCount);
         if (image <= 0) return imageName;
         else return imageName + image;
     }
 
     public String getHairImageName(double hair) {
-        int image = (int) MathUtils.mix(hair, 0, hairCount);
+        int image = (int) MathTools.mix(hair, 0, hairCount);
         if (image <= 0) return null;
         else return imageName + "_hair" + image;
     }
 
     public String getArmorImageName(double armor) {
-        int image = (int) MathUtils.mix(armor, 0, armorCount);
+        int image = (int) MathTools.mix(armor, 0, armorCount);
         if (image <= 0) return null;
         else return imageName + "_armor" + image;
     }
 
     public String getSpikeImageName(double spikes) {
-        int image = (int) MathUtils.mix(spikes, 0, spikeCount);
+        int image = (int) MathTools.mix(spikes, 0, spikeCount);
         if (image <= 0) return null;
         else return imageName + "_spikes" + image;
     }
