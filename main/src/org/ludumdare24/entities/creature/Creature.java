@@ -41,7 +41,7 @@ public class Creature extends WorldEntity {
 
     private double maxEnergy = 100+100*Math.random();
     private double energy = 100;
-    private double basicEnergyUsagePerSecond = 2;
+    private double basicEnergyUsagePerSecond = 1.5;
     private double pregnantEnergyUsagePerSecond = 1;
     private double woundedEnergyUsagePerSecond = 2;
     private double walkEnergyUsagePerSecond = 1;
