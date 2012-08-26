@@ -1,19 +1,17 @@
 Untitled
 - Delay -
-active: true
-lowMin: 0.0
-lowMax: 0.0
+active: false
 - Duration - 
-lowMin: 8000.0
-lowMax: 8000.0
+lowMin: 4000.0
+lowMax: 4000.0
 - Count - 
 min: 0
-max: 1
+max: 10
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1.0
-highMax: 1.0
+highMin: 2.0
+highMax: 2.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -22,13 +20,13 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 4.0
-highMax: 4.0
+highMin: 1000.0
+highMax: 3000.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
 scaling1: 1.0
-scaling2: 0.3
+scaling2: 1.0
 timelineCount: 3
 timeline0: 0.0
 timeline1: 0.66
@@ -64,76 +62,89 @@ timeline0: 0.0
 - Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 60.0
-highMax: 60.0
+highMin: -100.0
+highMax: -100.0
 relative: false
 scalingCount: 3
 scaling0: 0.0
-scaling1: 0.7346939
+scaling1: 0.81632656
 scaling2: 0.9591837
 timelineCount: 3
 timeline0: 0.0
-timeline1: 0.02739726
-timeline2: 1.0
+timeline1: 0.28082192
+timeline2: 0.9520548
 - Velocity - 
 active: true
 lowMin: 0.0
-lowMax: 10.0
-highMin: 1.0
-highMax: 1.0
+lowMax: 0.0
+highMin: 20.0
+highMax: 20.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
 scaling1: 0.97959185
-scaling2: 0.0
+scaling2: 0.3469388
 timelineCount: 3
 timeline0: 0.0
-timeline1: 0.30136988
-timeline2: 1.0
+timeline1: 0.26027396
+timeline2: 0.5479452
 - Angle - 
 active: true
 lowMin: 90.0
 lowMax: 90.0
 highMin: 45.0
-highMax: 135.0
+highMax: 360.0
 relative: false
-scalingCount: 3
+scalingCount: 2
 scaling0: 1.0
-scaling1: 0.0
-scaling2: 0.0
-timelineCount: 3
+scaling1: 1.0
+timelineCount: 2
 timeline0: 0.0
-timeline1: 0.5
-timeline2: 1.0
+timeline1: 0.999
 - Rotation - 
-active: false
+active: true
+lowMin: 1.0
+lowMax: 1.0
+highMin: 270.0
+highMax: 270.0
+relative: true
+scalingCount: 2
+scaling0: 1.0
+scaling1: 1.0
+timelineCount: 2
+timeline0: 0.0
+timeline1: 1.0
 - Wind - 
 active: false
 - Gravity - 
 active: false
 - Tint - 
-colorsCount: 15
+colorsCount: 18
 colors0: 1.0
-colors1: 1.0
-colors2: 1.0
-colors3: 0.47843137
-colors4: 0.19607843
-colors5: 0.14509805
+colors1: 0.4392157
+colors2: 0.4392157
+colors3: 0.49803922
+colors4: 0.21568628
+colors5: 0.12156863
 colors6: 0.7294118
-colors7: 0.7294118
-colors8: 0.7294118
-colors9: 0.80784315
-colors10: 0.3647059
-colors11: 0.047058824
-colors12: 0.53333336
-colors13: 0.29411766
-colors14: 0.16078432
-timelineCount: 5
+colors7: 0.43137255
+colors8: 0.43137255
+colors9: 0.87058824
+colors10: 0.8627451
+colors11: 0.8627451
+colors12: 0.87058824
+colors13: 0.6784314
+colors14: 0.3372549
+colors15: 0.76862746
+colors16: 0.5254902
+colors17: 0.16470589
+timelineCount: 6
 timeline0: 0.0
-timeline1: 0.26788992
+timeline1: 0.33577982
 timeline2: 0.50642204
-timeline3: 0.71376145
-timeline4: 1.0
+timeline3: 0.73394495
+timeline4: 0.8788991
+timeline5: 1.0
 - Transparency - 
 lowMin: 0.0
 lowMax: 0.0
@@ -141,20 +152,20 @@ highMin: 1.0
 highMax: 1.0
 relative: false
 scalingCount: 4
-scaling0: 1.0
-scaling1: 0.9298246
-scaling2: 0.84210527
+scaling0: 0.0
+scaling1: 1.0
+scaling2: 0.75
 scaling3: 0.0
 timelineCount: 4
 timeline0: 0.0
-timeline1: 0.20547946
-timeline2: 0.79452056
+timeline1: 0.2
+timeline2: 0.8
 timeline3: 1.0
 - Options - 
-attached: false
-continuous: false
-aligned: false
-additive: true
+attached: true
+continuous: true
+aligned: true
+additive: false
 behind: false
 - Image Path -
 /home/cesse/projekteja/ludumdare/ludumdare24/android/orginal_assets/images/foot.png

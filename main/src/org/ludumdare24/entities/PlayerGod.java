@@ -175,23 +175,28 @@ public class PlayerGod extends God {
 
 
     private void useTool(float x, float y) {
+
+
         if (currentTool != null) {
 
 
              if (currentTool.getManaCost() <= getMana() ){
+                 selectedCreature = null;
                  Creature closestCreature = game.getGameWorld().getClosestCreature(x, y);
-                 selectedCreature = closestCreature;
+
 
                  switch (currentTool ){
 
                     case SMITE:
                             if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                                 if (closestCreature != null) {
+                                    selectedCreature =closestCreature ;
                                     System.out.println("Ha Haa!  I smite you, creature "+closestCreature+" at " + x + ", " + y);
                                     closestCreature.damage(1000);
                                     changeMana(-Tool.SMITE.getManaCost());
                                     toolEffect.load(Gdx.files.internal("particles/smite.particle"), atlas);
                                     toolEffect.start();
+
 
                                 }
                             }
@@ -200,6 +205,7 @@ public class PlayerGod extends God {
                     case LOVE:
                         if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                             if (closestCreature != null) {
+                                selectedCreature = closestCreature ;
                                 System.out.println("I want you to fall in love "+closestCreature+" at " + x + ", " + y);
                                 changeMana(-Tool.LOVE.getManaCost());
                                 //TODO boost falling in love
@@ -212,7 +218,7 @@ public class PlayerGod extends God {
                     case MOVE:
                         System.out.println("Go here"+closestCreature+" at " + x + ", " + y);
                         changeMana(-Tool.MOVE.getManaCost());
-                        selectedCreature = null;
+
 
                         toolEffect.load(Gdx.files.internal("particles/move.particle"), atlas);
                         toolEffect.start();
@@ -223,6 +229,7 @@ public class PlayerGod extends God {
                     case RAGE:
                         if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                             if (closestCreature != null) {
+                                selectedCreature = closestCreature ;
                                 System.out.println("ATTACK THIS TROLL"+closestCreature+" at " + x + ", " + y);
                                 changeMana(-Tool.RAGE.getManaCost());
                                 //TODO get nearby creatures to attack this creature
@@ -234,13 +241,16 @@ public class PlayerGod extends God {
                     case FEED:
                         System.out.println("Here you have food"+closestCreature+" at " + x + ", " + y);
                         changeMana(-Tool.FEED.getManaCost());
-                        selectedCreature = null;
+                        toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
+                        toolEffect.start();
+
                         //TODO get nearby creatures to attack this creature
                        // toolEffect.load(Gdx.files.internal(TODO add apple image ), atlas);
-                        toolEffect.start();
-                        toolEffect.setPosition(x, y);
+                        //toolEffect.start();
+                        //toolEffect.setPosition(x, y);
                         break;
                     case WATCH:
+                        selectedCreature =closestCreature;
                         System.out.println("Tell me about yourself"+closestCreature+" at " + x + ", " + y);
                         changeMana(-Tool.WATCH.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/watchSelect.particle"), atlas);
@@ -264,14 +274,16 @@ public class PlayerGod extends God {
         manaLabel.setText("Mana: " + (int)getMana());
 
         if (cursorEffect != null){
-            cursorEffect.update(timeDelta );
             cursorEffect.setPosition(Gdx.input.getX(), (Gdx.graphics.getHeight()-Gdx.input.getY()));
+            cursorEffect.update(timeDelta );
         }
 
 
-        if (toolEffect != null && selectedCreature != null) {
+        if (toolEffect != null) {
+            if (selectedCreature != null){
+               toolEffect.setPosition(selectedCreature.getWorldPos().x, selectedCreature.getWorldPos().y);
+            }
             toolEffect.update(timeDelta );
-            toolEffect.setPosition(selectedCreature.getWorldPos().x, selectedCreature.getWorldPos().y);
         }
         // listen for presses
         //Gdx.input.
