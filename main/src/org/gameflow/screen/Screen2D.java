@@ -16,6 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import org.gameflow.entity.Entity;
+import org.ludumdare24.entities.WorldEntity;
+
+import java.util.Comparator;
 
 /**
  * A screen implementation with a sprite stage and other utilities.
@@ -34,6 +37,14 @@ public abstract class Screen2D extends ScreenBase {
     private final TextureAtlas atlas;
 
     private InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
+    private final Comparator<Entity> entityDrawOrderCompartor = new Comparator<Entity>() {
+        public int compare(Entity o1, Entity o2) {
+            if (o1.getDrawOrder() < o2.getDrawOrder()) return -1;
+            else if (o1.getDrawOrder() > o2.getDrawOrder()) return 1;
+            else return 0;
+        }
+    };
 
 
     public Screen2D(TextureAtlas atlas) {
@@ -130,6 +141,9 @@ public abstract class Screen2D extends ScreenBase {
         for (Entity entity : entities) {
             entity.update(deltaSeconds);
         }
+
+        // Sort entities by y coordinate
+        entities.sort(entityDrawOrderCompartor);
     }
 
     protected void onUpdate(float deltaSeconds) {}

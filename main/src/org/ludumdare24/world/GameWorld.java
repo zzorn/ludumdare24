@@ -19,7 +19,7 @@ import java.util.Random;
  */
 public class GameWorld {
 
-    private static final int FOOD_SPREAD = 100;
+    private static final int FOOD_SPREAD = 15;
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
     private final int initialCreatureCountPerGod = 30;
     private final int initialTreeCount = 30;

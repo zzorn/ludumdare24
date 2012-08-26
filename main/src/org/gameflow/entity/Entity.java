@@ -37,6 +37,10 @@ public abstract class Entity {
 
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {}
 
+    public float getDrawOrder() {
+        return 0;
+    }
+
     public final void dispose() {
         if (created && !disposed) {
             disposed = true;

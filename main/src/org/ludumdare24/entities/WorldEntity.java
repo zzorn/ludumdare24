@@ -28,6 +28,11 @@ public abstract class WorldEntity extends Entity {
         updateMovement(timeDelta);
     }
 
+    @Override
+    public float getDrawOrder() {
+        return -pos.y;
+    }
+
     protected void onUpdate(float timeDelta) {}
 
     protected void updateMovement(float timeDelta) {
