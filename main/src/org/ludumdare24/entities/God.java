@@ -14,7 +14,7 @@ public class God extends Entity {
 
     private double maxMana = 100;
     private double mana = 50;
-    private double manaRegenerationPerSecond = 2;
+    private double manaRegenerationPerSecond = 4;
     private final String GlowEffectName;
 
     private final Color color;

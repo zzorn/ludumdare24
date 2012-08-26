@@ -41,7 +41,7 @@ public class Creature extends WorldEntity {
 
     private double maxEnergy = 100+100*Math.random();
     private double energy = 100;
-    private double basicEnergyUsagePerSecond = 1;
+    private double basicEnergyUsagePerSecond = 2;
     private double pregnantEnergyUsagePerSecond = 1;
     private double woundedEnergyUsagePerSecond = 2;
     private double walkEnergyUsagePerSecond = 1;
@@ -61,7 +61,7 @@ public class Creature extends WorldEntity {
 
     private Vector2 movementDirection = new Vector2();
     private double movementSpeedFactor = 0.5;
-    private double maxMovementSpeedPerSecond = 3000;
+    private double maxMovementSpeedPerSecond = 1000;
 
     private double energyReleasedOnDeath = maxEnergy * 2;
 
@@ -278,8 +278,7 @@ public class Creature extends WorldEntity {
                 currentBehaviour = bestBehaviour;
 
                 if (currentBehaviour != null) {
-                    System.out.println("energy = " + energy);
-                    System.out.println("Activated behaviour " + currentBehaviour.getName() + " for " + this);
+
                     currentBehaviour.onActivated();
                     timeUntilBehaviourReactivation = currentBehaviour.getReActivationTime();
                 }
