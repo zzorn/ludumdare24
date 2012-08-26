@@ -27,39 +27,28 @@ public class InstructionChooseScreen extends Screen2D {
 
         Table table = new Table(getSkin());
 
-        table.add(new Label("Choose 'All' to see all instructions or   ", getSkin())).top().colspan(10);
-        table.row();
-        table.add(new Label("a specific section to jum right there.   ", getSkin())).top().colspan(10) ;
-        table.row();
-
-
-        table.add(createButton("All", new ClickListener() {
+        table.add(createButton("Intro", new ClickListener() {
             public void click(Actor actor, float x, float y) {
-                game.setScreen(new InstructionScreen(game));
+                game.setScreen(game.createHelpPage(1));
                 game.soundService.play(Sounds.UI_CLICK);
             }
         })).fillX().padBottom(10);
-
-
         table.row();
-
 
         table.add(createButton("Tools", new ClickListener() {
             public void click(Actor actor, float x, float y) {
-                game.setScreen(new InstructionScreen2(game));
+                game.setScreen(game.createHelpPage(2));
                 game.soundService.play(Sounds.UI_CLICK);
             }
         })).fillX().padBottom(10);
-
         table.row();
 
-        table.add(createButton("Something", new ClickListener() {
+        table.add(createButton("Return", new ClickListener() {
             public void click(Actor actor, float x, float y) {
-                game.setScreen(new InstructionScreen8(game) );
-                game.soundService.play(Sounds.UI_CLICK);
+                game.setScreen(new MainMenuScreen(game));
+                game.soundService.play(Sounds.UI_ACCEPT);
             }
         })).fillX().padBottom(10);
-
         table.row();
 
 
