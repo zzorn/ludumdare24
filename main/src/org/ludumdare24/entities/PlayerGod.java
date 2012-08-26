@@ -1,6 +1,7 @@
 package org.ludumdare24.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -33,7 +34,7 @@ public class PlayerGod extends God {
     private final MainGame game;
 
     public PlayerGod(MainGame game) {
-        super("particles/ownGlow.particles");
+        super("particles/ownGlow.particles", new Color(0.2f, 0.5f, 0.8f, 1f));
         this.game = game;
     }
 
@@ -106,6 +107,9 @@ public class PlayerGod extends God {
             @Override
             public boolean pan(int x, int y, int deltaX, int deltaY) {
                 // TODO: Move camera
+                System.out.println("PlayerGod.pan");
+                System.out.println("deltaX = " + deltaX);
+                System.out.println("deltaY = " + deltaY);
                 return true;
             }
 
@@ -281,7 +285,7 @@ public class PlayerGod extends God {
 
         if (cursorEffect != null){
             cursorEffect.setPosition(Gdx.input.getX(), (Gdx.graphics.getHeight()-Gdx.input.getY()));
-            cursorEffect.update(timeDelta );
+            cursorEffect.update(timeDelta);
         }
 
 

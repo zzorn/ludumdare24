@@ -29,8 +29,30 @@ public class MathTools {
 
     public static float clamp(float value, float min, float max) {
         if (value < min) return min;
-        else if (value > max) return max;
-        else return value;
+        if (value > max) return max;
+        return value;
+    }
+
+    public static double rollToZeroToOne(double value) {
+        return value - Math.floor(value);
+    }
+
+    public static float clampToZeroToOne(float value) {
+        if (value < 0) return 0;
+        if (value > 1) return 1;
+        return value;
+    }
+
+    public static double clampToZeroToOne(double value) {
+        if (value < 0) return 0;
+        if (value > 1) return 1;
+        return value;
+    }
+
+    public static double clampToMinusOneToOne(double value) {
+        if (value < -1) return -1;
+        if (value > 1) return 1;
+        return value;
     }
 
     public static float distance(float x1, float y1, float x2, float y2) {

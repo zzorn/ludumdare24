@@ -103,13 +103,13 @@ public class CreaturePart {
         attachedParts.add(part);
     }
 
-    public void draw(TextureAtlas atlas, SpriteBatch spriteBatch, Vector2 pos, float angle) {
+    public void draw(TextureAtlas atlas, SpriteBatch spriteBatch, float x, float y, float angle) {
 
         float currentAngle = baseAngle + this.angle + angle;
 
         // Draw all attached parts
         for (CreaturePart attachedPart : attachedParts) {
-            attachedPart.draw(atlas, spriteBatch, pos, currentAngle);
+            attachedPart.draw(atlas, spriteBatch, x, y, currentAngle);
         }
 
         // Draw the part itself
@@ -119,7 +119,7 @@ public class CreaturePart {
         if (spikesImage == null) spikesImage = getImage(atlas, shape.getSpikeImageName(spikes));
 
         tempPos.set(basePos);
-        tempPos.add(pos);
+        tempPos.add(x, y);
 
         drawLayer(spriteBatch, baseImage, tempPos, currentAngle, baseColor);
         drawLayer(spriteBatch, armorImage, tempPos, currentAngle, armorColor);
