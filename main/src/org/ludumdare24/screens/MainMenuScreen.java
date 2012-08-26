@@ -50,7 +50,7 @@ public class MainMenuScreen extends Screen2D {
 
         // Help
         table.row();
-        table.add(createButton("Instruction", new ClickListener() {
+        table.add(createButton("Help", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 game.setScreen(new InstructionChooseScreen(game) );
                 game.soundService.play(Sounds.UI_CLICK);
