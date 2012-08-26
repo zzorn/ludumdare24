@@ -14,6 +14,7 @@ import org.ludumdare24.MainGame;
 import org.ludumdare24.Sounds;
 import org.ludumdare24.entities.creature.Creature;
 import org.ludumdare24.screens.MainMenuScreen;
+import org.ludumdare24.world.FoodType;
 
 /**
  * The god that is the players character.
@@ -196,8 +197,10 @@ public class PlayerGod extends God {
                                     changeMana(-Tool.SMITE.getManaCost());
                                     toolEffect.load(Gdx.files.internal("particles/smite.particle"), atlas);
                                     toolEffect.start();
-
-
+                                    int randomSound = ((int) (Math.random())*3);
+                                    if (randomSound==0 ){ game.soundService.play(Sounds.SMITE1);}
+                                    else if (randomSound==1 ){ game.soundService.play(Sounds.SMITE2);}
+                                    else{ game.soundService.play(Sounds.SMITE3);}
                                 }
                             }
                         break;
@@ -211,6 +214,7 @@ public class PlayerGod extends God {
                                 //TODO boost falling in love
                                 toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
                                 toolEffect.start();
+                                game.soundService.play(Sounds.LOVE);
                             }
                         }
                         break;
@@ -235,6 +239,7 @@ public class PlayerGod extends God {
                                 //TODO get nearby creatures to attack this creature
                                 toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
                                 toolEffect.start();
+                                game.soundService.play(Sounds.RAGE);
                             }
                         }
                         break;
@@ -243,7 +248,7 @@ public class PlayerGod extends God {
                         changeMana(-Tool.FEED.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
                         toolEffect.start();
-
+                        game.getGameWorld().spawnFood(FoodType.APPLE, x, y,15  );
                         //TODO get nearby creatures to attack this creature
                        // toolEffect.load(Gdx.files.internal(TODO add apple image ), atlas);
                         //toolEffect.start();
