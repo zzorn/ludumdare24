@@ -65,8 +65,9 @@ public class PlayerGod extends God {
         buttons.add(createToolButton(Tool.MOVE, "moveButton", buttonGroup, screen2D));
         buttons.add(createToolButton(Tool.RAGE, "rageButton", buttonGroup, screen2D));
         buttons.add(createToolButton(Tool.FEED, "foodButton", buttonGroup, screen2D));
+        buttons.add(createToolButton(Tool.WATCH, "watchButton", buttonGroup, screen2D));
 
-        hud.add(buttons).expand().bottom().colspan(2);
+        hud.add(buttons).expand().bottom().colspan(3);
 
         // Add HUD to screen
         screen2D.getStage().addActor(hud);
@@ -119,6 +120,10 @@ public class PlayerGod extends God {
                     break;
                 case FEED:
                     cursorEffect.load(Gdx.files.internal("particles/feedSelect.particle"), atlas);
+                    cursorEffect.start();
+                    break;
+                case WATCH:
+                    cursorEffect.load(Gdx.files.internal("particles/watchSelect.particle"), atlas);
                     cursorEffect.start();
                     break;
                 default :
