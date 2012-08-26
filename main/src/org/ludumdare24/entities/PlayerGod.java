@@ -88,7 +88,7 @@ public class PlayerGod extends God {
             public boolean tap(int x, int y, int count) {
                 // TODO: Convert to world coordiantes
                 float worldX = x;
-                float worldY = Gdx.graphics.getWidth() - y;
+                float worldY = y;
 
                 useTool(worldX, worldY);
                 return true;

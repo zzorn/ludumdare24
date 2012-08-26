@@ -19,6 +19,7 @@ public class ImageRef {
     private double turnPointY = 0.5;
     private boolean mirrorX = false;
     private boolean mirrorY = false;
+    private double alpha = 1;
 
     private transient TextureAtlas.AtlasRegion image = null;
 
@@ -121,6 +122,14 @@ public class ImageRef {
         this.mirrorY = mirrorY;
     }
 
+    public double getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(double alpha) {
+        this.alpha = alpha;
+    }
+
     /**
      * The point around with the image should be rotated.
      * 0 = left / bottom edge, 1 = right upper edge.
@@ -140,23 +149,30 @@ public class ImageRef {
 
     public void render(float x, float y, TextureAtlas atlas, SpriteBatch spriteBatch) {
         if (imageName != null) {
-            if (image == null) image = atlas.findRegion(imageName, imageIndex);
+            if (image == null) image = atlas.findRegion(imageName + imageIndex);
 
-            if (image != null) {
-                float w = image.getRegionWidth();
-                float h = image.getRegionHeight();
-                float originY = (float) (h * turnPointY);
-                float originX = (float) (w * turnPointX);
-                spriteBatch.draw(
-                        image.getTexture(),
-                        x, y,
-                        originX, originY,
-                        w, h,
-                        (float) scaleX, (float) scaleY,
-                        MathTools.toDegrees(angleTurns * MathTools.Tau),
-                        image.getRegionX(), image.getRegionY(), image.getRegionWidth(), image.getRegionHeight(),
-                        isMirrorX(), isMirrorY());
-            }
+            // Try to look for image without index if it is low
+            if (image == null && imageIndex <= 1) image = atlas.findRegion(imageName);
+
+            if (image == null) throw new IllegalArgumentException("Image not found for image with name " + imageName + " and index " + imageIndex);
+
+            if (alpha < 1) spriteBatch.setColor(1f, 1f, 1f, (float) alpha);
+
+            float w = image.getRegionWidth();
+            float h = image.getRegionHeight();
+            float originY = (float) (h * turnPointY);
+            float originX = (float) (w * turnPointX);
+            spriteBatch.draw(
+                    image.getTexture(),
+                    x, y,
+                    originX, originY,
+                    w, h,
+                    (float) scaleX, (float) scaleY,
+                    MathTools.toDegrees(angleTurns * MathTools.Tau),
+                    image.getRegionX(), image.getRegionY(), image.getRegionWidth(), image.getRegionHeight(),
+                    isMirrorX(), isMirrorY());
+
+            if (alpha < 1) spriteBatch.setColor(1f, 1f, 1f, 1f);
         }
     }
 

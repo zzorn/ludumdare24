@@ -3,6 +3,8 @@ package org.ludumdare24;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import org.gameflow.GameBase;
+import org.gameflow.Service;
+import org.gameflow.ServiceBase;
 import org.gameflow.services.options.InMemoryOptionsService;
 import org.gameflow.services.options.OptionsService;
 import org.gameflow.services.sound.SoundService;
@@ -18,6 +20,12 @@ public class MainGame extends GameBase {
 
     public final OptionsService optionsService = addService(new InMemoryOptionsService());
     public final SoundService soundService = addService(new SoundServiceImpl());
+    public final Service gameWorldUpdateService = addService(new ServiceBase() {
+        @Override
+        public void update(float deltaSeconds) {
+            if (gameWorld != null) gameWorld.update(deltaSeconds);
+        }
+    });
 
     private TextureAtlas atlas;
     private GameWorld gameWorld = null;
@@ -48,6 +56,8 @@ public class MainGame extends GameBase {
         setScreen(new MainMenuScreen(this));
     }
 
+
+
     @Override
     protected void onShutdownStarted() {
         atlas.dispose();
@@ -66,13 +76,11 @@ public class MainGame extends GameBase {
     public HelpPageScreen createHelpPage(int index) {
         switch (index) {
             case 1: return createHelpPageWithContent(index, null,
-                    "You are the god of a tribe of trolls.",
+                    "You are the god of a species of trolls.",
                     "Your task is to look out for your worshippers",
                     "and help them to evolve and survive.",
                     "But beware!  You are not the only god",
-                    "in this world. There are others who",
-                    "wants their worshippers to survive",
-                    "because wat is a god without believers");
+                    "in this world.");
             case 2: return createHelpPageWithContent(index, "smiteButtonNotPressScaled",
                     "With the smite tool you can kill both enemy",
                     "trolls and your own worshippers.");
@@ -87,8 +95,8 @@ public class MainGame extends GameBase {
                     "but they have a mind of their own too.");
             case 5: return createHelpPageWithContent(index, "rageButtonNotPressScaled",
                     "When you click an enemy with the rage tool",
-                    "your nearby trolls will heedlessly attack the target.",
-                    "And fight to the last troll to kill it",
+                    "your nearby trolls will heedlessly attack the target",
+                    "and fight to the last troll to kill it - ",
                     "even if it is one of their own.");
             case 6: return createHelpPageWithContent(index, "foodButtonNotPressScaled",
                     "With the feed tool you can toss apples from the sky",
@@ -96,9 +104,7 @@ public class MainGame extends GameBase {
                     "or to save them if they are dying in hunger.");
             case 7: return createHelpPageWithContent(index, null,
                     "Using your tools will drain yor mana.",
-                    "Your mana will recover over time.",
-                    "But remember that it is good to spare it",
-                    "to when you really need it.");
+                    "But your mana will recover over time.");
         }
 
         return createHelpPageWithContent(0, null, "Unknown help page");

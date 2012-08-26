@@ -47,7 +47,7 @@ public class Creature extends WorldEntity {
     private Color hairColor = Color.YELLOW.cpy();
     private Color armorColor = Color.WHITE.cpy();
     private Color spikesColor = Color.WHITE.cpy();
-    private float SCALE = 1f;
+    private float SCALE = 0.5f;
     private CreaturePart rightLeg;
     private CreaturePart leftLeg;
     private CreaturePart abdomen;
@@ -185,7 +185,7 @@ public class Creature extends WorldEntity {
         // Check if dies
         if (health <= 0) {
             // Dead, remove from game
-            gameWorld.onCreatureDied(this);
+            gameWorld.removeEntity(this);
 
             // Spawn some meat there, depending on body size
             // TODO

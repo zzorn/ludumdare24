@@ -2,9 +2,11 @@ package org.ludumdare24.world;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import org.gameflow.entity.Entity;
 import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.entities.AppleTree;
+import org.ludumdare24.entities.FoodEntity;
 import org.ludumdare24.entities.God;
 import org.ludumdare24.entities.PlayerGod;
 import org.ludumdare24.entities.creature.Creature;
@@ -17,6 +19,8 @@ import java.util.Random;
  */
 public class GameWorld {
 
+    private static final int FOOD_SPREAD = 100;
+    private static final int MAX_FOOD_ENTITIES_COUNT = 100;
     private final int initialCreatureCountPerGod = 30;
     private final int initialTreeCount = 30;
 
@@ -24,6 +28,10 @@ public class GameWorld {
 
     private Array<Creature> creatures = new Array<Creature>();
     private Array<AppleTree> appleTrees = new Array<AppleTree>();
+    private Array<FoodEntity> foodEntities = new Array<FoodEntity>();
+
+    private Array<Entity> entitiesToRemove = new Array<Entity>();
+    private Array<Entity> entitiesToAdd = new Array<Entity>();
 
     private Array<WorldListener> worldListeners = new Array<WorldListener>();
     private Random random = new Random();
@@ -39,7 +47,7 @@ public class GameWorld {
 
         // Create some trees
         for (int i = 0; i < initialTreeCount; i++) {
-            AppleTree tree = new AppleTree(random);
+            AppleTree tree = new AppleTree(this, random);
             tree.setWorldPos(random.nextFloat() * 1000, random.nextFloat() * 1000);
             appleTrees.add(tree);
         }
@@ -52,11 +60,33 @@ public class GameWorld {
 
         creature.setWorldPos(random.nextFloat() * 1000, random.nextFloat() * 1000);
 
-        addCreature(creature);
+        addEntity(creature);
     }
 
-    public void addCreature(Creature creature) {
-        creatures.add(creature);
+    /**
+     * Adds food to the game world at some pos.
+     */
+    public void spawnFood(FoodType foodType, float x, float y, double totalEnergy) {
+        if (totalEnergy > 0) {
+            // Calculate how many food items to spawn
+            int num = Math.max(1, (int) (totalEnergy / foodType.getEnergyInOne())); // At least one
+
+            // Calculate how much energy in each food item
+            double energyPerFood = totalEnergy / num;
+            double energyPart = energyPerFood / foodType.getEnergyInOne();
+
+            for (int i = 0; i < num && foodEntities.size < MAX_FOOD_ENTITIES_COUNT; i++) {
+                // Create a food item
+                FoodEntity foodEntity = new FoodEntity(this, random, foodType, energyPart);
+
+                // Put it close to the target point
+                foodEntity.setWorldPos(
+                        x + (float) random.nextGaussian() * FOOD_SPREAD,
+                        y + (float) random.nextGaussian() * FOOD_SPREAD);
+
+                addEntity(foodEntity);
+            }
+        }
     }
 
     public void showOnScreen(GameScreen gameScreen) {
@@ -74,22 +104,30 @@ public class GameWorld {
         }
     }
 
-    public void addListener(WorldListener value) {
-        worldListeners.add(value);
-    }
+    public void update(float durationSeconds) {
+        // Remove entities to remove
+        for (Entity entity : entitiesToRemove) {
+            // Remove from correct list
+            if (Creature.class.isInstance(entity)) creatures.removeValue((Creature) entity, true);
+            else if (AppleTree.class.isInstance(entity)) appleTrees.removeValue((AppleTree) entity, true);
+            else if (FoodEntity.class.isInstance(entity)) foodEntities.removeValue((FoodEntity) entity, true);
+            else throw new IllegalArgumentException("Unknown entity type " + entity.getClass());
 
-    public void removeListener(WorldListener value) {
-        worldListeners.removeValue(value, true);
-    }
-
-    /**
-     * Called by the creature when it died
-     */
-    public void onCreatureDied(Creature creature) {
-        for (WorldListener listener : worldListeners) {
-            creatures.removeValue(creature, true);
-            listener.onEntityRemoved(creature);
+            notifyEntityRemoved(entity);
         }
+        entitiesToRemove.clear();
+
+        // Add entities to add
+        for (Entity entity : entitiesToAdd) {
+            // Add to correct list
+            if (Creature.class.isInstance(entity)) creatures.add((Creature) entity);
+            else if (AppleTree.class.isInstance(entity)) appleTrees.add((AppleTree) entity);
+            else if (FoodEntity.class.isInstance(entity)) foodEntities.add((FoodEntity) entity);
+            else throw new IllegalArgumentException("Unknown entity type " + entity.getClass());
+
+            notifyEntityAdded(entity);
+        }
+        entitiesToAdd.clear();
     }
 
     public Creature getClosestCreature(float x, float y) {
@@ -107,4 +145,36 @@ public class GameWorld {
         return closestCreature;
     }
 
+    public void removeEntity(Entity entity) {
+        if (!entitiesToRemove.contains(entity, true)) entitiesToRemove.add(entity);
+    }
+
+    public void addEntity(Entity entity) {
+        if (!entitiesToAdd.contains(entity, true)) entitiesToAdd.add(entity);
+    }
+
+    public void addListener(WorldListener value) {
+        worldListeners.add(value);
+    }
+
+    public void removeListener(WorldListener value) {
+        worldListeners.removeValue(value, true);
+    }
+
+    private void notifyEntityAdded(Entity entity) {
+        for (WorldListener worldListener : worldListeners) {
+            worldListener.onEntityCreated(entity);
+        }
+    }
+
+    private void notifyEntityRemoved(Entity entity) {
+        for (WorldListener worldListener : worldListeners) {
+            worldListener.onEntityRemoved(entity);
+        }
+    }
+
+
+    public Random getRandom() {
+        return random;
+    }
 }
