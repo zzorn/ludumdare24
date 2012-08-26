@@ -59,8 +59,11 @@ public class PlayerGod extends God {
 
 
         // Mana gauge
+        Table manaTable = new Table();
+        manaTable.add(new Image(atlas.findRegion("manaStar")) );
         manaLabel = new Label("Mana", screen2D.getSkin());
-        hud.add(manaLabel).expand().top().right();
+        manaTable.add(manaLabel);
+        hud.add(manaTable).expand().top().right();
 
         hud.row();
 
@@ -274,7 +277,7 @@ public class PlayerGod extends God {
         super.update(timeDelta);
 
         // Show mana
-        manaLabel.setText("Mana: " + (int)getMana());
+        manaLabel.setText("Mana " + (int)getMana());
 
         if (cursorEffect != null){
             cursorEffect.setPosition(Gdx.input.getX(), (Gdx.graphics.getHeight()-Gdx.input.getY()));
