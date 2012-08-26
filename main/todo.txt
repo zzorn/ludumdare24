@@ -3,19 +3,102 @@ GameFlow Tasks
 ==============
 
 * Environment
-  * Tile map rendering
-* Being
-  * Creature
-  * Plant
+  * Terrain with different temperatures in different places
+    * Snow
+    * Grass
+    * Desert
+* Creature
+  * Movement speed
+    * Depends on leg length
+  * Growth
+    * Max age (seconds)
+    * Relative age (0..1)
+    * Energy needed to eat to mature
+    * Energy eaten so far
+    * Starts out as child, needs to eat x amount of food until it grows into an adult, where x depends on how bit it is etc.
+  * Hunger
+    * Max energy param, depends on stomach size?
+    * Current energy
+    * Eating speed (energy / second)
+    * Energy usage (energy / second)
+      * Depends on body size etc
+      * When pregnant this is higher
+    * Hunger drive increases when energy goes down
+    * When food search is on, and walks near food on ground that it can eat, it eats some (at eating speed)
+    * When energy is zero, takes damage
+  * Love
+    * Has love cooldown
+    * Likes creatures based on following paramerers (evolvable)
+      * Looks similar
+      * High age
+      * Same god
+      * High max energy
+      * Lovetargeted by god?
+    * When love active, and comes close to another creature with love active, and not on cooldown, and neither is pregnant, and they like each other enough, love particles spawned and either one gets pregnant.
+  * Rage
+    * Has rage attack cooldown
+    * Hates creatures based on following parameters (evolvable)
+      * Looks different
+      * Different god
+      * Ragetargeted by a god
+    * Rage drive depends on
+      * Inversely cowardness
+      * Anger parameter
+      * Hunger
+      * Nearby liked creature that gets attacked?
+    * When rage active, and comes close to suitable target, and not on cooldown, attacks it
+      * Attack deals damage based on amount of spikes, and consumes some energy?
+        * Attack damage on target is lessened by its armor amount
+        * Attack damage reduces health
+  * Flee
+    * Cowardness parameter
+    * Seek defense parameter
+    * Flee drive increased by low health and proximity of hated creatures
+    * When activated moves away from closest enough hated creature, or towards closest liked creature if seek defense parameter is high?
+  * Health
+    * max health
+      * Visible as torso size?
+    * current health
+    * Health is reduced by attacks, or by old age, or by god smiting
+    * When health is zero, dead
+  * Temperature effect
+    * If too cold, energy consumption is higher
+    * If too warm, energy consumption is higher
+  * Idle
+    * Params
+      * Companionship / exploration need
+      * Personal space size
+    * Moves towards liked creatures (possibly averaged position of closest N or so) if companionship is high
+    * Moves away if closer than personal space
+* Food
+  * Lays on ground, creatures eat when walking over it if they are hungry, the food shrinks to how much is left, particle effects spawns bones / apple cores from creature
+  * Apple - Drops from trees or god
+  * Meatstick - Drops from dead creatures
+* Apple tree
+  * Drops apples on ground at some intervals
+  * Grows in any terrain?  Or only grass?
 * God
   * Player God
   * Ai God
+* Loosing condition
+  * All your creatures are dead
+* Winning condition
+  * If you have creatures left, and no other god have any creatures
+* View clicked creature button
+  * Focus the closes creature to the click
+  * Shows info about the creature
+  * Shows next & prev button, to browse your creatures
+  * Stays focused until you swipe to move the camera
+* Swipe to pan the screen
+
 * Screens
   * Main Screen
   * Game Screen - god perspective
   * Game Screen - creature perspective
   * Game menu screen
   * Game over screen
+  * Game won screen
+
 
   TODO
   fix bugs:
