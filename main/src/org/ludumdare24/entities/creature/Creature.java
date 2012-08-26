@@ -83,6 +83,14 @@ public class Creature extends WorldEntity {
         leftEye = createBodyPart(BodyPartShape.EYE, false, Color.WHITE, basicShape);
         rightEye = createBodyPart(BodyPartShape.EYE, true, Color.WHITE, basicShape);
         ownerGodColour = new ParticleEffect();
+        if (god!=null) {
+            ownerGodColour.load(Gdx.files.internal(god.getGlowEffectName()), atlas);
+            ownerGodColour.start();
+        }
+        else {
+            ownerGodColour.load(Gdx.files.internal("particles/enemyGlow.particles"), atlas);
+            ownerGodColour.start();
+        }
 
 
         float headCenterY = torso.getVisibleH() / 2 + head.getVisibleH() / 2;
@@ -154,6 +162,7 @@ public class Creature extends WorldEntity {
         double armAngle = MathTools.mix(armPos, (0.25 + 0.75) * MathTools.Tau, (0.25 + 0.35) * MathTools.Tau);
         leftArm.setAngle(armAngle);
         rightArm.setAngle(MathTools.Tau - armAngle);
+        ownerGodColour.update(timeDelta);
 
         // Random walk
         Vector2 velocity = getVelocity();
@@ -164,15 +173,14 @@ public class Creature extends WorldEntity {
     }
 
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
-        if (god!=null) {
-            g
-        }
-        ownerGodColour.load(Gdx.files.internal("particles/move.particle"), atlas);
-        ownerGodColour.start();
-        ownerGodColour .setPosition(x,y);
+
+        ownerGodColour .setPosition(getWorldPos().x, getWorldPos().y);
+        ownerGodColour.draw(spriteBatch );
+
         for (CreaturePart part : parts) {
             part.draw(atlas, spriteBatch, getWorldPos(), angle);
         }
+
 
     }
 
