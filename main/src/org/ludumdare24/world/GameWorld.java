@@ -182,7 +182,11 @@ public class GameWorld {
     }
 
     public void removeEntity(Entity entity) {
-        if (!entitiesToRemove.contains(entity, true)) entitiesToRemove.add(entity);
+        if (!entitiesToRemove.contains(entity, true)) {
+            entitiesToRemove.add(entity);
+            System.out.println("Creatures left" + creatures.size );
+        }
+
     }
 
     public void addEntity(Entity entity) {
