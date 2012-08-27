@@ -42,7 +42,7 @@ public class Behaviour {
     /**
      * Called when this behaviour gets activated.
      */
-    public void onActivated() {
+    public void onActivated(double actiavationImportance) {
 
     }
 

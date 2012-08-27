@@ -191,7 +191,7 @@ public class PlayerGod extends God {
 
              if (currentTool.getManaCost() <= getMana() ){
                  selectedCreature = null;
-                 Creature closestCreature = game.getGameWorld().getClosestCreature(x, y);
+                 Creature closestCreature = game.getGameWorld().getClosestCreature(x, y, null);
 
 
                  switch (currentTool ){
@@ -235,7 +235,8 @@ public class PlayerGod extends God {
                         toolEffect.load(Gdx.files.internal("particles/move.particle"), atlas);
                         toolEffect.start();
                         toolEffect.setPosition(x,y);
-                      // TODO creatures in an area around the place will go in this direction
+
+                        placeMoveTarget(x, y);
                         break;
 
                     case RAGE:

@@ -19,9 +19,9 @@ public class GameWorld {
 
     private static final int FOOD_SPREAD = 15;
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
-    private final int initialPlayerCreatureCount = 8;
-    private final int initialUngodlyCreatureCount =15;
-    private final int initialTreeCount = 30;
+    private final int initialPlayerCreatureCount = 6;
+    private final int initialUngodlyCreatureCount =6;
+    private final int initialTreeCount = 14;
 
     private PlayerGod player;
 
@@ -45,9 +45,9 @@ public class GameWorld {
 
         createTribe(400, 200, player, initialPlayerCreatureCount);
         createTribe(1000, 200, null, initialUngodlyCreatureCount);
-        createTribe(0, 200, null, initialUngodlyCreatureCount);
-        createTribe(400, 0, null, initialUngodlyCreatureCount);
-        createTribe(400, 400, null, initialUngodlyCreatureCount);
+        createTribe(0, -200, null, initialUngodlyCreatureCount);
+        createTribe(400, -150, null, initialUngodlyCreatureCount);
+        createTribe(200, 600, null, initialUngodlyCreatureCount);
 
 
         // Create some trees
@@ -59,6 +59,9 @@ public class GameWorld {
     }
 
     private void createTribe(int x, int y, God god, int tribeSize) {
+
+        // Place move target
+        if (god != null) god.placeMoveTarget(x, y);
 
         // Tribe mother
         Creature tribeMother = createCreature(god, x, y, null);
@@ -155,27 +158,50 @@ public class GameWorld {
         entitiesToAdd.clear();
     }
 
-    public Creature getClosestCreature(float x, float y) {
-        return (Creature) findClosestEntity(x, y, creatures);
+    public Creature getClosestCreature(float x, float y, Creature exceptThis) {
+        return (Creature) findClosestEntity(x, y, null, creatures);
+    }
+
+    public Creature getClosestCreature(float x, float y, Creature exceptThis, float withinDistance) {
+        return (Creature) findClosestEntity(x, y, exceptThis, creatures, withinDistance);
     }
 
     public FoodEntity getClosestFood(float x, float y) {
-        return (FoodEntity) findClosestEntity(x, y, foodEntities);
+        return (FoodEntity) findClosestEntity(x, y, null, foodEntities);
+    }
+
+    public FoodEntity getClosestFood(float x, float y, float withinDistance) {
+        return (FoodEntity) findClosestEntity(x, y, null, foodEntities, withinDistance);
     }
 
     public AppleTree getClosestAppleTree(float x, float y) {
-        return (AppleTree) findClosestEntity(x, y, appleTrees);
+        return (AppleTree) findClosestEntity(x, y, null, appleTrees);
     }
 
-    private WorldEntity findClosestEntity(float x, float y, Array<? extends WorldEntity> entities) {
+    public AppleTree getClosestAppleTree(float x, float y, float withinDistance) {
+        return (AppleTree) findClosestEntity(x, y, null, appleTrees, withinDistance);
+    }
+
+    private WorldEntity findClosestEntity(float x, float y, WorldEntity exceptThis, Array<? extends WorldEntity> entities, float withinDistance) {
+        WorldEntity closestEntity = findClosestEntity(x, y, exceptThis, entities);
+        if (closestEntity != null) {
+            float distance = MathTools.distance(closestEntity.getX(), closestEntity.getY(), x, y);
+            if (distance > withinDistance) return null; // Too far away
+        }
+        return closestEntity;
+    }
+
+    private WorldEntity findClosestEntity(float x, float y, WorldEntity exceptThis, Array<? extends WorldEntity> entities) {
         float closestDistance = Float.POSITIVE_INFINITY;
         WorldEntity closestEntity = null;
         for (WorldEntity entity : entities) {
-            Vector2 worldPos = entity.getWorldPos();
-            float distance = MathTools.distanceSquared(worldPos.x, worldPos.y, x, y);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestEntity = entity;
+            if (entity != exceptThis) {
+                Vector2 worldPos = entity.getWorldPos();
+                float distance = MathTools.distanceSquared(worldPos.x, worldPos.y, x, y);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestEntity = entity;
+                }
             }
         }
         return closestEntity;
@@ -216,5 +242,9 @@ public class GameWorld {
 
     public Random getRandom() {
         return random;
+    }
+
+    public Mutator getMutator() {
+        return mutator;
     }
 }

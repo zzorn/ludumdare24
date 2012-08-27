@@ -46,8 +46,8 @@ public class CreatureAppearance {
     private CreaturePart leftEye;
     private CreaturePart rightEye;
 
-    private double armWaveSpeed = 1.5;
-    private double armWaveSize = 0.5;
+    private double armWaveSpeed = 1.5 * Math.random();
+    private double armWaveSize = 0.5 * Math.random();
 
     private double totalTime = 0;
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import org.gameflow.utils.MathTools;
 import org.ludumdare24.Mutator;
+import org.ludumdare24.entities.AppleTree;
 import org.ludumdare24.entities.FoodEntity;
 import org.ludumdare24.entities.God;
 import org.ludumdare24.entities.WorldEntity;
@@ -19,9 +20,14 @@ import org.ludumdare24.world.GameWorld;
 public class Creature extends WorldEntity {
 
     private static final double MAX_ARMOR_PROTECTION = 0.5;
+    private static final double MATING_BOOST_DURATION_SECONDS = 20;
     private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
 
-    private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 10.0;
+    private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 20.0;
+    private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 20.0;
+    private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
+    private static final double MATURITY_AGE = 0.2;
+    private static final double MATING_DISTANCE = 30;
 
     private final GameWorld gameWorld;
     private final God god;
@@ -41,16 +47,22 @@ public class Creature extends WorldEntity {
 
     private double maxEnergy = 100+100*Math.random();
     private double energy = 100;
-    private double basicEnergyUsagePerSecond = 1.5;
-    private double pregnantEnergyUsagePerSecond = 1;
+    private double basicEnergyUsagePerSecond = 2;
+    private double pregnantEnergyUsagePerSecond = 2;
     private double woundedEnergyUsagePerSecond = 2;
-    private double walkEnergyUsagePerSecond = 1;
+    private double walkEnergyUsagePerSecond = 2;
 
-    private double eatingSpeedEnergyPerSecond = 100;
-    private double maxEatingDistance = 80;
+    private double eatingSpeedEnergyPerSecond = 50;
+    private double maxEatingDistance = 60;
+    private double minDistanceToOthers = 20;
+    private double sightRange = 300;
 
+    private double ageSeconds = 0;
+    private double maxAgeSeconds = 60;
+
+    private double matingBoostTimeLeft = 0;
     private double babyDevelopmentTime = 20;
-    private double timeUntilBirthing = 0;
+    private double babyDevelopmentTimeLeft = 0;
     private Creature baby = null;
 
     private Array<Behaviour> behaviours = new Array<Behaviour>();
@@ -61,11 +73,16 @@ public class Creature extends WorldEntity {
 
     private Vector2 movementDirection = new Vector2();
     private double movementSpeedFactor = 0.5;
-    private double maxMovementSpeedPerSecond = 1000;
+    private double maxMovementSpeedPerSecond = 2000;
 
-    private double energyReleasedOnDeath = maxEnergy * 2;
+    private double maxDistanceToGodTarget = 300;
 
-    private FoodEntity targetFoodEntity = null;
+    private double energyReleasedOnDeath = maxEnergy * 0.2;
+
+    private FoodEntity closestFoodEntity = null;
+    private Creature closestCreature = null;
+    private Creature matingTarget = null;
+    private AppleTree closestAppleTree = null;
 
     public Creature(GameWorld gameWorld, God god, Mutator mutator) {
         this.gameWorld = gameWorld;
@@ -129,28 +146,97 @@ public class Creature extends WorldEntity {
             }
 
             @Override
-            public void onActivated() {
+            public void onActivated(double activationImportance) {
                 // Random jog
                 moveInRandomDirection(0.7);
             }
         });
 
+        // Walk towards move target
+        behaviours.add(new Behaviour("Walk towards move target", this, 5) {
+            @Override
+            public double getImportance(double timeSinceLastAsked) {
+                if (god != null) {
+                    double distanceToGodMoveTarget = god.getMoveTarget().dst(getX(), getY());
+                    double distancePull = MathTools.map(distanceToGodMoveTarget, 0.5*maxDistanceToGodTarget, 1.5*maxDistanceToGodTarget, 0, 1);
+                    double recencyPull = god.getMoveTargetPull();
+                    return distancePull + recencyPull;
+                }
+                else return 0;
+            }
+
+            @Override
+            public void onActivated(double activationImportance) {
+                moveTowards(god.getMoveTarget(), 1);
+            }
+        });
+
+        // Mate
+        behaviours.add(new Behaviour("Mate", this, 5) {
+            @Override
+            public double getImportance(double timeSinceLastAsked) {
+                if (!canMate()) return 0;
+                else return matingBoost() + getEnergyStatus();
+            }
+
+            @Override
+            public void onActivated(double activationImportance) {
+                // TODO: Check suitability?
+                if (closestCreature != null) {
+                    matingTarget = closestCreature;
+                    moveTowards(closestCreature.getWorldPos(), 0.5);
+                }
+                else {
+                    standStill();
+                }
+            }
+
+            @Override
+            public void onDeactivated() {
+                matingTarget = null;
+            }
+        });
+
         // Flock to others
-        behaviours.add(new Behaviour("Flock to other", this, 4) {
+        behaviours.add(new Behaviour("Flock to other", this, 3) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return Math.random() * 0.5;
             }
 
             @Override
-            public void onActivated() {
-                Creature closestCreature = gameWorld.getClosestCreature(getX(), getY());
+            public void onActivated(double activationImportance) {
                 if (closestCreature  != null) {
                     moveTowards(closestCreature.getWorldPos(), 0.2);
                 }
                 else {
                     // All alone in the world.  Stand and think about that.
-                    moveInRandomDirection(0);
+                    standStill();
+                }
+            }
+        });
+
+        // Overcrowd
+        behaviours.add(new Behaviour("Over Crowded", this, 1) {
+            @Override
+            public double getImportance(double timeSinceLastAsked) {
+                if (closestCreature == null) return 0;
+                else {
+                    double distanceToClosest = distanceTo(closestCreature);
+                    if (distanceToClosest > minDistanceToOthers) return 0;
+                    else return (minDistanceToOthers - distanceToClosest) / minDistanceToOthers;
+                }
+            }
+
+            @Override
+            public void onActivated(double activationImportance) {
+                if (closestCreature  != null) {
+                    //moveInRandomDirection(0.3 + activationImportance);
+                    moveAwayFrom(closestCreature.getWorldPos(), activationImportance);
+                }
+                else {
+                    // All alone in the world.  Stand and think about that.
+                    standStill();
                 }
             }
         });
@@ -163,14 +249,17 @@ public class Creature extends WorldEntity {
             }
 
             @Override
-            public void onActivated() {
-                targetFoodEntity = gameWorld.getClosestFood(getX(), getY());
-                if (targetFoodEntity != null) {
-                    moveTowards(targetFoodEntity.getWorldPos(), 1);
+            public void onActivated(double actiavationImportance) {
+                closestFoodEntity = gameWorld.getClosestFood(getX(), getY());
+                if (closestFoodEntity != null) {
+                    moveTowards(closestFoodEntity.getWorldPos(), 1);
+                }
+                else if (closestAppleTree != null) {
+                    moveTowards(closestAppleTree.getWorldPos(), 0.2);
                 }
                 else {
                     // Search for food
-                    moveInRandomDirection(0.7);
+                    moveInRandomDirection(0.5);
                 }
             }
         });
@@ -183,7 +272,7 @@ public class Creature extends WorldEntity {
             }
 
             @Override
-            public void onActivated() {
+            public void onActivated(double actiavationImportance) {
                 // Random crawl
                 moveInRandomDirection(0.2);
             }
@@ -191,9 +280,37 @@ public class Creature extends WorldEntity {
 
     }
 
+    private boolean canMate() {
+        return !isPregnant() && getRelativeAge() >= MATURITY_AGE;
+    }
+
     private void moveTowards(Vector2 pos, double speed) {
         movementDirection.set(pos.x - getX(), pos.y - getY());
         movementSpeedFactor = speed;
+    }
+
+    private void moveTowards(float x, float y, double speed) {
+        movementDirection.set(x - getX(), y - getY());
+        movementSpeedFactor = speed;
+    }
+
+    private void moveAwayFrom(Vector2 pos, double speed) {
+        movementDirection.set(pos.x - getX(), pos.y - getY());
+        movementDirection.mul(-1);
+        movementSpeedFactor = speed;
+    }
+
+    private void moveAwayFrom(float x, float y, double speed) {
+        movementDirection.set(x - getX(), y - getY());
+        movementDirection.mul(-1);
+        movementSpeedFactor = speed;
+    }
+
+    private void standStill() {
+        movementDirection.set(
+                (float) Math.random() * 2 - 1,
+                (float) Math.random() * 2 - 1);
+        movementSpeedFactor = 0;
     }
 
     private void moveInRandomDirection(double speed) {
@@ -259,11 +376,16 @@ public class Creature extends WorldEntity {
         timeUntilBehaviourReactivation -= timeDelta;
         if (timeUntilBehaviourChange <= 0 || timeUntilBehaviourReactivation <= 0 || currentBehaviour == null) {
 
+            // Update world perception for behaviours
+            closestFoodEntity = gameWorld.getClosestFood(getX(), getY(), (float) sightRange);
+            closestAppleTree  = gameWorld.getClosestAppleTree(getX(), getY(), (float) sightRange);
+            closestCreature   = gameWorld.getClosestCreature(getX(), getY(), this, (float) sightRange);
+
             // Vote in a new behavior
             double highestImportance = Double.NEGATIVE_INFINITY;
             Behaviour bestBehaviour = null;
             for (Behaviour behaviour : behaviours) {
-                double importance = behaviour.getImportance(timeSinceBehaviourChecked);
+                double importance = MathTools.clampToZeroToOne(behaviour.getImportance(timeSinceBehaviourChecked));
                 if (importance > highestImportance) {
                     highestImportance = importance;
                     bestBehaviour = behaviour;
@@ -272,15 +394,15 @@ public class Creature extends WorldEntity {
 
             // Change behaviour if needed
             if (bestBehaviour != currentBehaviour || timeUntilBehaviourReactivation <= 0) {
-                targetFoodEntity = null;
+
                 if (currentBehaviour != null) currentBehaviour.onDeactivated();
 
                 currentBehaviour = bestBehaviour;
 
                 if (currentBehaviour != null) {
-
-                    currentBehaviour.onActivated();
-                    timeUntilBehaviourReactivation = currentBehaviour.getReActivationTime();
+                    System.out.println("currentBehaviour = " + currentBehaviour.getName());
+                    currentBehaviour.onActivated(highestImportance);
+                    timeUntilBehaviourReactivation = currentBehaviour.getReActivationTime() * (0.5 + Math.random());
                 }
                 else {
                     timeUntilBehaviourReactivation = Double.POSITIVE_INFINITY;
@@ -288,7 +410,7 @@ public class Creature extends WorldEntity {
             }
 
             // Add some random factor to next check time to avoid everyone checking at once.
-            timeUntilBehaviourChange = BEHAVIOUR_CHECK_INTERVAL_SECONDS + BEHAVIOUR_CHECK_INTERVAL_SECONDS * Math.random();
+            timeUntilBehaviourChange = BEHAVIOUR_CHECK_INTERVAL_SECONDS * (0.5 + Math.random());
             timeSinceBehaviourChecked = 0;
         }
 
@@ -299,11 +421,13 @@ public class Creature extends WorldEntity {
     }
 
     private void simulate(float timeDelta) {
+        matingBoostTimeLeft -= timeDelta;
+
         double energyUsagePerSecond = basicEnergyUsagePerSecond;
 
         // Eating
-        if (energy < maxEnergy && targetFoodEntity != null && distanceTo(targetFoodEntity) <= maxEatingDistance) {
-            energy += targetFoodEntity.eat(eatingSpeedEnergyPerSecond * timeDelta);
+        if (energy < maxEnergy && closestFoodEntity != null && distanceTo(closestFoodEntity) <= maxEatingDistance) {
+            energy += closestFoodEntity.eat(eatingSpeedEnergyPerSecond * timeDelta);
             if (energy > maxEnergy) {
                 energy = maxEnergy;
             }
@@ -314,10 +438,15 @@ public class Creature extends WorldEntity {
             energyUsagePerSecond += woundedEnergyUsagePerSecond;
 
             // Heal if energy
-            if (energy > maxEnergy*0.2) {
+            if (energy > maxEnergy) {
                 health += healPerSecond * timeDelta;
                 if (health > maxHealth) health = maxHealth;
             }
+        }
+
+        // Mating
+        if (matingTarget != null && canMate() && distanceTo(matingTarget) < MATING_DISTANCE) {
+            mateWith(matingTarget);
         }
 
         // Pregnancy
@@ -326,8 +455,8 @@ public class Creature extends WorldEntity {
 
             // Develop baby if energy
             if (energy > 0) {
-                timeUntilBirthing -= timeDelta;
-                if (timeUntilBirthing <= 0) {
+                babyDevelopmentTimeLeft -= timeDelta;
+                if (babyDevelopmentTimeLeft <= 0) {
                     // Birth!
                     Vector2 worldPos = getWorldPos();
                     baby.setWorldPos(
@@ -335,23 +464,21 @@ public class Creature extends WorldEntity {
                             worldPos.y + 10 * (float) (Math.random() * 2 - 1));
                     gameWorld.addEntity(baby);
                     baby = null;
-                    timeUntilBirthing = 0;
+                    babyDevelopmentTimeLeft = 0;
                 }
             }
         }
 
         // Movement
         movementSpeedFactor = MathTools.clampToZeroToOne(movementSpeedFactor);
-        if (energy > 0) {
-            energyUsagePerSecond += movementSpeedFactor * walkEnergyUsagePerSecond;
-            getVelocity().set(movementDirection);
-            getVelocity().nor().mul((float) (movementSpeedFactor * maxMovementSpeedPerSecond * timeDelta));
+        double currentMovementSpeed = movementSpeedFactor * maxMovementSpeedPerSecond * timeDelta;
+        energyUsagePerSecond += movementSpeedFactor * walkEnergyUsagePerSecond;
+        if (energy <= 0) {
+            // No energy - move slowly
+            currentMovementSpeed *= NO_ENERGY_MOVEMENT_SLOWDOWN;
         }
-        else {
-            // Low energy move slowly
-            getVelocity().set(movementDirection);
-            getVelocity().nor().mul((float) (movementSpeedFactor * maxMovementSpeedPerSecond * timeDelta/4));
-        }
+        getVelocity().set(movementDirection);
+        getVelocity().nor().mul((float) currentMovementSpeed);
 
         // Use energy
         energy -= energyUsagePerSecond * timeDelta;
@@ -360,6 +487,12 @@ public class Creature extends WorldEntity {
         if (energy <= 0) {
             energy = 0;
             trueDamage(DAMAGE_FROM_NO_ENERGY_PER_SECOND * timeDelta);
+        }
+
+        // Age
+        ageSeconds += timeDelta;
+        if (ageSeconds > maxAgeSeconds) {
+            trueDamage(DAMAGE_FROM_OLD_AGE_PER_SECOND * timeDelta);
         }
     }
 
@@ -392,11 +525,29 @@ public class Creature extends WorldEntity {
     }
 
     /**
+     * @return 0 for just born, 1 for just about to die from old age.
+     */
+    public double getRelativeAge() {
+        return MathTools.clampToZeroToOne(ageSeconds / maxAgeSeconds);
+    }
+
+    /**
+     * @return 0 for not booster, 1 for full boost.
+     */
+    public double matingBoost() {
+        return MathTools.clampToZeroToOne(matingBoostTimeLeft / MATING_BOOST_DURATION_SECONDS);
+    }
+
+    /**
      * @return 0 if not pregnant, 0..1 when pregnant, 1 when delivery nearly due.
      */
     public double getPregnancyStatus() {
-        if (timeUntilBirthing <= 0) return 0;
-        else return MathTools.clampToZeroToOne(1.0 - timeUntilBirthing / babyDevelopmentTime);
+        if (babyDevelopmentTimeLeft <= 0) return 0;
+        else return MathTools.clampToZeroToOne(1.0 - babyDevelopmentTimeLeft / babyDevelopmentTime);
+    }
+
+    public void boostMating() {
+        matingBoostTimeLeft = MATING_BOOST_DURATION_SECONDS;
     }
 
     public boolean isWounded() {
@@ -419,6 +570,13 @@ public class Creature extends WorldEntity {
 
     public void onDispose() {
         appearance.onDispose();
+    }
+
+    public void mateWith(Creature dad) {
+        if (canMate()) {
+            baby = new Creature(gameWorld, gameWorld.getMutator(), this, dad);
+            babyDevelopmentTimeLeft = babyDevelopmentTime;
+        }
     }
 
     /**

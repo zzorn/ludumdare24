@@ -3,6 +3,7 @@ package org.ludumdare24.entities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import org.gameflow.entity.Entity;
 import org.gameflow.screen.Screen2D;
@@ -15,6 +16,10 @@ public class God extends Entity {
     private double maxMana = 100;
     private double mana = 50;
     private double manaRegenerationPerSecond = 4;
+    private Vector2 moveTarget = new Vector2();
+    private double moveTargetPullTimeLeft = 0;
+    private double moveTargetPullTimeSeconds = 10;
+
     private final String GlowEffectName;
 
     private final Color color;
@@ -56,11 +61,30 @@ public class God extends Entity {
 
     public void update(float timeDelta) {
         updateMana(timeDelta);
+
+        moveTargetPullTimeLeft -= timeDelta;
+        if (moveTargetPullTimeLeft < 0) moveTargetPullTimeLeft = 0;
     }
 
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
     }
 
     public void onDispose() {
+    }
+
+    public Vector2 getMoveTarget() {
+        return moveTarget;
+    }
+
+    /**
+     * @return pull of move target, 0 no pull, 1 full pull.
+     */
+    public double getMoveTargetPull() {
+        return moveTargetPullTimeLeft / moveTargetPullTimeSeconds;
+    }
+
+    public void placeMoveTarget(float x, float y) {
+        moveTarget.set(x, y);
+        moveTargetPullTimeLeft = moveTargetPullTimeSeconds;
     }
 }

@@ -107,3 +107,37 @@ GameFlow Tasks
   * cant see move.particle on map where creatures should move
 
 
+// TODOs:
+
+Behaviour
+* Love & babies
+* Rage & attacking
+
+Follow
+* Show creature name?
+* Show creature age
+* Show creature energy
+* Show creature health % and max
+* Show creature pregnancy %
+* Show armor?
+* Show attack?
+* Focus creature
+* Stop focusing on swipe
+* Next and Previous buttons (and maybe stop focus button? - or just stop focus when using other tool?)
+
+Game
+* Check if all own dead -> loose
+* Check if all other dead -> win
+
+UI
+* Pan
+
+Graphics
+* Repeating ground
+  * Multi terrain ground if more time
+* Restricted world size
+* Gauge widget for mana, creature properties
+
+Creatures
+* Calculate max speed, max health, energy usage, etc
+* Inherit behaviour genes

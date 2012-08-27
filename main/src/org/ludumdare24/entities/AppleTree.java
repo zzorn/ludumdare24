@@ -16,9 +16,9 @@ public class AppleTree extends SimpleWorldEntity {
 
     private final GameWorld gameWorld;
     private double timeUntilSpawn = 10;
-    private double spawnInterval = 60;
+    private double spawnInterval = 30;
     private FoodType foodType = FoodType.APPLE;
-    private double energySpawnedAtOnce = foodType.getEnergyInOne() * 2.5;
+    private double energySpawnedAtOnce = foodType.getEnergyInOne() * 1;
 
     public AppleTree(GameWorld gameWorld) {
         this(gameWorld, new Random());
