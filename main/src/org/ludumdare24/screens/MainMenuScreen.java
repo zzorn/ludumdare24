@@ -57,7 +57,7 @@ public class MainMenuScreen extends Screen2D {
             }
         })).fillX().padBottom(10);
 
-        // New game world
+        // Credits
         if (game.isGameWorldCreated()) {
             table.row();
             table.add(createButton("New game", new ClickListener() {
@@ -68,6 +68,15 @@ public class MainMenuScreen extends Screen2D {
                 }
             })).fillX().padBottom(10);
         }
+
+        // Help
+        table.row();
+        table.add(createButton("Credits", new ClickListener() {
+            public void click(Actor actor, float x, float y) {
+                game.setScreen(new CreditScreen(game) );
+                game.soundService.play(Sounds.UI_CLICK);
+            }
+        })).fillX().padBottom(10);
 
         // Quit
         table.row();
