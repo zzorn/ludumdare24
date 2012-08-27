@@ -27,7 +27,7 @@ public class Creature extends WorldEntity {
     private static final double BASIC_HEALING_PER_SECOND = 3.0;
     private static final double BASIC_BABY_DEVELOPMENT_TIME = 15.0;
     private static final double BASIC_MOVEMENT_SPEED_PER_SECOND = 800.0;
-    private static final double BASIC_LIFE_LENGTH_SECONDS = 125.0;
+    private static final double BASIC_LIFE_LENGTH_SECONDS = 130.0;
 
     private static final double ENERGY_CONSUMPTION_PER_KG_PER_SECOND = 0.02;
     private static final double ENERGY_NEEDED_TO_PRODUCE_ONE_KG = 1;

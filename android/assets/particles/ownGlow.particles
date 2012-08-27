@@ -34,7 +34,16 @@ timeline2: 1.0
 - Life Offset - 
 active: false
 - X Offset - 
-active: false
+active: true
+lowMin: 13.0
+lowMax: 13.0
+highMin: 0.0
+highMax: 0.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
 - Y Offset - 
 active: true
 lowMin: 20.0
@@ -47,7 +56,7 @@ scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
 - Spawn Shape - 
-shape: square
+shape: point
 - Spawn Width - 
 lowMin: 0.0
 lowMax: 0.0
@@ -71,8 +80,8 @@ timeline0: 0.0
 - Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 30.0
-highMax: 50.0
+highMin: 80.0
+highMax: 70.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -132,7 +141,7 @@ timeline0: 0.0
 colorsCount: 9
 colors0: 0.047058824
 colors1: 1.0
-colors2: 0.9254902
+colors2: 0.92156863
 colors3: 0.73333335
 colors4: 0.92941177
 colors5: 0.8862745
@@ -187,14 +196,14 @@ highMin: 1.0
 highMax: 2.0
 relative: false
 scalingCount: 1
-scaling0: 0.48979592
+scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 2000.0
-highMax: 3000.0
+highMin: 2500.0
+highMax: 3500.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
@@ -210,8 +219,8 @@ active: false
 active: false
 - Y Offset - 
 active: true
-lowMin: 10.0
-lowMax: 10.0
+lowMin: 30.0
+lowMax: 30.0
 highMin: 0.0
 highMax: 0.0
 relative: false
@@ -259,8 +268,8 @@ timeline2: 0.98630136
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: 30.0
-highMax: 30.0
+highMin: 10.0
+highMax: 10.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -290,7 +299,7 @@ active: false
 - Tint - 
 colorsCount: 24
 colors0: 0.4862745
-colors1: 0.95686275
+colors1: 0.9647059
 colors2: 1.0
 colors3: 0.047058824
 colors4: 0.627451
@@ -345,4 +354,4 @@ aligned: false
 additive: true
 behind: false
 - Image Path -
-/home/cesse/projekteja/ludumdare/ludumdare24/android/orginal_assets/images/star.png
+C:\data\Projects\ludumdare\ludumdare24\ludumdare24\android\orginal_assets\images\star.png
