@@ -115,6 +115,7 @@ public class Creature extends WorldEntity {
     private Creature baby = null;
     private boolean dead = false;
     private boolean attacking = false;
+    private boolean doActionRePrioritation = false;
     private String currentAction = "Doing nothing";
 
     // Behaviour
@@ -620,7 +621,8 @@ public class Creature extends WorldEntity {
         // Check if we should reselect behaviour
         timeUntilBehaviourChange -= timeDelta;
         timeUntilBehaviourReactivation -= timeDelta;
-        if (timeUntilBehaviourChange <= 0 || timeUntilBehaviourReactivation <= 0 || currentBehaviour == null) {
+        if (timeUntilBehaviourChange <= 0 || timeUntilBehaviourReactivation <= 0 || currentBehaviour == null || doActionRePrioritation) {
+            doActionRePrioritation = false;
 
             // Update world perception for behaviours
             closestFoodEntity = gameWorld.getClosestFood(getX(), getY(), (float) sightRange);
@@ -900,7 +902,7 @@ public class Creature extends WorldEntity {
 
 
         // Baby follows mother in worship
-        if (god != null) god.addFollower(baby);
+        if (god != null) god.addWorshipper(baby);
 
         baby = null;
         babyDevelopmentTimeLeft = 0;
@@ -911,7 +913,7 @@ public class Creature extends WorldEntity {
             dead = true;
 
             // Decrease followers for god
-            if (god != null) god.removeFollower(this);
+            if (god != null) god.removeWorshipper(this);
 
             // Dead, remove from game
             gameWorld.removeEntity(this);
@@ -990,5 +992,12 @@ public class Creature extends WorldEntity {
      */
     public String getCurrentAction() {
         return currentAction;
+    }
+
+    /**
+     * Forces to re-check the action next update.
+     */
+    public void reEvaluateAction() {
+        doActionRePrioritation = true;
     }
 }

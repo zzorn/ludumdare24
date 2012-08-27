@@ -24,6 +24,7 @@ import org.ludumdare24.world.FoodType;
  */
 public class PlayerGod extends God {
 
+    private static final int SMITE_DAMAGE = 1000;
     private Label manaLabel;
     private Label followerLabel;
 
@@ -251,13 +252,19 @@ public class PlayerGod extends God {
                             if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                                 if (closestCreature != null) {
                                     selectedCreature =closestCreature ;
-                                    closestCreature.damage(1000);
+                                    closestCreature.damage(SMITE_DAMAGE);
                                     changeMana(-Tool.SMITE.getManaCost());
                                     toolEffect.load(Gdx.files.internal("particles/smite.particle"), atlas);
                                     toolEffect.start();
                                     int randomSound = ((int) ((Math.random())*2));
                                     if (randomSound==0 ){ game.soundService.play(Sounds.SMITE2);}
                                     else{ game.soundService.play(Sounds.SMITE1);}
+
+                                    // Re-evaluate actions of all own creatures (causes an apparent reaction as they change directions randomly)
+                                    // TODO: Re evaluate all creatures, not just own?
+                                    for (Creature creature : getWorshippers()) {
+                                        creature.reEvaluateAction();
+                                    }
 
                                 }
                             }
@@ -272,6 +279,7 @@ public class PlayerGod extends God {
 
                                 // Boost falling in love
                                 selectedCreature.boostMating();
+                                selectedCreature.reEvaluateAction();
 
                                 toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
                                 toolEffect.start();
@@ -287,6 +295,11 @@ public class PlayerGod extends God {
                         toolEffect.start();
                         toolEffect.setPosition(x,y);
 
+                        // Re-evaluate all own creatures
+                        for (Creature creature : getWorshippers()) {
+                            creature.reEvaluateAction();
+                        }
+
                         placeMoveTarget(x, y);
                         break;
 
@@ -296,8 +309,13 @@ public class PlayerGod extends God {
                                 selectedCreature = closestCreature ;
                                 changeMana(-Tool.RAGE.getManaCost());
 
-                                //Get nearby creatures to attack this creature
+                                // Get nearby creatures to attack this creature
                                 selectedCreature.makeRageTarget();
+
+                                // Re-evaluate actions of all own creatures
+                                for (Creature creature : getWorshippers()) {
+                                    creature.reEvaluateAction();
+                                }
 
                                 toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
                                 toolEffect.start();
@@ -310,6 +328,12 @@ public class PlayerGod extends God {
                         toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
                         toolEffect.start();
                         game.getGameWorld().spawnFood(FoodType.APPLE, x, y,400  );
+
+                        // Re-evaluate actions of all own creatures
+                        for (Creature creature : getWorshippers()) {
+                            creature.reEvaluateAction();
+                        }
+
                         break;
 
                     case WATCH:
@@ -358,7 +382,7 @@ public class PlayerGod extends God {
 
         // Show followers
         int numberOfAllTrolls = game.getGameWorld().getNumberOfCreatures();
-        followerLabel.setText("Trolls " + getNumberOfFollowers() + "/" + numberOfAllTrolls);
+        followerLabel.setText("Trolls " + getNumberOfWorshippers() + "/" + numberOfAllTrolls);
 
         // Show observation data if needed
         if (observedCreature != null) {
@@ -402,10 +426,10 @@ public class PlayerGod extends God {
         }
 
         // Check win / loose conditions
-        if (getNumberOfFollowers() >= numberOfAllTrolls) {
+        if (getNumberOfWorshippers() >= numberOfAllTrolls) {
             game.setScreen(new WinScreen(game));
         }
-        else if (getNumberOfFollowers() <= 0) {
+        else if (getNumberOfWorshippers() <= 0) {
             game.setScreen(new GameOverScreen(game));
         }
     }

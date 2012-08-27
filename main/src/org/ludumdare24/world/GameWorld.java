@@ -99,7 +99,7 @@ public class GameWorld {
 
         // Count creature for god
         if (god != null) {
-            god.addFollower(creature);
+            god.addWorshipper(creature);
         }
 
         return creature;

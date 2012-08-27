@@ -4,9 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 import org.gameflow.entity.Entity;
-import org.gameflow.screen.Screen2D;
 import org.ludumdare24.entities.creature.Creature;
 
 /**
@@ -23,11 +22,11 @@ public class God extends Entity {
     private double moveTargetPullTimeLeft = 0;
     private double moveTargetPullTimeSeconds = 10;
 
-    private int numberOfFollowers = 0;
-
     private final String GlowEffectName;
 
     private final Color color;
+
+    private Array<Creature> worshippers = new Array<Creature>();
 
     public God(String glowEffectName, Color color) {
         GlowEffectName = glowEffectName;
@@ -55,7 +54,7 @@ public class God extends Entity {
     }
 
     protected void updateMana(float deltaTime) {
-        mana += (manaRegenerationPerSecond + MANA_REGEN_PER_FOLLOWER * numberOfFollowers) * deltaTime;
+        mana += (manaRegenerationPerSecond + MANA_REGEN_PER_FOLLOWER * getNumberOfWorshippers()) * deltaTime;
         if (mana > maxMana) {
             mana = maxMana;
         }
@@ -93,19 +92,23 @@ public class God extends Entity {
         moveTargetPullTimeLeft = moveTargetPullTimeSeconds;
     }
 
-    public void addFollower(Creature creature) {
-        numberOfFollowers++;
+    public void addWorshipper(Creature creature) {
+        worshippers.add(creature);
     }
 
-    public void removeFollower(Creature creature) {
-        numberOfFollowers--;
+    public void removeWorshipper(Creature creature) {
+        worshippers.removeValue(creature, true);
     }
 
-    public int getNumberOfFollowers() {
-        return numberOfFollowers;
+    public int getNumberOfWorshippers() {
+        return worshippers.size;
     }
 
     public boolean isPlayerGod() {
         return false;
+    }
+
+    public Array<Creature> getWorshippers() {
+        return worshippers;
     }
 }
