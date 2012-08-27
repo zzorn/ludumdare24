@@ -86,6 +86,8 @@ public class Creature extends WorldEntity {
     private String firstName;
     private String familyName;
 
+    private boolean dead = false;
+
     public Creature(GameWorld gameWorld, God god, Mutator mutator) {
         this.gameWorld = gameWorld;
         this.god = god;
@@ -674,14 +676,18 @@ public class Creature extends WorldEntity {
     }
 
     private void die() {
-        // Decrease followers for god
-        if (god != null) god.removeFollower(this);
+        if (!dead) {
+            dead = true;
 
-        // Dead, remove from game
-        gameWorld.removeEntity(this);
+            // Decrease followers for god
+            if (god != null) god.removeFollower(this);
 
-        // Spawn some meat there, depending on body size
-        gameWorld.spawnFood(FoodType.MEAT, getX(), getY(), energyReleasedOnDeath);
+            // Dead, remove from game
+            gameWorld.removeEntity(this);
+
+            // Spawn some meat there, depending on body size
+            gameWorld.spawnFood(FoodType.MEAT, getX(), getY(), energyReleasedOnDeath);
+        }
     }
 
     public String getName() {
@@ -717,7 +723,7 @@ public class Creature extends WorldEntity {
     }
 
     public boolean isDead() {
-        return health <= 0;
+        return dead;
     }
 
     public double getAgeSeconds() {
