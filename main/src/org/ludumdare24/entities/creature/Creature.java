@@ -25,9 +25,9 @@ import static org.gameflow.utils.MathTools.*;
 public class Creature extends WorldEntity {
 
     private static final double BASIC_HEALING_PER_SECOND = 3.0;
-    private static final double BASIC_BABY_DEVELOPMENT_TIME = 15.0;
+    private static final double BASIC_BABY_DEVELOPMENT_TIME = 16.0;
     private static final double BASIC_MOVEMENT_SPEED_PER_SECOND = 800.0;
-    private static final double BASIC_LIFE_LENGTH_SECONDS = 130.0;
+    private static final double BASIC_LIFE_LENGTH_SECONDS = 127.5;
 
     private static final double ENERGY_CONSUMPTION_PER_KG_PER_SECOND = 0.02;
     private static final double ENERGY_NEEDED_TO_PRODUCE_ONE_KG = 1;
@@ -43,7 +43,7 @@ public class Creature extends WorldEntity {
     private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
     private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
     private static final double MATURITY_AGE = 0.2;
-    private static final double MATING_DISTANCE = 40;
+    private static final double MATING_DISTANCE = 37;
 
     private final MainGame game;
     private final GameWorld gameWorld;

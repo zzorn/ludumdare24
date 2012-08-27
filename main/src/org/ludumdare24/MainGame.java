@@ -70,13 +70,13 @@ public class MainGame extends GameBase {
 
     public int getHelpPageCount() {
         // NOTE: Remember to update this if you add more help pages!
-        return 7;
+        return 8;
     }
 
     public HelpPageScreen createHelpPage(int index) {
         switch (index) {
-            case 1: return createHelpPageWithContent(index, null,
-                    "You are the god of a species of trolls.",
+            case 1: return createHelpPageWithContent(index, "troll",
+                    "You are the god of a blue species of trolls.",
                     "Your task is to look out for your worshippers",
                     "and help them to evolve and survive.",
                     "But beware!  You are not the only god",
@@ -102,10 +102,15 @@ public class MainGame extends GameBase {
                     "With the feed tool you can toss apples from the sky",
                     "to your faithful followers as a prize,",
                     "or to save them if they are dying in hunger.");
-            case 7: return createHelpPageWithContent(index, null,
+            case 7: return createHelpPageWithContent(index, "watchButtonNotPressScaled",
+                    "Whit the watch tool you can listen and follow",
+                    "one of your trolls.");
+            case 8: return createHelpPageWithContent(index, null,
                     "Using your tools will drain yor mana.",
                     "But your mana will recover over time.");
-        }
+
+
+    }
 
         return createHelpPageWithContent(0, null, "Unknown help page");
     }

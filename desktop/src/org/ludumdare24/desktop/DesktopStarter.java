@@ -13,8 +13,8 @@ public class DesktopStarter {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Troll God";
         cfg.useGL20 = false;
-        cfg.width = 800;
-        cfg.height = 480;
+        cfg.width = 1200;
+        cfg.height = 760;
 
         new LwjglApplication(new MainGame(), cfg);
     }

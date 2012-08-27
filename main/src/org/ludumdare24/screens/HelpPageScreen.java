@@ -43,18 +43,22 @@ public class HelpPageScreen extends Screen2D {
             }
         })).expandX().top().left();
 
+        // Prew button
+        if (helpPageIndex>1) {
+            table.add(createButton("Previous", new ClickListener() {
+                public void click(Actor actor, float x, float y) {
+                    game.setScreen(game.createHelpPage(helpPageIndex - 1));
+                    game.soundService.play(Sounds.UI_CLICK);
+                }
+            })).expandX().top().right();
+        }
+
+
         // Next button
         if (helpPageIndex < game.getHelpPageCount()) {
             table.add(createButton("Next", new ClickListener() {
                 public void click(Actor actor, float x, float y) {
                     game.setScreen(game.createHelpPage(helpPageIndex + 1));
-                    game.soundService.play(Sounds.UI_CLICK);
-                }
-            })).expandX().top().right();
-        } else {
-            table.add(createButton("Return", new ClickListener() {
-                public void click(Actor actor, float x, float y) {
-                    game.setScreen(new MainMenuScreen(game));
                     game.soundService.play(Sounds.UI_CLICK);
                 }
             })).expandX().top().right();

@@ -74,7 +74,7 @@ public class TileMap extends Entity {
                 float su = u2 - u1;
                 float sv = v2 - v1;
 
-                spriteBatch.draw(grass.getTexture(), x, y, tileSize, tileSize, u, v, u2, v2);
+               // spriteBatch.draw(grass.getTexture(), x, y, tileSize, tileSize, u, v, u2, v2);
             }
         }
 
