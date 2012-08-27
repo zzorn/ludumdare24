@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import org.gameflow.screen.Screen2D;
 import org.ludumdare24.MainGame;
@@ -47,7 +46,7 @@ public class WinScreen extends Screen2D {
         table.add(createButton("Continue playing", new ClickListener() {
             public void click(Actor actor, float x, float y) {
                 // Add some more enemies to play against
-                game.getGameWorld().createEnemyTribes();
+                game.getGameWorld().createEnemyTribes(game);
 
                 game.setScreen(new GameScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);

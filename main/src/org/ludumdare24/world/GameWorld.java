@@ -42,9 +42,9 @@ public class GameWorld {
         // Create player
         player = new PlayerGod(game);
 
-        createTribe(400, 200, player, initialPlayerCreatureCount);
+        createTribe(game, 400, 200, player, initialPlayerCreatureCount);
 
-        createEnemyTribes();
+        createEnemyTribes(game);
 
 
         // Create some trees
@@ -55,40 +55,40 @@ public class GameWorld {
         }
     }
 
-    public void createEnemyTribes() {
+    public void createEnemyTribes(MainGame game) {
         float cx = 400;
         float cy = 220;
 
         float d = 2.8f;
 
-        createTribe(cx, cy + cy*d, null, initialUngodlyCreatureCount);
-        createTribe(cx, cy - cy*d, null, initialUngodlyCreatureCount);
-        createTribe(cx + cx*d, cy, null, initialUngodlyCreatureCount);
-        createTribe(cx - cx*d, cy, null, initialUngodlyCreatureCount);
+        createTribe(game, cx, cy + cy*d, null, initialUngodlyCreatureCount);
+        createTribe(game, cx, cy - cy*d, null, initialUngodlyCreatureCount);
+        createTribe(game, cx + cx*d, cy, null, initialUngodlyCreatureCount);
+        createTribe(game, cx - cx*d, cy, null, initialUngodlyCreatureCount);
     }
 
-    private void createTribe(float x, float y, God god, int tribeSize) {
+    private void createTribe(MainGame game, float x, float y, God god, int tribeSize) {
 
         // Place move target
         if (god != null) god.placeMoveTarget(x, y);
 
         // Tribe mother
-        Creature tribeMother = createCreature(god, x, y, null);
+        Creature tribeMother = createCreature(null, god, x, y, null);
 
         // Spawn members based on mother
         for (int i = 0; i < tribeSize; i++) {
-            createCreature(god, x, y, tribeMother);
+            createCreature(game, god, x, y, tribeMother);
         }
     }
 
-    private Creature createCreature(God god, float x, float y, Creature mother) {
+    private Creature createCreature(MainGame game, God god, float x, float y, Creature mother) {
 
         Creature creature;
         if (mother != null) {
-            creature = new Creature(this, mutator, mother);
+            creature = new Creature(game, this, mutator, mother);
         }
         else {
-            creature = new Creature(this, god, mutator);
+            creature = new Creature(game, this, god, mutator);
         }
 
         float x2 = x + (float)(random.nextGaussian() * 50);

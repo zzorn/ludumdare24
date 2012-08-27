@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import org.gameflow.utils.MathTools;
+import org.ludumdare24.MainGame;
 import org.ludumdare24.Mutator;
 import org.ludumdare24.entities.AppleTree;
 import org.ludumdare24.entities.FoodEntity;
@@ -23,81 +24,121 @@ public class Creature extends WorldEntity {
     private static final double MATING_BOOST_DURATION_SECONDS = 20;
     private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
 
+    private static final double ENERGY_CONSUMPTION_PER_KG_PER_SECOND = 0.02;
+    private static final double ENERGY_NEEDED_TO_PRODUCE_ONE_KG = 1;
+
     private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 10.0;
     private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
     private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
     private static final double MATURITY_AGE = 0.2;
     private static final double MATING_DISTANCE = 30;
 
+    private final MainGame game;
     private final GameWorld gameWorld;
     private final God god;
 
-    private CreatureAppearance appearance;
+    // Name
+    private String firstName;
+    private String familyName;
 
+    // Appearance
+    private CreatureAppearance appearance;
     private double basicShape = 0.5;
-    private double hair = 0.5;
-    private double armor = 0;
-    private double spikes = 0;
-    private double fatness = 0.8;
-    private double length = 1;
+
+    // Physical attributes
+    private double heart = 0.5;        // Increases mass, max health, affects torso size
+    private double stomach = 0.5;      // Increases mass, max energy, affects stomach size
+    private double armor = 0.5;        // Increases mass, protection
+    private double spikes = 0.5;       // Increases mass, attack
+    private double eyes = 0.5;         // Increases energy usage, vision range
+    private double fastLegs = 0.5;     // Increases energy usage, movement speed, affects leg length
+    private double hair = 0.5;         // Changes optimal temperature zone
+    private double developmentLengthFactor = 0.5; // Changes between short development with high energy usage per second and longer with lower energy usage
+
+    // Derived physical attributes
+    private double mass = 100;  // Affects energy consumption up and development time up and movement speed down
+    private double basicEnergyUsagePerSecond = 2;
 
     private double maxHealth = 100;
-    private double health = 100;
     private double healPerSecond = 5;
 
     private double maxEnergy = 100+50*Math.random();
-    private double energy = maxEnergy / 2;
-    private double basicEnergyUsagePerSecond = 2;
     private double pregnantEnergyUsagePerSecond = 2;
     private double woundedEnergyUsagePerSecond = 2;
     private double walkEnergyUsagePerSecond = 2;
 
     private double eatingSpeedEnergyPerSecond = 50;
+
     private double maxEatingDistance = 60;
-    private double minDistanceToOthers = 60;
+
     private double sightRange = 300;
 
-    private double ageSeconds = 0;
     private double maxAgeSeconds = 60;
 
-    private double matingBoostTimeLeft = 0;
     private double babyDevelopmentTime = 20;
+
+    private double maxMovementSpeedPerSecond = 1650;
+
+    private double energyReleasedOnDeath = maxEnergy * 0.2;
+
+    // Mental attributes
+    private double fearfulReckless = 0.5;
+    private double peacefulAngry = 0.5;
+    private double frigidNymphomanic = 0.5;
+    private double spartanGlutton = 0.5;
+    private double homesitterExplorer = 0.5;
+    private double loneWolfGroupAnimal = 0.5;
+    private double walkerRunner = 0.5;
+    private double diciplinedRandom = 0.5;
+    private double claustrofobicTreeHugger = 0.5;
+    private double godFearingIrreligious = 0.5;
+
+
+    // Derived mental attributes
+    private double minDistanceToOthers = 60;
+    private double maxDistanceToGodTarget = 300;
+
+
+    // Runtime attributes
+    private double health = 100;
+    private double energy = maxEnergy / 2;
+    private double ageSeconds = 0;
+    private double matingBoostTimeLeft = 0;
     private double babyDevelopmentTimeLeft = 0;
     private Creature baby = null;
+    private boolean dead = false;
 
+    // Behaviour
     private Array<Behaviour> behaviours = new Array<Behaviour>();
     private Behaviour currentBehaviour = null;
     private double timeUntilBehaviourChange = BEHAVIOUR_CHECK_INTERVAL_SECONDS;
     private double timeUntilBehaviourReactivation = 0;
     private double timeSinceBehaviourChecked = 0;
 
+    // Movement
     private Vector2 movementDirection = new Vector2();
     private double movementSpeedFactor = 0.5;
-    private double maxMovementSpeedPerSecond = 1650;
 
-    private double maxDistanceToGodTarget = 300;
 
-    private double energyReleasedOnDeath = maxEnergy * 0.2;
-
+    // Perception
     private FoodEntity closestFoodEntity = null;
     private Creature closestCreature = null;
     private Creature matingTarget = null;
     private AppleTree closestAppleTree = null;
-    private String firstName;
-    private String familyName;
 
-    private boolean dead = false;
 
-    public Creature(GameWorld gameWorld, God god, Mutator mutator) {
+
+    public Creature(MainGame game, GameWorld gameWorld, God god, Mutator mutator) {
         this.gameWorld = gameWorld;
         this.god = god;
+        this.game = game;
 
         basicShape = mutator.randomize();
         hair       = mutator.randomize();
         armor      = mutator.randomize();
         spikes     = mutator.randomize();
-        fatness    = mutator.randomize();
-        length     = mutator.randomize();
+        heart      = mutator.randomize();
+        stomach    = mutator.randomize();
 
         Color color = god != null ? god.getColor() : mutator.randomizeColor();
         appearance = new CreatureAppearance(this, color, mutator);
@@ -107,8 +148,9 @@ public class Creature extends WorldEntity {
         createName(null);
     }
 
-    public Creature(GameWorld gameWorld, Mutator mutator, Creature parent) {
+    public Creature(MainGame game, GameWorld gameWorld, Mutator mutator, Creature parent) {
         this.gameWorld = gameWorld;
+        this.game = game;
         this.god = parent.getGod();
 
         this.setWorldPos(parent.getWorldPos().x, parent.getWorldPos().y);
@@ -117,8 +159,8 @@ public class Creature extends WorldEntity {
         hair       = mutator.mutate(parent.hair);
         armor      = mutator.mutate(parent.armor);
         spikes     = mutator.mutate(parent.spikes);
-        fatness    = mutator.mutate(parent.fatness);
-        length     = mutator.mutate(parent.length);
+        heart      = mutator.mutate(parent.heart);
+        stomach    = mutator.mutate(parent.stomach);
 
         appearance = new CreatureAppearance(this, parent.getAppearance(), mutator);
 
@@ -127,8 +169,9 @@ public class Creature extends WorldEntity {
         createName(parent);
     }
 
-    public Creature(GameWorld gameWorld, Mutator mutator, Creature mother, Creature father) {
+    public Creature(MainGame game, GameWorld gameWorld, Mutator mutator, Creature mother, Creature father) {
         this.gameWorld = gameWorld;
+        this.game = game;
         this.god = mother.getGod();
 
         this.setWorldPos(mother.getWorldPos().x, mother.getWorldPos().y);
@@ -137,8 +180,8 @@ public class Creature extends WorldEntity {
         hair       = mutator.mix(mother.hair, father.hair);
         armor      = mutator.mix(mother.armor, father.armor);
         spikes     = mutator.mix(mother.spikes, father.spikes);
-        fatness    = mutator.mix(mother.fatness, father.fatness);
-        length     = mutator.mix(mother.length, father.length);
+        heart = mutator.mix(mother.heart, father.heart);
+        stomach     = mutator.mix(mother.stomach, father.stomach);
 
         appearance = new CreatureAppearance(this, mother.getAppearance(), father.getAppearance(), mutator);
 
@@ -408,11 +451,11 @@ public class Creature extends WorldEntity {
     }
 
     public double getFatness() {
-        return fatness;
+        return stomach;
     }
 
     public double getLength() {
-        return length;
+        return fastLegs;
     }
 
     public void onCreate(TextureAtlas atlas) {
@@ -630,7 +673,7 @@ public class Creature extends WorldEntity {
 
     public void mateWith(Creature dad) {
         if (canMate() && gameWorld.canAddCreatures()) {
-            baby = new Creature(gameWorld, gameWorld.getMutator(), this, dad);
+            baby = new Creature(game, gameWorld, gameWorld.getMutator(), this, dad);
             babyDevelopmentTimeLeft = babyDevelopmentTime;
         }
     }
