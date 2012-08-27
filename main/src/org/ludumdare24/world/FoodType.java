@@ -5,19 +5,21 @@ package org.ludumdare24.world;
  */
 public enum FoodType {
 
-    APPLE(40, "food", 1, 40, 0.3),
-    MEAT(100, "meatFood", 1, 20, 1),
+    APPLE(40, "food", "particles/eaten.particle", 1, 40, 0.3),
+    MEAT(100, "meatFood", "particles/eatenMeat.particle", 1, 20, 1),
     ;
 
     private final double energyInOne;
     private final String image;
+    private final String particles;
     private final int imageCount;
     private final double durationSeconds;
     private final double imageScale;
 
-    private FoodType(double energyInOne, String image, int imageCount, double durationSeconds, double imageScale) {
+    private FoodType(double energyInOne, String image, String particles, int imageCount, double durationSeconds, double imageScale) {
         this.energyInOne = energyInOne;
         this.image = image;
+        this.particles = particles;
         this.imageCount = imageCount;
         this.durationSeconds = durationSeconds;
         this.imageScale = imageScale;
@@ -29,6 +31,10 @@ public enum FoodType {
 
     public String getImage() {
         return image;
+    }
+
+    public String getParticles() {
+        return particles;
     }
 
     public int getImageCount() {

@@ -1,5 +1,6 @@
 package org.ludumdare24.entities.creature;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -127,7 +128,7 @@ public class Creature extends WorldEntity {
     private AppleTree closestAppleTree = null;
 
     // Particle effect
-    private ParticleEffect CreatureParticle=null;
+    private ParticleEffect creatureParticle=null;
 
 
 
@@ -534,6 +535,7 @@ public class Creature extends WorldEntity {
     }
 
     public void onCreate(TextureAtlas atlas) {
+        creatureParticle = new ParticleEffect();
 
         appearance.create(atlas);
     }
@@ -547,6 +549,10 @@ public class Creature extends WorldEntity {
 
         // Update appearance
         appearance.onUpdate(timeDelta);
+        if (creatureParticle != null){
+            creatureParticle.setPosition(getX() , getY());
+            creatureParticle.update(timeDelta);
+        }
     }
 
     private void behave(float timeDelta) {
@@ -612,6 +618,12 @@ public class Creature extends WorldEntity {
             if (energy > maxEnergy) {
                 energy = maxEnergy;
             }
+            if (creatureParticle!= null && game !=null ){
+                creatureParticle.load(Gdx.files.internal(closestFoodEntity.getFoodType().getParticles()), game.getAtlas());
+                creatureParticle.start();
+            }
+
+
         }
 
         // Healing
@@ -628,7 +640,7 @@ public class Creature extends WorldEntity {
         // Mating
         if (matingTarget != null && canMate() && distanceTo(matingTarget) < MATING_DISTANCE) {
             mateWith(matingTarget);
-            if (god != null && god.isPlayerGod()){
+            if (god != null && god.isPlayerGod()&& game!= null && game.soundService != null){
               game.soundService.play(Sounds.KISS);
             }
         }

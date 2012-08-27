@@ -19,9 +19,12 @@ public class FoodEntity extends SimpleWorldEntity {
     private double fadeInTimeLeft = START_FADE_IN_TIME;
     private double baseScale = 1;
 
+
+
     public FoodEntity(GameWorld gameWorld, Random random, FoodType foodType) {
         this(gameWorld, random, foodType, 1);
     }
+
 
     public FoodEntity(GameWorld gameWorld, Random random, FoodType foodType, double partFull) {
         super(createImage(random, foodType, partFull));
@@ -43,6 +46,10 @@ public class FoodEntity extends SimpleWorldEntity {
         image.setAngleTurns(random.nextGaussian() * 0.05);
 
         return image;
+    }
+
+    public FoodType getFoodType() {
+        return foodType;
     }
 
     @Override
