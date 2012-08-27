@@ -187,7 +187,6 @@ public class PlayerGod extends God {
     }
 
     private void changeTool(Tool tool) {
-        observedCreature = null;
         currentTool = tool;
         if (currentTool != null) {
             /*
@@ -220,6 +219,7 @@ public class PlayerGod extends God {
                     cursorEffect.start();
                     break;
                 case WATCH:
+                    unObserveCreature();
                     cursorEffect.load(Gdx.files.internal("particles/watchSelect.particle"), atlas);
                     cursorEffect.start();
                     break;
@@ -230,7 +230,6 @@ public class PlayerGod extends God {
         }
 
     }
-
 
     private void useTool(float x, float y) {
 
@@ -308,8 +307,9 @@ public class PlayerGod extends God {
                         break;
 
                     case WATCH:
-                        observedCreature = game.getGameWorld().getClosestCreatureOfGod(x, y, this);
-                        selectedCreature = observedCreature;
+                        Creature ourClosestCreature = game.getGameWorld().getClosestCreatureOfGod(x, y, this);
+                        selectedCreature = ourClosestCreature;
+                        observeCreature(ourClosestCreature);
                         changeMana(-Tool.WATCH.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/watchSelect.particle"), atlas);
                         toolEffect.start();
@@ -323,6 +323,24 @@ public class PlayerGod extends God {
 
 
         }
+
+
+    private void observeCreature(Creature creatureToObserve) {
+        unObserveCreature();
+
+        observedCreature = creatureToObserve;
+
+        if (observedCreature != null) {
+            observedCreature.setObserved(true);
+        }
+    }
+
+    private void unObserveCreature() {
+        if (observedCreature != null) {
+            observedCreature.setObserved(false);
+            observedCreature = null;
+        }
+    }
 
 
     @Override

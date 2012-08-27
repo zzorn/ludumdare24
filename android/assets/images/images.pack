@@ -17,7 +17,7 @@ snow
   orig: 512, 512
   offset: 0, 0
   index: -1
-watch
+appleTree1
   rotate: false
   xy: 0, 381
   size: 128, 128
@@ -38,49 +38,49 @@ appleTree3
   orig: 128, 128
   offset: 0, 0
   index: -1
-sand
+appleTree4
   rotate: false
   xy: 0, 121
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-appleTree1
+sand
   rotate: false
   xy: 128, 251
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-appleTree4
+watch
   rotate: false
   xy: 256, 381
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-eatenFood
+abdomen
   rotate: false
   xy: 0, 55
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1_hair1
+arm
   rotate: false
   xy: 128, 185
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-skull
+blood
   rotate: false
   xy: 256, 315
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye1
+bone
   rotate: false
   xy: 384, 445
   size: 64, 64
@@ -94,364 +94,364 @@ boxy
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_spikes1
+eatenFood
   rotate: false
   xy: 128, 119
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_hair3
+eye
   rotate: false
   xy: 192, 185
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-foot
+eye1
   rotate: false
   xy: 256, 249
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-blood
+eye2
   rotate: false
   xy: 320, 315
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_armor2
+eye3
   rotate: false
   xy: 384, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-torso
+eye4
   rotate: false
   xy: 448, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye4
+eye5
   rotate: false
   xy: 192, 119
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_armor1
+eye6
   rotate: false
   xy: 256, 183
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-heartRed
+food
   rotate: false
   xy: 320, 249
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-abdomen
+foot
   rotate: false
   xy: 384, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye
+handfoot
   rotate: false
   xy: 448, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye2
+head
   rotate: false
   xy: 512, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-sun
+head_armor1
   rotate: false
   xy: 320, 183
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-handfoot
+head_armor2
   rotate: false
   xy: 384, 247
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-meatFood
+head_armor3
   rotate: false
   xy: 448, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-star
+head_hair1
   rotate: false
   xy: 512, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-arm
+head_hair2
   rotate: false
   xy: 576, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1_hair2
+head_hair3
   rotate: false
   xy: 448, 247
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1_hair3
+head_spikes1
   rotate: false
   xy: 512, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-smiteExplo
+head_spikes2
   rotate: false
   xy: 576, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-snowflake2
+head_spikes3
   rotate: false
   xy: 640, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_hair2
+heart
   rotate: false
   xy: 512, 247
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-rage
+heartRed
   rotate: false
   xy: 576, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye3
+leg
   rotate: false
   xy: 640, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_spikes2
+meatFood
   rotate: false
   xy: 704, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-leg
+potato1
   rotate: false
   xy: 576, 247
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_spikes3
+potato1_hair1
   rotate: false
   xy: 640, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_hair1
+potato1_hair2
   rotate: false
   xy: 704, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye6
+potato1_hair3
   rotate: false
   xy: 768, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head
+rage
   rotate: false
   xy: 640, 247
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-head_armor3
+skull
   rotate: false
   xy: 704, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-food
+smite
   rotate: false
   xy: 768, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-bone
+smiteExplo
   rotate: false
   xy: 832, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-smite
+snowflake2
   rotate: false
   xy: 704, 247
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-eye5
+star
   rotate: false
   xy: 768, 313
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-potato1
+sun
   rotate: false
   xy: 832, 379
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-heart
+torso
   rotate: false
   xy: 896, 445
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-foodButtonPressScaled
+foodButtonNotPressScaled
   rotate: false
   xy: 0, 5
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-smiteButtonNotPressScaled
+foodButtonPressScaled
   rotate: false
   xy: 128, 69
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-watchButtonNotPressScaled
+heartButtonNotPressScaled
   rotate: false
   xy: 256, 133
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-watchButtonPressScaled
+heartButtonPressScaled
   rotate: false
   xy: 384, 197
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-moveButtonPressScaled
+moveButtonNotPressScaled
   rotate: false
   xy: 768, 263
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-rageButtonPressScaled
+moveButtonPressScaled
   rotate: false
   xy: 832, 329
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-smiteButtonPressScaled
+rageButtonNotPressScaled
   rotate: false
   xy: 896, 395
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-moveButtonNotPressScaled
+rageButtonPressScaled
   rotate: false
   xy: 960, 461
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-heartButtonPressScaled
+smiteButtonNotPressScaled
   rotate: false
   xy: 48, 5
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-foodButtonNotPressScaled
+smiteButtonPressScaled
   rotate: false
   xy: 176, 69
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-heartButtonNotPressScaled
+watchButtonNotPressScaled
   rotate: false
   xy: 304, 133
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-rageButtonNotPressScaled
+watchButtonPressScaled
   rotate: false
   xy: 432, 197
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
-particle
+manaStar
   rotate: false
   xy: 96, 21
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-troll_icon
+particle
   rotate: false
   xy: 128, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-manaStar
+smile
   rotate: false
   xy: 128, 1
   size: 32, 32

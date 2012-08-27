@@ -73,7 +73,7 @@ public class GameWorld {
         if (god != null) god.placeMoveTarget(x, y);
 
         // Tribe mother
-        Creature tribeMother = createCreature(null, god, x, y, null);
+        Creature tribeMother = createCreature(game, god, x, y, null);
 
         // Spawn members based on mother
         for (int i = 0; i < tribeSize; i++) {

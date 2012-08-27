@@ -128,7 +128,9 @@ public class Creature extends WorldEntity {
     private AppleTree closestAppleTree = null;
 
     // Particle effect
+
     private ParticleEffect creatureParticle=null;
+    private boolean observed;
 
 
 
@@ -618,7 +620,7 @@ public class Creature extends WorldEntity {
             if (energy > maxEnergy) {
                 energy = maxEnergy;
             }
-            if (creatureParticle!= null && game !=null ){
+            if (creatureParticle!= null ){
                 creatureParticle.load(Gdx.files.internal(closestFoodEntity.getFoodType().getParticles()), game.getAtlas());
                 creatureParticle.start();
             }
@@ -755,6 +757,9 @@ public class Creature extends WorldEntity {
         if (currentBehaviour != null) {
             currentBehaviour.render(atlas, spriteBatch);
         }
+        if (creatureParticle != null){
+            creatureParticle.draw(spriteBatch);
+        }
     }
 
     public void onDispose() {
@@ -777,6 +782,7 @@ public class Creature extends WorldEntity {
         double damageThrough = mix(armor, amount, amount * MAX_ARMOR_PROTECTION);
 
         trueDamage(damageThrough);
+
     }
 
     /**
@@ -787,9 +793,17 @@ public class Creature extends WorldEntity {
         // Change health
         health -= damageThrough;
 
+        // blood splash (don't work)
+        if (creatureParticle!= null ){
+            creatureParticle.load(Gdx.files.internal("particles/blood.particle"), game.getAtlas());
+            creatureParticle.start();
+        }
+
+
         // Check if dies
         if (health <= 0) {
             die();
+
         }
     }
 
@@ -800,6 +814,11 @@ public class Creature extends WorldEntity {
                 worldPos.x + 10 * (float) (Math.random() * 2 - 1),
                 worldPos.y + 10 * (float) (Math.random() * 2 - 1));
         gameWorld.addEntity(baby);
+        if (creatureParticle!= null ){
+            creatureParticle.load(Gdx.files.internal("particles/child.particle"), game.getAtlas());
+            creatureParticle.start();
+        }
+
 
         // Baby follows mother in worship
         if (god != null) god.addFollower(baby);
@@ -820,6 +839,8 @@ public class Creature extends WorldEntity {
 
             // Spawn some meat there, depending on body size
             gameWorld.spawnFood(FoodType.MEAT, getX(), getY(), energyReleasedOnDeath);
+
+
         }
     }
 
@@ -861,5 +882,13 @@ public class Creature extends WorldEntity {
 
     public double getAgeSeconds() {
         return ageSeconds;
+    }
+
+    public void setObserved(boolean observed) {
+        this.observed = observed;
+    }
+
+    public boolean isObserved() {
+        return observed;
     }
 }

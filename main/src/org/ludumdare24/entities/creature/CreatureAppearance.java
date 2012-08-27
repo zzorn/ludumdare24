@@ -10,14 +10,13 @@ import org.gameflow.utils.ColorUtils;
 import org.gameflow.utils.MathTools;
 import org.ludumdare24.Mutator;
 
-import java.util.Random;
 
 /**
  * Messy troll drawing code here.
  */
 public class CreatureAppearance {
     private static final int BODY_IMAGE_SIZE = 64;
-    private static final double MIX_MUTATION_AMOUNT = 0.1;
+    private static final float OBSERVATION_SCALING_FACTOR = 3.0f;
 
     private final Creature creature;
 
@@ -208,8 +207,9 @@ public class CreatureAppearance {
         ownerGodGlowEffect.draw(spriteBatch );
 
         // Render creature bodyparts
+        float scale = creature.isObserved() ? OBSERVATION_SCALING_FACTOR : 1f;
         for (CreaturePart part : parts) {
-            part.draw(atlas, spriteBatch, x, y, 0);
+            part.draw(atlas, spriteBatch, x, y, 0, scale);
         }
     }
 

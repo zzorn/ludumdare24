@@ -2,11 +2,11 @@ Untitled
 - Delay -
 active: false
 - Duration - 
-lowMin: 3000.0
-lowMax: 3000.0
+lowMin: 1000.0
+lowMax: 1000.0
 - Count - 
 min: 0
-max: 5
+max: 1
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
@@ -24,8 +24,8 @@ timeline2: 0.43150684
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1500.0
-highMax: 2000.0
+highMin: 1400.0
+highMax: 1400.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
@@ -66,8 +66,8 @@ timeline0: 0.0
 - Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 60.0
-highMax: 32.0
+highMin: 20.0
+highMax: 40.0
 relative: false
 scalingCount: 2
 scaling0: 0.0
@@ -79,17 +79,29 @@ timeline1: 0.23287672
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: 150.0
-highMax: 200.0
+highMin: 250.0
+highMax: 250.0
 relative: false
-scalingCount: 1
+scalingCount: 7
 scaling0: 1.0
-timelineCount: 1
+scaling1: 0.9019608
+scaling2: 0.7058824
+scaling3: 0.49019608
+scaling4: 0.3529412
+scaling5: 0.1764706
+scaling6: 0.13725491
+timelineCount: 7
 timeline0: 0.0
+timeline1: 0.1369863
+timeline2: 0.24657534
+timeline3: 0.3561644
+timeline4: 0.43835616
+timeline5: 0.5479452
+timeline6: 0.6438356
 - Angle - 
 active: true
-lowMin: 50.0
-lowMax: 135.0
+lowMin: 80.0
+lowMax: 100.0
 highMin: 360.0
 highMax: 360.0
 relative: false
@@ -107,8 +119,8 @@ timeline3: 1.0
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: -90.0
-highMax: 90.0
+highMin: -125.0
+highMax: 125.0
 relative: true
 scalingCount: 2
 scaling0: 1.0
@@ -122,13 +134,25 @@ active: false
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: -80.0
-highMax: -80.0
+highMin: -250.0
+highMax: -250.0
 relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
+scalingCount: 7
+scaling0: 0.0
+scaling1: 0.0
+scaling2: 0.11764706
+scaling3: 0.25490198
+scaling4: 0.49019608
+scaling5: 0.64705884
+scaling6: 0.78431374
+timelineCount: 7
 timeline0: 0.0
+timeline1: 0.21917808
+timeline2: 0.38356164
+timeline3: 0.5205479
+timeline4: 0.6438356
+timeline5: 0.72602737
+timeline6: 0.8287671
 - Tint - 
 colorsCount: 3
 colors0: 1.0
@@ -145,12 +169,12 @@ relative: false
 scalingCount: 4
 scaling0: 0.0
 scaling1: 1.0
-scaling2: 0.75
+scaling2: 0.50877196
 scaling3: 0.0
 timelineCount: 4
 timeline0: 0.0
-timeline1: 0.2
-timeline2: 0.8
+timeline1: 0.061643835
+timeline2: 0.74657536
 timeline3: 1.0
 - Options - 
 attached: false
@@ -159,4 +183,4 @@ aligned: false
 additive: true
 behind: false
 - Image Path -
-/home/cesse/projekteja/ludumdare/ludumdare24/orginal/images/eatenFood.png
+C:\data\Projects\ludumdare\ludumdare24\ludumdare24\android\orginal_assets\images\eatenFood.png
