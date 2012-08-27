@@ -103,13 +103,13 @@ public class CreaturePart {
         attachedParts.add(part);
     }
 
-    public void draw(TextureAtlas atlas, SpriteBatch spriteBatch, float x, float y, float angle) {
+    public void draw(TextureAtlas atlas, SpriteBatch spriteBatch, float x, float y, float angle, float scale) {
 
         float currentAngle = baseAngle + this.angle + angle;
 
         // Draw all attached parts
         for (CreaturePart attachedPart : attachedParts) {
-            attachedPart.draw(atlas, spriteBatch, x, y, currentAngle);
+            attachedPart.draw(atlas, spriteBatch, x, y, currentAngle, scale);
         }
 
         // Draw the part itself
@@ -121,14 +121,14 @@ public class CreaturePart {
         tempPos.set(basePos);
         tempPos.add(x, y);
 
-        drawLayer(spriteBatch, baseImage, tempPos, currentAngle, baseColor);
-        drawLayer(spriteBatch, armorImage, tempPos, currentAngle, armorColor);
-        drawLayer(spriteBatch, hairImage, tempPos, currentAngle, hairColor);
-        drawLayer(spriteBatch, spikesImage, tempPos, currentAngle, spikesColor);
+        drawLayer(spriteBatch, baseImage, tempPos, currentAngle, baseColor, scale);
+        drawLayer(spriteBatch, armorImage, tempPos, currentAngle, armorColor, scale);
+        drawLayer(spriteBatch, hairImage, tempPos, currentAngle, hairColor, scale);
+        drawLayer(spriteBatch, spikesImage, tempPos, currentAngle, spikesColor, scale);
 
     }
 
-    private void drawLayer(SpriteBatch spriteBatch, TextureAtlas.AtlasRegion image, Vector2 pos, float angle, Color color) {
+    private void drawLayer(SpriteBatch spriteBatch, TextureAtlas.AtlasRegion image, Vector2 pos, float angle, Color color, float extraScale) {
         if (image != null) {
             spriteBatch.setColor(color);
             float w = image.getRegionWidth() * fatness;
@@ -140,7 +140,7 @@ public class CreaturePart {
             float h = image.getRegionHeight() * length;
             float x = pos.x + xOffs ;
             float y = pos.y;
-            spriteBatch.draw(image, x, y, w*originX, h*originY, w, h, scale, scale, MathTools.toDegrees(angle));
+            spriteBatch.draw(image, x, y, w*originX, h*originY, w, h, scale*extraScale, scale*extraScale, MathTools.toDegrees(angle));
             spriteBatch.setColor(Color.WHITE);
         }
     }

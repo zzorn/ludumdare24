@@ -128,7 +128,7 @@ public class Creature extends WorldEntity {
 
     // Particle effect
     private ParticleEffect CreatureParticle=null;
-
+    private boolean observed;
 
 
     public Creature(MainGame game, GameWorld gameWorld, God god, Mutator mutator) {
@@ -849,5 +849,13 @@ public class Creature extends WorldEntity {
 
     public double getAgeSeconds() {
         return ageSeconds;
+    }
+
+    public void setObserved(boolean observed) {
+        this.observed = observed;
+    }
+
+    public boolean isObserved() {
+        return observed;
     }
 }
