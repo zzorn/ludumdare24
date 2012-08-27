@@ -17,6 +17,7 @@ import java.util.Random;
  */
 public class GameWorld {
 
+    private static final int MAX_CREATURES_COUNT = 300;
     private static final int FOOD_SPREAD = 15;
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
     private final int initialPlayerCreatureCount = 5;
@@ -276,5 +277,9 @@ public class GameWorld {
 
     public Mutator getMutator() {
         return mutator;
+    }
+
+    public boolean canAddCreatures() {
+        return creatures.size < MAX_CREATURES_COUNT;
     }
 }

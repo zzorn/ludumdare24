@@ -627,7 +627,7 @@ public class Creature extends WorldEntity {
     }
 
     public void mateWith(Creature dad) {
-        if (canMate()) {
+        if (canMate() && gameWorld.canAddCreatures()) {
             baby = new Creature(gameWorld, gameWorld.getMutator(), this, dad);
             babyDevelopmentTimeLeft = babyDevelopmentTime;
         }
