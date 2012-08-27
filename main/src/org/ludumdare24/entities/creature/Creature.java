@@ -1,6 +1,7 @@
 package org.ludumdare24.entities.creature;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -124,6 +125,9 @@ public class Creature extends WorldEntity {
     private Creature closestCreature = null;
     private Creature matingTarget = null;
     private AppleTree closestAppleTree = null;
+
+    // Particle effect
+    private ParticleEffect CreatureParticle=null;
 
 
 
