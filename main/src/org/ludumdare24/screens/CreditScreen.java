@@ -29,7 +29,7 @@ public class CreditScreen extends Screen2D {
         table.setFillParent(true);
 
         // Toggle sounds enabled checkbox
-        table.add(new Label("Credits:", getSkin())).padBottom(30);
+        table.add(new Label("Troll God was made by:", getSkin())).padBottom(30);
         table.row();
         table.add(new Label("Zzorn & Shiera  ", getSkin())).padBottom(10);
         table.row();
