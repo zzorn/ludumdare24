@@ -141,3 +141,5 @@ Graphics
 Creatures
 * Calculate max speed, max health, energy usage, etc [DONE]
 * Inherit behaviour genes [DONE]
+
+* Prefer similar creatures when breeding [TODO]
