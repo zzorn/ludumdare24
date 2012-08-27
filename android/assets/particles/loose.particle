@@ -186,12 +186,12 @@ timeline3: 0.8082192
 timeline4: 1.0
 - Options - 
 attached: false
-continuous: false
+continuous: true
 aligned: false
-additive: true
+additive: false
 behind: false
 - Image Path -
-/home/cesse/projekteja/ludumdare/ludumdare24/android/orginal_assets/images/skull.png
+C:\data\Projects\ludumdare\ludumdare24\ludumdare24\android\orginal_assets\images\skull.png
 
 
 rege
@@ -359,9 +359,9 @@ timeline2: 0.8
 timeline3: 1.0
 - Options - 
 attached: false
-continuous: false
+continuous: true
 aligned: false
 additive: false
 behind: false
 - Image Path -
-/home/cesse/projekteja/ludumdare/ludumdare24/android/orginal_assets/images/rage.png
+C:\data\Projects\ludumdare\ludumdare24\ludumdare24\android\orginal_assets\images\rage.png
