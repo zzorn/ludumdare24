@@ -88,6 +88,7 @@ public class Creature extends WorldEntity {
 
     private boolean dead = false;
 
+
     public Creature(GameWorld gameWorld, God god, Mutator mutator) {
         this.gameWorld = gameWorld;
         this.god = god;
@@ -510,6 +511,10 @@ public class Creature extends WorldEntity {
         // Mating
         if (matingTarget != null && canMate() && distanceTo(matingTarget) < MATING_DISTANCE) {
             mateWith(matingTarget);
+          //  if (getGod()==player){
+           //     game.soundService.play(Sounds.KISS);
+         //   }
+
         }
 
         // Pregnancy

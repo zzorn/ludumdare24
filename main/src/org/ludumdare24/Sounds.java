@@ -15,7 +15,8 @@ public enum Sounds implements SoundResourceHandle {
     SMITE3("sounds/smite3.wav"),
     RAGE("sounds/rage.wav"),
     LOVE("sounds/love.wav"),
-    KISS("sounds/kiss.wav")
+    KISS("sounds/kiss.wav"),
+    OOM("sounds/oom.wav")
     ;
 
     private final String fileName;

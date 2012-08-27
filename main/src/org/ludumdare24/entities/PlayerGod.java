@@ -238,9 +238,12 @@ public class PlayerGod extends God {
         if (currentTool != null) {
 
 
+             if (currentTool.getManaCost() > getMana()) {game.soundService.play(Sounds.OOM);}
+
              if (currentTool.getManaCost() <= getMana() ){
                  selectedCreature = null;
                  Creature closestCreature = game.getGameWorld().getClosestCreature(x, y, null);
+
 
 
                  switch (currentTool ){
@@ -253,10 +256,10 @@ public class PlayerGod extends God {
                                     changeMana(-Tool.SMITE.getManaCost());
                                     toolEffect.load(Gdx.files.internal("particles/smite.particle"), atlas);
                                     toolEffect.start();
-                                    int randomSound = ((int) (Math.random())*3);
-                                    if (randomSound==0 ){ game.soundService.play(Sounds.SMITE1);}
-                                    else if (randomSound==1 ){ game.soundService.play(Sounds.SMITE2);}
-                                    else{ game.soundService.play(Sounds.SMITE3);}
+                                    int randomSound = ((int) ((Math.random())*2));
+                                    if (randomSound==0 ){ game.soundService.play(Sounds.SMITE2);}
+                                    else{ game.soundService.play(Sounds.SMITE1);}
+
                                 }
                             }
                         break;
@@ -316,7 +319,9 @@ public class PlayerGod extends God {
 
                     }
                 }
-            }
+             }
+
+
         }
 
 
