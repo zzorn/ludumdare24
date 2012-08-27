@@ -14,6 +14,8 @@ import org.ludumdare24.entities.creature.Creature;
  */
 public class God extends Entity {
 
+    private static final double MANA_REGEN_PER_FOLLOWER = 0.25;
+
     private double maxMana = 100;
     private double mana = 100;
     private double manaRegenerationPerSecond = 5;
@@ -53,7 +55,7 @@ public class God extends Entity {
     }
 
     protected void updateMana(float deltaTime) {
-        mana += manaRegenerationPerSecond * deltaTime;
+        mana += (manaRegenerationPerSecond + MANA_REGEN_PER_FOLLOWER * numberOfFollowers) * deltaTime;
         if (mana > maxMana) {
             mana = maxMana;
         }
