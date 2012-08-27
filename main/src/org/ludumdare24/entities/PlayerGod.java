@@ -406,5 +406,8 @@ public class PlayerGod extends God {
         */
     }
 
+    public boolean isPlayerGod() {
+        return true;
+    }
 
 }

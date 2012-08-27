@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Mutator;
+import org.ludumdare24.Sounds;
 import org.ludumdare24.entities.AppleTree;
 import org.ludumdare24.entities.FoodEntity;
 import org.ludumdare24.entities.God;
@@ -15,17 +15,24 @@ import org.ludumdare24.entities.WorldEntity;
 import org.ludumdare24.world.FoodType;
 import org.ludumdare24.world.GameWorld;
 
+import static org.gameflow.utils.MathTools.*;
+
 /**
  *
  */
 public class Creature extends WorldEntity {
 
-    private static final double MAX_ARMOR_PROTECTION = 0.5;
-    private static final double MATING_BOOST_DURATION_SECONDS = 20;
-    private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
+    private static final double BASIC_HEALING_PER_SECOND = 3.0;
+    private static final double BASIC_BABY_DEVELOPMENT_TIME = 20.0;
+    private static final double BASIC_MOVEMENT_SPEED_PER_SECOND = 1400.0;
+    private static final double BASIC_LIFE_LENGTH_SECONDS = 60.0;
 
     private static final double ENERGY_CONSUMPTION_PER_KG_PER_SECOND = 0.02;
     private static final double ENERGY_NEEDED_TO_PRODUCE_ONE_KG = 1;
+
+    private static final double MAX_ARMOR_PROTECTION = 0.5;
+    private static final double MATING_BOOST_DURATION_SECONDS = 20;
+    private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
 
     private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 10.0;
     private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
@@ -46,52 +53,44 @@ public class Creature extends WorldEntity {
     private double basicShape = 0.5;
 
     // Physical attributes
-    private double heart = 0.5;        // Increases mass, max health, affects torso size
-    private double stomach = 0.5;      // Increases mass, max energy, affects stomach size
-    private double armor = 0.5;        // Increases mass, protection
-    private double spikes = 0.5;       // Increases mass, attack
-    private double eyes = 0.5;         // Increases energy usage, vision range
-    private double fastLegs = 0.5;     // Increases energy usage, movement speed, affects leg length
-    private double hair = 0.5;         // Changes optimal temperature zone
-    private double developmentLengthFactor = 0.5; // Changes between short development with high energy usage per second and longer with lower energy usage
+    private double heart = Math.random();        // Increases mass, max health, affects torso size
+    private double stomach = Math.random();      // Increases mass, max energy, affects stomach size
+    private double armor = Math.random();        // Increases mass, protection
+    private double spikes = Math.random();       // Increases mass, attack
+    private double eyes = Math.random();         // Increases energy usage, vision range
+    private double fastMoving = Math.random();     // Increases energy usage, movement speed, affects leg length
+    private double hair = Math.random();         // Changes optimal temperature zone
+    private double fastBaby = Math.random(); // Changes between short development with high energy usage per second and longer with lower energy usage
+    private double fastHealing = Math.random(); // Changes between short heal with high energy usage per second and longer with lower energy usage
 
     // Derived physical attributes
     private double mass = 100;  // Affects energy consumption up and development time up and movement speed down
     private double basicEnergyUsagePerSecond = 2;
-
     private double maxHealth = 100;
     private double healPerSecond = 5;
-
     private double maxEnergy = 100+50*Math.random();
     private double pregnantEnergyUsagePerSecond = 2;
     private double woundedEnergyUsagePerSecond = 2;
-    private double walkEnergyUsagePerSecond = 2;
-
+    private double movementEnergyUsagePerSecond = 2;
     private double eatingSpeedEnergyPerSecond = 50;
-
     private double maxEatingDistance = 60;
-
     private double sightRange = 300;
-
     private double maxAgeSeconds = 60;
-
     private double babyDevelopmentTime = 20;
-
     private double maxMovementSpeedPerSecond = 1650;
-
     private double energyReleasedOnDeath = maxEnergy * 0.2;
 
     // Mental attributes
-    private double fearfulReckless = 0.5;
-    private double peacefulAngry = 0.5;
-    private double frigidNymphomanic = 0.5;
-    private double spartanGlutton = 0.5;
-    private double homesitterExplorer = 0.5;
-    private double loneWolfGroupAnimal = 0.5;
-    private double walkerRunner = 0.5;
-    private double diciplinedRandom = 0.5;
-    private double claustrofobicTreeHugger = 0.5;
-    private double godFearingIrreligious = 0.5;
+    private double fearfulReckless = Math.random();
+    private double peacefulAngry = Math.random();
+    private double frigidNymphomanic = Math.random();
+    private double spartanGlutton = Math.random();
+    private double homesitterExplorer = Math.random();
+    private double loneWolfGroupAnimal = Math.random();
+    private double walkerRunner = Math.random();
+    private double diciplinedRandom = Math.random();
+    private double claustrofobicTreeHugger = Math.random();
+    private double godFearingIrreligious = Math.random();
 
 
     // Derived mental attributes
@@ -133,6 +132,7 @@ public class Creature extends WorldEntity {
         this.god = god;
         this.game = game;
 
+        // Randomize basic attributes
         basicShape = mutator.randomize();
         hair       = mutator.randomize();
         armor      = mutator.randomize();
@@ -140,6 +140,10 @@ public class Creature extends WorldEntity {
         heart      = mutator.randomize();
         stomach    = mutator.randomize();
 
+        // Derive
+        calculateDerivedAttributes();
+
+        // Appearance
         Color color = god != null ? god.getColor() : mutator.randomizeColor();
         appearance = new CreatureAppearance(this, color, mutator);
 
@@ -155,13 +159,13 @@ public class Creature extends WorldEntity {
 
         this.setWorldPos(parent.getWorldPos().x, parent.getWorldPos().y);
 
-        basicShape = mutator.mutate(parent.basicShape, true);
-        hair       = mutator.mutate(parent.hair);
-        armor      = mutator.mutate(parent.armor);
-        spikes     = mutator.mutate(parent.spikes);
-        heart      = mutator.mutate(parent.heart);
-        stomach    = mutator.mutate(parent.stomach);
+        // Mutate basic attributes
+        calculateBasicAttributes(mutator, parent, parent);
 
+        // Derive
+        calculateDerivedAttributes();
+
+        // Appearance
         appearance = new CreatureAppearance(this, parent.getAppearance(), mutator);
 
         setupBehaviors();
@@ -176,19 +180,86 @@ public class Creature extends WorldEntity {
 
         this.setWorldPos(mother.getWorldPos().x, mother.getWorldPos().y);
 
-        basicShape = mutator.mix(mother.basicShape, father.basicShape, true);
-        hair       = mutator.mix(mother.hair, father.hair);
-        armor      = mutator.mix(mother.armor, father.armor);
-        spikes     = mutator.mix(mother.spikes, father.spikes);
-        heart = mutator.mix(mother.heart, father.heart);
-        stomach     = mutator.mix(mother.stomach, father.stomach);
+        // Mutate basic attributes
+        calculateBasicAttributes(mutator, mother, father);
 
+        // Derive
+        calculateDerivedAttributes();
+
+        // Appearance
         appearance = new CreatureAppearance(this, mother.getAppearance(), father.getAppearance(), mutator);
 
         setupBehaviors();
 
         createName(mother);
     }
+
+    private void calculateBasicAttributes(Mutator mutator, Creature mother, Creature father) {
+        // Physical attributes
+        basicShape  = mutator.mix(mother.basicShape, father.basicShape, true);
+        heart       = mutator.mix(mother.heart, father.heart);
+        stomach     = mutator.mix(mother.stomach, father.stomach);
+        hair        = mutator.mix(mother.hair, father.hair);
+        armor       = mutator.mix(mother.armor, father.armor);
+        spikes      = mutator.mix(mother.spikes, father.spikes);
+        eyes        = mutator.mix(mother.eyes, father.eyes);
+        fastMoving  = mutator.mix(mother.fastMoving, father.fastMoving);
+        fastBaby    = mutator.mix(mother.fastBaby, father.fastBaby);
+        fastHealing = mutator.mix(mother.fastHealing, father.fastHealing);
+
+        // Mental attributes
+        fearfulReckless         = mutator.mix(mother.fearfulReckless, father.fearfulReckless);
+        peacefulAngry           = mutator.mix(mother.peacefulAngry, father.peacefulAngry);
+        frigidNymphomanic       = mutator.mix(mother.frigidNymphomanic, father.frigidNymphomanic);
+        spartanGlutton          = mutator.mix(mother.spartanGlutton, father.spartanGlutton);
+        homesitterExplorer      = mutator.mix(mother.homesitterExplorer, father.homesitterExplorer);
+        loneWolfGroupAnimal     = mutator.mix(mother.loneWolfGroupAnimal, father.loneWolfGroupAnimal);
+        walkerRunner            = mutator.mix(mother.walkerRunner, father.walkerRunner);
+        diciplinedRandom        = mutator.mix(mother.diciplinedRandom, father.diciplinedRandom);
+        claustrofobicTreeHugger = mutator.mix(mother.claustrofobicTreeHugger, father.claustrofobicTreeHugger);
+        godFearingIrreligious   = mutator.mix(mother.godFearingIrreligious, father.godFearingIrreligious);
+
+    }
+
+    private void calculateDerivedAttributes() {
+        // Derived physical attributes
+        mass = 20;
+        mass += mix(heart, 10, 40);
+        mass += mix(stomach, 20, 50);
+        mass += mix(armor, 0, 100);
+        mass += mix(spikes, 0, 20);
+
+        basicEnergyUsagePerSecond = 0.3;
+        basicEnergyUsagePerSecond += mix(eyes, 0, 0.5);
+        basicEnergyUsagePerSecond += mix(fastMoving, 0, 0.5);
+        basicEnergyUsagePerSecond += ENERGY_CONSUMPTION_PER_KG_PER_SECOND * mass;
+
+        maxHealth = mix(heart, 50, 150);
+        maxEnergy = mix(stomach, 50, 150);
+
+        healPerSecond                = BASIC_HEALING_PER_SECOND * mix(fastHealing, 0.5, 5);
+        woundedEnergyUsagePerSecond  = mix(fastHealing, 0.25, 10);
+
+        pregnantEnergyUsagePerSecond = mix(fastBaby, 5, 0.5);
+        babyDevelopmentTime = BASIC_BABY_DEVELOPMENT_TIME *  mix(fastBaby, 0.25, 10);
+
+        movementEnergyUsagePerSecond = mix(fastMoving, 0.5, 5);
+        maxMovementSpeedPerSecond = BASIC_MOVEMENT_SPEED_PER_SECOND * mix(fastMoving, 0.25, 10) * (100.0 / mass);
+
+        eatingSpeedEnergyPerSecond = mix(stomach, 20, 80); // TODO: Could make similar eating speed vs absorbed energy tradeoff as above
+        maxEatingDistance = mix(fastMoving, 40, 100);
+
+        sightRange = mix(eyes, 100, 500);
+
+        maxAgeSeconds = BASIC_LIFE_LENGTH_SECONDS * (100.0 / mass); // Fat people live shorter :P
+
+        energyReleasedOnDeath = maxEnergy * 0.5;
+
+        // Derived mental attributes
+        minDistanceToOthers = mix(loneWolfGroupAnimal, 300, 40);
+        maxDistanceToGodTarget = mix(godFearingIrreligious, 100, 1000);
+    }
+
 
     /**
      * Determine the first name and family name for this troll.
@@ -264,7 +335,7 @@ public class Creature extends WorldEntity {
             public double getImportance(double timeSinceLastAsked) {
                 if (god != null) {
                     double distanceToGodMoveTarget = god.getMoveTarget().dst(getX(), getY());
-                    double distancePull = MathTools.map(distanceToGodMoveTarget, 0.5*maxDistanceToGodTarget, 1.5*maxDistanceToGodTarget, 0, 1);
+                    double distancePull = map(distanceToGodMoveTarget, 0.5 * maxDistanceToGodTarget, 1.5 * maxDistanceToGodTarget, 0, 1);
                     double recencyPull = god.getMoveTargetPull();
                     return distancePull + recencyPull;
                 }
@@ -455,7 +526,7 @@ public class Creature extends WorldEntity {
     }
 
     public double getLength() {
-        return fastLegs;
+        return fastMoving;
     }
 
     public void onCreate(TextureAtlas atlas) {
@@ -491,7 +562,7 @@ public class Creature extends WorldEntity {
             double highestImportance = Double.NEGATIVE_INFINITY;
             Behaviour bestBehaviour = null;
             for (Behaviour behaviour : behaviours) {
-                double importance = MathTools.clampToZeroToOne(behaviour.getImportance(timeSinceBehaviourChecked));
+                double importance = clampToZeroToOne(behaviour.getImportance(timeSinceBehaviourChecked));
                 if (importance > highestImportance) {
                     highestImportance = importance;
                     bestBehaviour = behaviour;
@@ -553,10 +624,9 @@ public class Creature extends WorldEntity {
         // Mating
         if (matingTarget != null && canMate() && distanceTo(matingTarget) < MATING_DISTANCE) {
             mateWith(matingTarget);
-            // EN OSAAA
-            //if (getGod()==Player){
-            //  game.soundService.play(Sounds.KISS);
-            //}
+            if (god != null && god.isPlayerGod()){
+              game.soundService.play(Sounds.KISS);
+            }
         }
 
         // Pregnancy
@@ -573,9 +643,9 @@ public class Creature extends WorldEntity {
         }
 
         // Movement
-        movementSpeedFactor = MathTools.clampToZeroToOne(movementSpeedFactor);
+        movementSpeedFactor = clampToZeroToOne(movementSpeedFactor);
         double currentMovementSpeed = movementSpeedFactor * maxMovementSpeedPerSecond * timeDelta;
-        energyUsagePerSecond += movementSpeedFactor * walkEnergyUsagePerSecond;
+        energyUsagePerSecond += movementSpeedFactor * movementEnergyUsagePerSecond;
         if (energy <= 0) {
             // No energy - move slowly
             currentMovementSpeed *= NO_ENERGY_MOVEMENT_SLOWDOWN;
@@ -603,14 +673,14 @@ public class Creature extends WorldEntity {
      * @return 0 if no health, 1 if full health.
      */
     public double getHealthStatus() {
-        return MathTools.clampToZeroToOne(health / maxHealth);
+        return clampToZeroToOne(health / maxHealth);
     }
 
     /**
      * @return 0 if no energy, 1 if max energy
      */
     public double getEnergyStatus() {
-        return MathTools.clampToZeroToOne(energy / maxEnergy);
+        return clampToZeroToOne(energy / maxEnergy);
     }
 
     /**
@@ -631,14 +701,14 @@ public class Creature extends WorldEntity {
      * @return 0 for just born, 1 for just about to die from old age.
      */
     public double getRelativeAge() {
-        return MathTools.clampToZeroToOne(ageSeconds / maxAgeSeconds);
+        return clampToZeroToOne(ageSeconds / maxAgeSeconds);
     }
 
     /**
      * @return 0 for not booster, 1 for full boost.
      */
     public double matingBoost() {
-        return MathTools.clampToZeroToOne(matingBoostTimeLeft / MATING_BOOST_DURATION_SECONDS);
+        return clampToZeroToOne(matingBoostTimeLeft / MATING_BOOST_DURATION_SECONDS);
     }
 
     /**
@@ -646,7 +716,7 @@ public class Creature extends WorldEntity {
      */
     public double getPregnancyStatus() {
         if (babyDevelopmentTimeLeft <= 0) return 0;
-        else return MathTools.clampToZeroToOne(1.0 - babyDevelopmentTimeLeft / babyDevelopmentTime);
+        else return clampToZeroToOne(1.0 - babyDevelopmentTimeLeft / babyDevelopmentTime);
     }
 
     public void boostMating() {
@@ -688,7 +758,7 @@ public class Creature extends WorldEntity {
      */
     public void damage(float amount) {
         // Armor protects
-        double damageThrough = MathTools.mix(armor, amount, amount * MAX_ARMOR_PROTECTION);
+        double damageThrough = mix(armor, amount, amount * MAX_ARMOR_PROTECTION);
 
         trueDamage(damageThrough);
     }

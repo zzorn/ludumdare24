@@ -12,6 +12,10 @@ public class MathTools {
         return start * (1.0 - t) + end * t;
     }
 
+    public static double mixAndClamp(double t, double start, double end) {
+        return clamp(start * (1.0 - t) + end * t, start, end);
+    }
+
     public static double relPos(double t, double start, double end) {
         if (end == start) return 0.5;
         else return (t - start) / (end - start);
@@ -22,12 +26,23 @@ public class MathTools {
         return mix(r, targetStart, targetEnd);
     }
 
+    public static double mapAndClamp(double t, double sourceStart, double sourceEnd, double targetStart, double targetEnd) {
+        double r = relPos(t, sourceStart, sourceEnd);
+        return clamp(mix(r, targetStart, targetEnd), targetStart, targetEnd);
+    }
+
 
     public static float toDegrees(double angle) {
         return (float)(360.0 * angle / Tau);
     }
 
     public static float clamp(float value, float min, float max) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
+    public static double clamp(double value, double min, double max) {
         if (value < min) return min;
         if (value > max) return max;
         return value;

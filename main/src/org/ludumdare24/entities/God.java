@@ -104,4 +104,8 @@ public class God extends Entity {
     public int getNumberOfFollowers() {
         return numberOfFollowers;
     }
+
+    public boolean isPlayerGod() {
+        return false;
+    }
 }
