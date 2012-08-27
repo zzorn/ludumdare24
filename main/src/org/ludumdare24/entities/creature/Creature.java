@@ -25,9 +25,9 @@ import static org.gameflow.utils.MathTools.*;
 public class Creature extends WorldEntity {
 
     private static final double BASIC_HEALING_PER_SECOND = 3.0;
-    private static final double BASIC_BABY_DEVELOPMENT_TIME = 20.0;
+    private static final double BASIC_BABY_DEVELOPMENT_TIME = 15.0;
     private static final double BASIC_MOVEMENT_SPEED_PER_SECOND = 800.0;
-    private static final double BASIC_LIFE_LENGTH_SECONDS = 90.0;
+    private static final double BASIC_LIFE_LENGTH_SECONDS = 125.0;
 
     private static final double ENERGY_CONSUMPTION_PER_KG_PER_SECOND = 0.02;
     private static final double ENERGY_NEEDED_TO_PRODUCE_ONE_KG = 1;
@@ -43,7 +43,7 @@ public class Creature extends WorldEntity {
     private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
     private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
     private static final double MATURITY_AGE = 0.2;
-    private static final double MATING_DISTANCE = 30;
+    private static final double MATING_DISTANCE = 40;
 
     private final MainGame game;
     private final GameWorld gameWorld;
@@ -85,7 +85,7 @@ public class Creature extends WorldEntity {
     private double maxAgeSeconds = 60;
     private double babyDevelopmentTime = 20;
     private double maxMovementSpeedPerSecond = 1650;
-    private double energyReleasedOnDeath = maxEnergy * 0.2;
+    private double energyReleasedOnDeath = maxEnergy * 0.45;
 
     // Mental attributes
     private double fearfulReckless = Math.random();
@@ -257,7 +257,7 @@ public class Creature extends WorldEntity {
         healPerSecond                = BASIC_HEALING_PER_SECOND * mix(fastHealing, 0.5, 5);
         woundedEnergyUsagePerSecond  = mix(fastHealing, 0.25, 10);
 
-        pregnantEnergyUsagePerSecond = mix(fastBaby, 5, 0.5);
+        pregnantEnergyUsagePerSecond = mix(fastBaby,0.5, 5 );
         babyDevelopmentTime = BASIC_BABY_DEVELOPMENT_TIME *  mix(fastBaby, 5, 0.25);
 
         movementEnergyUsagePerSecond = mix(fastMoving, 0.5, 5);
@@ -478,7 +478,7 @@ public class Creature extends WorldEntity {
                 else {
                     double rageTarget = closestCreature.getRageTargetBoost() * 10.0;
                     double wrongRegionRage = closestCreature.getGod() != god ? 0.4 : 0; // Other god! They must die!
-                    double basicAttitude = peacefulAngry * 0.5;
+                    double basicAttitude = peacefulAngry * 0.3;
                     double ods = getHealthStatus() - closestCreature.getHealthStatus();
                     return rageTarget + (wrongRegionRage + basicAttitude + ods) * getHealthStatus();
                 }

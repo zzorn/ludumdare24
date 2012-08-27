@@ -22,7 +22,7 @@ public class GameWorld {
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
     private final int initialPlayerCreatureCount = 5;
     private final int initialUngodlyCreatureCount = 7;
-    private final int initialTreeCount = 16;
+    private final int initialTreeCount = 20;
 
     private PlayerGod player;
 
