@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import org.gameflow.entity.Entity;
 import org.gameflow.screen.Screen2D;
+import org.ludumdare24.entities.creature.Creature;
 
 /**
  *
@@ -14,11 +15,13 @@ import org.gameflow.screen.Screen2D;
 public class God extends Entity {
 
     private double maxMana = 100;
-    private double mana = 50;
-    private double manaRegenerationPerSecond = 4;
+    private double mana = 100;
+    private double manaRegenerationPerSecond = 5;
     private Vector2 moveTarget = new Vector2();
     private double moveTargetPullTimeLeft = 0;
     private double moveTargetPullTimeSeconds = 10;
+
+    private int numberOfFollowers = 0;
 
     private final String GlowEffectName;
 
@@ -86,5 +89,17 @@ public class God extends Entity {
     public void placeMoveTarget(float x, float y) {
         moveTarget.set(x, y);
         moveTargetPullTimeLeft = moveTargetPullTimeSeconds;
+    }
+
+    public void addFollower(Creature creature) {
+        numberOfFollowers++;
+    }
+
+    public void removeFollower(Creature creature) {
+        numberOfFollowers--;
+    }
+
+    public int getNumberOfFollowers() {
+        return numberOfFollowers;
     }
 }

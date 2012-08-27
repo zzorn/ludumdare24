@@ -14,7 +14,9 @@ import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Sounds;
 import org.ludumdare24.entities.creature.Creature;
+import org.ludumdare24.screens.GameOverScreen;
 import org.ludumdare24.screens.MainMenuScreen;
+import org.ludumdare24.screens.WinScreen;
 import org.ludumdare24.world.FoodType;
 
 /**
@@ -23,15 +25,24 @@ import org.ludumdare24.world.FoodType;
 public class PlayerGod extends God {
 
     private Label manaLabel;
+    private Label followerLabel;
 
     private Tool currentTool;
     private Creature selectedCreature=null;
+    private Creature observedCreature=null;
 
     private ParticleEffect cursorEffect=null;
     private ParticleEffect toolEffect=null;
     private TextureAtlas atlas;
 
     private final MainGame game;
+    private Table observationTable;
+    private Label observedNameLabel;
+    private Label observedHealthLabel;
+    private Label observedEnergyLabel;
+    private Label observedArmorLabel;
+    private Label observedAttackLabel;
+    private Label observedBabyLabel;
 
     public PlayerGod(MainGame game) {
         super("particles/ownGlow.particles", new Color(0.2f, 0.5f, 0.8f, 1f));
@@ -51,22 +62,59 @@ public class PlayerGod extends God {
         Table hud = new Table();
         hud.setFillParent(true);
 
-        hud.add(screen2D.createButton("Menu", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-                game.soundService.play(Sounds.UI_ACCEPT);
-            }
-        })).expand().top().left();
-
-
         // Mana gauge
         Table manaTable = new Table();
         manaTable.add(new Image(atlas.findRegion("manaStar")) );
         manaLabel = new Label("Mana", screen2D.getSkin());
         manaTable.add(manaLabel);
-        hud.add(manaTable).expand().top().right();
+        hud.add(manaTable).expand().top().left();
+
+        // Follower count
+        Table followerTable = new Table();
+        followerTable.add(new Image(atlas.findRegion("troll_icon")) );
+        followerLabel = new Label("Trolls", screen2D.getSkin());
+        followerTable.add(followerLabel);
+        hud.add(followerTable).expand().top();
+
+        // Menu button
+        hud.add(screen2D.createButton("Menu", new ClickListener() {
+            public void click(Actor actor, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+                game.soundService.play(Sounds.UI_ACCEPT);
+            }
+        })).expand().top().right();
 
         hud.row();
+
+
+        // Labels used to show info about an observed troll
+        observedNameLabel = new Label("Igor Trollowitch", screen2D.getSkin());
+        observedHealthLabel = new Label("Health: 51", screen2D.getSkin());
+        observedEnergyLabel = new Label("Energy: 43", screen2D.getSkin());
+        observedArmorLabel = new Label("Armor: 13", screen2D.getSkin());
+        observedAttackLabel = new Label("Attack: 54", screen2D.getSkin());
+        observedBabyLabel = new Label("Baby due in: 5", screen2D.getSkin());
+
+        // Table to show the observations in
+        observationTable = new Table();
+        observationTable.add(observedNameLabel).left();
+        observationTable.row();
+        observationTable.add(observedHealthLabel).left();
+        observationTable.row();
+        observationTable.add(observedEnergyLabel).left();
+        observationTable.row();
+        observationTable.add(observedArmorLabel).left();
+        observationTable.row();
+        observationTable.add(observedAttackLabel).left();
+        observationTable.row();
+        observationTable.add(observedBabyLabel).left();
+        observationTable.row();
+        hud.add(observationTable).left().expandY().colspan(3);
+        hud.row();
+
+        // Hide initially
+        observationTable.visible = false;
+
 
         // Action buttons
         Table buttons = new Table();
@@ -139,6 +187,7 @@ public class PlayerGod extends God {
     }
 
     private void changeTool(Tool tool) {
+        observedCreature = null;
         currentTool = tool;
         if (currentTool != null) {
             /*
@@ -200,7 +249,6 @@ public class PlayerGod extends God {
                             if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                                 if (closestCreature != null) {
                                     selectedCreature =closestCreature ;
-                                    System.out.println("Ha Haa!  I smite you, creature "+closestCreature+" at " + x + ", " + y);
                                     closestCreature.damage(1000);
                                     changeMana(-Tool.SMITE.getManaCost());
                                     toolEffect.load(Gdx.files.internal("particles/smite.particle"), atlas);
@@ -214,10 +262,10 @@ public class PlayerGod extends God {
                         break;
 
                     case LOVE:
+                        closestCreature = game.getGameWorld().getClosestCreatureOfGod(x, y, this);
                         if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                             if (closestCreature != null) {
                                 selectedCreature = closestCreature ;
-                                System.out.println("I want you to fall in love "+closestCreature+" at " + x + ", " + y);
                                 changeMana(-Tool.LOVE.getManaCost());
                                 //TODO boost falling in love
                                 toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
@@ -228,9 +276,7 @@ public class PlayerGod extends God {
                         break;
 
                     case MOVE:
-                        System.out.println("Go here"+closestCreature+" at " + x + ", " + y);
                         changeMana(-Tool.MOVE.getManaCost());
-
 
                         toolEffect.load(Gdx.files.internal("particles/move.particle"), atlas);
                         toolEffect.start();
@@ -243,7 +289,6 @@ public class PlayerGod extends God {
                         if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
                             if (closestCreature != null) {
                                 selectedCreature = closestCreature ;
-                                System.out.println("ATTACK THIS TROLL"+closestCreature+" at " + x + ", " + y);
                                 changeMana(-Tool.RAGE.getManaCost());
                                 //TODO get nearby creatures to attack this creature
                                 toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
@@ -253,7 +298,6 @@ public class PlayerGod extends God {
                         }
                         break;
                     case FEED:
-                        System.out.println("Here you have food"+closestCreature+" at " + x + ", " + y);
                         changeMana(-Tool.FEED.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/empty.particle"), atlas);
                         toolEffect.start();
@@ -261,12 +305,11 @@ public class PlayerGod extends God {
                         break;
 
                     case WATCH:
-                        selectedCreature =closestCreature;
-                        System.out.println("Tell me about yourself"+closestCreature+" at " + x + ", " + y);
+                        observedCreature = game.getGameWorld().getClosestCreatureOfGod(x, y, this);
+                        selectedCreature = observedCreature;
                         changeMana(-Tool.WATCH.getManaCost());
                         toolEffect.load(Gdx.files.internal("particles/watchSelect.particle"), atlas);
                         toolEffect.start();
-                        //TODO observe this creature
                         break;
                     default :
                         break;
@@ -284,11 +327,43 @@ public class PlayerGod extends God {
         // Show mana
         manaLabel.setText("Mana " + (int)getMana());
 
+        // Show followers
+        int numberOfAllTrolls = game.getGameWorld().getNumberOfCreatures();
+        followerLabel.setText("Trolls " + getNumberOfFollowers() + "/" + numberOfAllTrolls);
+
+        // Show observation data if needed
+        if (observedCreature != null) {
+            observationTable.visible = true;
+            observedNameLabel.setText(observedCreature.getName());
+            if (observedCreature.isDead()) {
+                observedHealthLabel.setText("Died, R.I.P");
+                observedEnergyLabel.setText("");
+                observedArmorLabel.setText("");
+                observedAttackLabel.setText("");
+                observedBabyLabel.setText("");
+            }
+            else {
+                observedHealthLabel.setText("Health " + (int) observedCreature.getHealth() + " (" + (int) (100*observedCreature.getHealthStatus()) + "%)");
+                observedEnergyLabel.setText("Energy " + (int) observedCreature.getEnergy() + " (" + (int) (100*observedCreature.getEnergyStatus()) + "%)");
+                observedArmorLabel.setText("Armor " + (int) observedCreature.getArmor());
+                observedAttackLabel.setText("Attack " + (int) observedCreature.getSpikes());
+                if (observedCreature.isPregnant()) {
+                    observedBabyLabel.setText("Baby due in " + (int) observedCreature.getBabyDevelopmentTimeLeft());
+                }
+                else {
+                    observedBabyLabel.setText("Age " + (int) observedCreature.getAgeSeconds());
+                }
+            }
+        }
+        else {
+            observationTable.visible = false;
+        }
+
+        // Effects
         if (cursorEffect != null){
             cursorEffect.setPosition(Gdx.input.getX(), (Gdx.graphics.getHeight()-Gdx.input.getY()));
             cursorEffect.update(timeDelta);
         }
-
 
         if (toolEffect != null) {
             if (selectedCreature != null){
@@ -296,10 +371,14 @@ public class PlayerGod extends God {
             }
             toolEffect.update(timeDelta );
         }
-        // listen for presses
-        //Gdx.input.
 
-
+        // Check win / loose conditions
+        if (getNumberOfFollowers() >= numberOfAllTrolls) {
+            game.setScreen(new WinScreen(game));
+        }
+        else if (getNumberOfFollowers() <= 0) {
+            game.setScreen(new GameOverScreen(game));
+        }
     }
 
     public void topLayerRender(TextureAtlas atlas, SpriteBatch spriteBatch) {
@@ -321,4 +400,6 @@ public class PlayerGod extends God {
         }
         */
     }
+
+
 }

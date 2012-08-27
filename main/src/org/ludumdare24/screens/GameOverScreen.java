@@ -36,9 +36,9 @@ public class GameOverScreen extends Screen2D {
         Table table = new Table(getSkin());
 
 
-        table.add(new Label("GAME OWER", getSkin())).padBottom(30);
+        table.add(new Label("Game Over", getSkin())).padBottom(30);
         table.row();
-        table.add(new Label("All your trolls died", getSkin())).left().padBottom(30);;
+        table.add(new Label("All your trolls died.", getSkin())).left().padBottom(30);;
         table.row();
      ;
 
@@ -49,6 +49,8 @@ public class GameOverScreen extends Screen2D {
         table.row();
         table.add(createButton("Main Menu", new ClickListener() {
             public void click(Actor actor, float x, float y) {
+                // Clear the game world so we can't resume it.
+                game.clearGameWorld();
                 game.setScreen(new MainMenuScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);
             }

@@ -19,9 +19,9 @@ public class GameWorld {
 
     private static final int FOOD_SPREAD = 15;
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
-    private final int initialPlayerCreatureCount = 6;
-    private final int initialUngodlyCreatureCount =6;
-    private final int initialTreeCount = 14;
+    private final int initialPlayerCreatureCount = 5;
+    private final int initialUngodlyCreatureCount = 7;
+    private final int initialTreeCount = 16;
 
     private PlayerGod player;
 
@@ -41,24 +41,32 @@ public class GameWorld {
         // Create player
         player = new PlayerGod(game);
 
-
-
         createTribe(400, 200, player, initialPlayerCreatureCount);
-        createTribe(1000, 200, null, initialUngodlyCreatureCount);
-        createTribe(0, -200, null, initialUngodlyCreatureCount);
-        createTribe(400, -150, null, initialUngodlyCreatureCount);
-        createTribe(200, 600, null, initialUngodlyCreatureCount);
+
+        createEnemyTribes();
 
 
         // Create some trees
         for (int i = 0; i < initialTreeCount; i++) {
             AppleTree tree = new AppleTree(this, random);
-            tree.setWorldPos(random.nextFloat() * 1000, random.nextFloat() * 1000);
+            tree.setWorldPos(random.nextFloat() * 1100, random.nextFloat() * 800);
             appleTrees.add(tree);
         }
     }
 
-    private void createTribe(int x, int y, God god, int tribeSize) {
+    public void createEnemyTribes() {
+        float cx = 400;
+        float cy = 220;
+
+        float d = 2.8f;
+
+        createTribe(cx, cy + cy*d, null, initialUngodlyCreatureCount);
+        createTribe(cx, cy - cy*d, null, initialUngodlyCreatureCount);
+        createTribe(cx + cx*d, cy, null, initialUngodlyCreatureCount);
+        createTribe(cx - cx*d, cy, null, initialUngodlyCreatureCount);
+    }
+
+    private void createTribe(float x, float y, God god, int tribeSize) {
 
         // Place move target
         if (god != null) god.placeMoveTarget(x, y);
@@ -82,11 +90,16 @@ public class GameWorld {
             creature = new Creature(this, god, mutator);
         }
 
-        float x2 = x + (float)(random.nextGaussian() * 10);
-        float y2 = y + (float )(random.nextGaussian() * 10);
+        float x2 = x + (float)(random.nextGaussian() * 50);
+        float y2 = y + (float )(random.nextGaussian() * 35);
         creature.setWorldPos(x2, y2);
 
         addEntity(creature);
+
+        // Count creature for god
+        if (god != null) {
+            god.addFollower(creature);
+        }
 
         return creature;
     }
@@ -162,6 +175,22 @@ public class GameWorld {
         return (Creature) findClosestEntity(x, y, null, creatures);
     }
 
+    public Creature getClosestCreatureOfGod(float x, float y, God god) {
+        float closestDistance = Float.POSITIVE_INFINITY;
+        Creature closestEntity = null;
+        for (Creature entity : creatures) {
+            if (entity.getGod() == god) {
+                Vector2 worldPos = entity.getWorldPos();
+                float distance = MathTools.distanceSquared(worldPos.x, worldPos.y, x, y);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestEntity = entity;
+                }
+            }
+        }
+        return closestEntity;
+    }
+
     public Creature getClosestCreature(float x, float y, Creature exceptThis, float withinDistance) {
         return (Creature) findClosestEntity(x, y, exceptThis, creatures, withinDistance);
     }
@@ -210,9 +239,7 @@ public class GameWorld {
     public void removeEntity(Entity entity) {
         if (!entitiesToRemove.contains(entity, true)) {
             entitiesToRemove.add(entity);
-            System.out.println("Creatures left" + creatures.size );
         }
-
     }
 
     public void addEntity(Entity entity) {
@@ -227,6 +254,10 @@ public class GameWorld {
         worldListeners.removeValue(value, true);
     }
 
+    public int getNumberOfCreatures() {
+        return creatures.size;
+    }
+
     private void notifyEntityAdded(Entity entity) {
         for (WorldListener worldListener : worldListeners) {
             worldListener.onEntityCreated(entity);
@@ -238,7 +269,6 @@ public class GameWorld {
             worldListener.onEntityRemoved(entity);
         }
     }
-
 
     public Random getRandom() {
         return random;

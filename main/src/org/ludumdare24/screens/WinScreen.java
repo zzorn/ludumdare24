@@ -37,17 +37,18 @@ public class WinScreen extends Screen2D {
         Table table = new Table(getSkin());
 
 
-        table.add(new Label("YOU WIN", getSkin())).padBottom(30);
+        table.add(new Label("You Win!", getSkin())).padBottom(30);
         table.row();
-        table.add(new Label("you can continue in the current world", getSkin())).left();
-        table.row();
-        table.add(new Label("pressing resume", getSkin())).left().padBottom(10);
 
+        table.add(new Label("Your trolls are the only ones left alive!", getSkin())).left();
         table.row();
 
 
-        table.add(createButton("Resume game", new ClickListener() {
+        table.add(createButton("Continue playing", new ClickListener() {
             public void click(Actor actor, float x, float y) {
+                // Add some more enemies to play against
+                game.getGameWorld().createEnemyTribes();
+
                 game.setScreen(new GameScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);
             }
@@ -57,6 +58,8 @@ public class WinScreen extends Screen2D {
         table.row();
         table.add(createButton("Main Menu", new ClickListener() {
             public void click(Actor actor, float x, float y) {
+                // Clear the game world so we can't resume it.
+                game.clearGameWorld();
                 game.setScreen(new MainMenuScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);
             }

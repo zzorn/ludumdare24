@@ -23,8 +23,8 @@ public class Creature extends WorldEntity {
     private static final double MATING_BOOST_DURATION_SECONDS = 20;
     private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
 
-    private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 20.0;
-    private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 20.0;
+    private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 10.0;
+    private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
     private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
     private static final double MATURITY_AGE = 0.2;
     private static final double MATING_DISTANCE = 30;
@@ -43,10 +43,10 @@ public class Creature extends WorldEntity {
 
     private double maxHealth = 100;
     private double health = 100;
-    private double healPerSecond = 1;
+    private double healPerSecond = 5;
 
-    private double maxEnergy = 100+100*Math.random();
-    private double energy = 100;
+    private double maxEnergy = 100+50*Math.random();
+    private double energy = maxEnergy / 2;
     private double basicEnergyUsagePerSecond = 2;
     private double pregnantEnergyUsagePerSecond = 2;
     private double woundedEnergyUsagePerSecond = 2;
@@ -54,7 +54,7 @@ public class Creature extends WorldEntity {
 
     private double eatingSpeedEnergyPerSecond = 50;
     private double maxEatingDistance = 60;
-    private double minDistanceToOthers = 20;
+    private double minDistanceToOthers = 60;
     private double sightRange = 300;
 
     private double ageSeconds = 0;
@@ -73,7 +73,7 @@ public class Creature extends WorldEntity {
 
     private Vector2 movementDirection = new Vector2();
     private double movementSpeedFactor = 0.5;
-    private double maxMovementSpeedPerSecond = 2000;
+    private double maxMovementSpeedPerSecond = 1650;
 
     private double maxDistanceToGodTarget = 300;
 
@@ -83,6 +83,8 @@ public class Creature extends WorldEntity {
     private Creature closestCreature = null;
     private Creature matingTarget = null;
     private AppleTree closestAppleTree = null;
+    private String firstName;
+    private String familyName;
 
     public Creature(GameWorld gameWorld, God god, Mutator mutator) {
         this.gameWorld = gameWorld;
@@ -99,6 +101,8 @@ public class Creature extends WorldEntity {
         appearance = new CreatureAppearance(this, color, mutator);
 
         setupBehaviors();
+
+        createName(null);
     }
 
     public Creature(GameWorld gameWorld, Mutator mutator, Creature parent) {
@@ -117,6 +121,8 @@ public class Creature extends WorldEntity {
         appearance = new CreatureAppearance(this, parent.getAppearance(), mutator);
 
         setupBehaviors();
+
+        createName(parent);
     }
 
     public Creature(GameWorld gameWorld, Mutator mutator, Creature mother, Creature father) {
@@ -135,6 +141,61 @@ public class Creature extends WorldEntity {
         appearance = new CreatureAppearance(this, mother.getAppearance(), father.getAppearance(), mutator);
 
         setupBehaviors();
+
+        createName(mother);
+    }
+
+    /**
+     * Determine the first name and family name for this troll.
+     * @param mother the mother of the troll, or null if this troll has no mother.
+     */
+    private void createName(Creature mother) {
+        // Create first name
+        firstName = createFirstName();
+
+        if (mother == null) {
+            // No mother, create new family name
+            familyName = createFamilyName();
+        }
+        else {
+            if (Math.random() < 0.5) {
+                // Use mothers family name
+                familyName = mother.getFamilyName();
+            }
+            else if (Math.random() < 0.5) {
+                // Use mothers first name as family name
+                familyName = mother.getFirstName() + randomString("son", "dottir","");
+            }
+            else {
+                // Create new family name
+                familyName = createFamilyName();
+            }
+        }
+    }
+
+    /**
+     * @return a first name for this troll.
+     */
+    private String createFirstName() {
+        return randomString("Tryg", "Un", "Bur", "Hur", "Lur", "Mur", "Nir", "Gar", "Bal", "Bar", "Tur", "Mun") +
+               randomString("am", "um", "ul", "uk", "ul", "", "", "", "")+
+               randomString("dir", "dir", "dik", "dil", "bar", "mur", "ko", "ro", "do", "go", "", "");
+    }
+
+    /**
+     * @return a new family name for this troll.
+     */
+    private String createFamilyName() {
+        return randomString("Stone", "Cave", "Tree", "Boulder", "Hill", "Mound", "Grave", "Valley", "Root", "Un", "Buk", "Ruk") +
+               randomString("hollow", "root", "nest", "home", "shade", "side", "rest", "brock", "rak", "digger", "lifter", "roller", "", "", "", "");
+    }
+
+    /**
+     * @return a random string from the strings passed in.
+     */
+    private String randomString(String ... strings) {
+        int i = (int) ((strings.length - 1) * Math.random());
+        return strings[i];
     }
 
     private void setupBehaviors() {
@@ -400,7 +461,7 @@ public class Creature extends WorldEntity {
                 currentBehaviour = bestBehaviour;
 
                 if (currentBehaviour != null) {
-                    System.out.println("currentBehaviour = " + currentBehaviour.getName());
+                    //System.out.println("currentBehaviour = " + currentBehaviour.getName());
                     currentBehaviour.onActivated(highestImportance);
                     timeUntilBehaviourReactivation = currentBehaviour.getReActivationTime() * (0.5 + Math.random());
                 }
@@ -438,7 +499,7 @@ public class Creature extends WorldEntity {
             energyUsagePerSecond += woundedEnergyUsagePerSecond;
 
             // Heal if energy
-            if (energy > maxEnergy) {
+            if (energy > 0) {
                 health += healPerSecond * timeDelta;
                 if (health > maxHealth) health = maxHealth;
             }
@@ -457,14 +518,7 @@ public class Creature extends WorldEntity {
             if (energy > 0) {
                 babyDevelopmentTimeLeft -= timeDelta;
                 if (babyDevelopmentTimeLeft <= 0) {
-                    // Birth!
-                    Vector2 worldPos = getWorldPos();
-                    baby.setWorldPos(
-                            worldPos.x + 10 * (float) (Math.random() * 2 - 1),
-                            worldPos.y + 10 * (float) (Math.random() * 2 - 1));
-                    gameWorld.addEntity(baby);
-                    baby = null;
-                    babyDevelopmentTimeLeft = 0;
+                    childBirth();
                 }
             }
         }
@@ -600,11 +654,73 @@ public class Creature extends WorldEntity {
 
         // Check if dies
         if (health <= 0) {
-            // Dead, remove from game
-            gameWorld.removeEntity(this);
-
-            // Spawn some meat there, depending on body size
-            gameWorld.spawnFood(FoodType.MEAT, getX(), getY(), energyReleasedOnDeath);
+            die();
         }
+    }
+
+    private void childBirth() {
+        // Birth!
+        Vector2 worldPos = getWorldPos();
+        baby.setWorldPos(
+                worldPos.x + 10 * (float) (Math.random() * 2 - 1),
+                worldPos.y + 10 * (float) (Math.random() * 2 - 1));
+        gameWorld.addEntity(baby);
+
+        // Baby follows mother in worship
+        if (god != null) god.addFollower(baby);
+
+        baby = null;
+        babyDevelopmentTimeLeft = 0;
+    }
+
+    private void die() {
+        // Decrease followers for god
+        if (god != null) god.removeFollower(this);
+
+        // Dead, remove from game
+        gameWorld.removeEntity(this);
+
+        // Spawn some meat there, depending on body size
+        gameWorld.spawnFood(FoodType.MEAT, getX(), getY(), energyReleasedOnDeath);
+    }
+
+    public String getName() {
+        return getFirstName() + " " + getFamilyName();
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public double getMaxHealth() {
+        return maxHealth;
+    }
+
+    public double getEnergy() {
+        return energy;
+    }
+
+    public double getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    public double getBabyDevelopmentTimeLeft() {
+        return babyDevelopmentTimeLeft;
+    }
+
+    public boolean isDead() {
+        return health <= 0;
+    }
+
+    public double getAgeSeconds() {
+        return ageSeconds;
     }
 }
