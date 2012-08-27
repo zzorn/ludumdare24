@@ -258,7 +258,7 @@ public class Creature extends WorldEntity {
         woundedEnergyUsagePerSecond  = mix(fastHealing, 0.25, 10);
 
         pregnantEnergyUsagePerSecond = mix(fastBaby, 5, 0.5);
-        babyDevelopmentTime = BASIC_BABY_DEVELOPMENT_TIME *  mix(fastBaby, 0.25, 10);
+        babyDevelopmentTime = BASIC_BABY_DEVELOPMENT_TIME *  mix(fastBaby, 5, 0.25);
 
         movementEnergyUsagePerSecond = mix(fastMoving, 0.5, 5);
         maxMovementSpeedPerSecond = BASIC_MOVEMENT_SPEED_PER_SECOND * mix(fastMoving, 0.25, 10) * (100.0 / mass);
