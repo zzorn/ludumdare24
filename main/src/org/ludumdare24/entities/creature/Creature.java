@@ -372,13 +372,31 @@ public class Creature extends WorldEntity {
         behaviours.add(new Behaviour("Looking for some love!", this, 5) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
-                if (!canMate()) return 0;
-                else return getMatingBoost() + getEnergyStatus();
+                if (!canMate() || closestCreature == null) return 0;
+                else {
+                    double attractiveness = 0;
+
+                    // Similarity
+                    attractiveness += closestCreature.getAppearance().similarity(getAppearance()) * 2;
+
+                    // General willingness
+                    attractiveness += frigidNymphomanic;
+
+                    // Mating boost
+                    attractiveness += getMatingBoost() * 4;
+
+                    // Energy
+                    attractiveness += getEnergyStatus();
+
+                    // Other party doing well
+                    attractiveness += closestCreature.getEnergyStatus();
+
+                    return attractiveness / 5;
+                }
             }
 
             @Override
             public void onActivated(double activationImportance) {
-                // TODO: Check suitability?
                 if (closestCreature != null) {
                     matingTarget = closestCreature;
                     moveTowards(closestCreature.getWorldPos(), 0.5);

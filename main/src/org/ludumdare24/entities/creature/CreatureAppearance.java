@@ -18,6 +18,8 @@ public class CreatureAppearance {
     private static final int BODY_IMAGE_SIZE = 64;
     private static final float OBSERVATION_SCALING_FACTOR = 3.0f;
 
+    private static final float ADJUST_DAMPENING = 0.8f;
+
     private final Creature creature;
 
     private float scale = 0.5f;
@@ -95,12 +97,12 @@ public class CreatureAppearance {
         baseHue = mutator.mutate(mother.baseHue, true);
         baseSat = mutator.mutate(mother.baseSat);
         baseLum = mutator.mutate(mother.baseLum);
-        armorHueAdjust = mutator.mutate(mother.armorHueAdjust, true);
-        armorSatAdjust = mutator.mutate(mother.armorSatAdjust, false, true);
-        armorLumAdjust = mutator.mutate(mother.armorLumAdjust, false, true);
-        hairHueAdjust = mutator.mutate(mother.hairHueAdjust, true);
-        hairSatAdjust = mutator.mutate(mother.hairSatAdjust, false, true);
-        hairLumAdjust = mutator.mutate(mother.hairLumAdjust, false, true);
+        armorHueAdjust = mutator.mutate(mother.armorHueAdjust, true) * ADJUST_DAMPENING;
+        armorSatAdjust = mutator.mutate(mother.armorSatAdjust, false, true) * ADJUST_DAMPENING;
+        armorLumAdjust = mutator.mutate(mother.armorLumAdjust, false, true) * ADJUST_DAMPENING;
+        hairHueAdjust = mutator.mutate(mother.hairHueAdjust, true) * ADJUST_DAMPENING;
+        hairSatAdjust = mutator.mutate(mother.hairSatAdjust, false, true) * ADJUST_DAMPENING;
+        hairLumAdjust = mutator.mutate(mother.hairLumAdjust, false, true) * ADJUST_DAMPENING;
         spikeLum = mutator.mutate(mother.spikeLum);
 
         buildColors();
@@ -117,15 +119,47 @@ public class CreatureAppearance {
         baseHue = mutator.mix(mother.baseHue, father.baseHue, true);
         baseSat = mutator.mix(mother.baseSat, father.baseSat);
         baseLum = mutator.mix(mother.baseLum, father.baseLum);
-        armorHueAdjust = mutator.mix(mother.armorHueAdjust, father.armorHueAdjust, true);
-        armorSatAdjust = mutator.mix(mother.armorSatAdjust, father.armorSatAdjust, false, true);
-        armorLumAdjust = mutator.mix(mother.armorLumAdjust, father.armorLumAdjust, false, true);
-        hairHueAdjust = mutator.mix(mother.hairHueAdjust, father.hairHueAdjust, true);
-        hairSatAdjust = mutator.mix(mother.hairSatAdjust, father.hairSatAdjust, false, true);
-        hairLumAdjust = mutator.mix(mother.hairLumAdjust, father.hairLumAdjust, false, true);
+        armorHueAdjust = mutator.mix(mother.armorHueAdjust, father.armorHueAdjust, true) * ADJUST_DAMPENING;
+        armorSatAdjust = mutator.mix(mother.armorSatAdjust, father.armorSatAdjust, false, true) * ADJUST_DAMPENING;
+        armorLumAdjust = mutator.mix(mother.armorLumAdjust, father.armorLumAdjust, false, true) * ADJUST_DAMPENING;
+        hairHueAdjust = mutator.mix(mother.hairHueAdjust, father.hairHueAdjust, true) * ADJUST_DAMPENING;
+        hairSatAdjust = mutator.mix(mother.hairSatAdjust, father.hairSatAdjust, false, true) * ADJUST_DAMPENING;
+        hairLumAdjust = mutator.mix(mother.hairLumAdjust, father.hairLumAdjust, false, true) * ADJUST_DAMPENING;
         spikeLum = mutator.mix(mother.spikeLum, father.spikeLum);
 
         buildColors();
+    }
+
+    /**
+     * @return 0 not very similar at all, 1 very similar.
+     */
+    public double similarity(CreatureAppearance other) {
+        return MathTools.clampToZeroToOne(
+               hueSimilarity(baseHue, other.baseHue) *
+               valueSimilarity(baseSat, other.baseSat) *
+               valueSimilarity(baseLum , other.baseLum) *
+               hueSimilarity(armorHueAdjust, other.armorHueAdjust) *
+               valueSimilarity(armorSatAdjust , other.armorSatAdjust) *
+               valueSimilarity(armorLumAdjust , other.armorLumAdjust) *
+               hueSimilarity(hairHueAdjust , other.hairHueAdjust) *
+               valueSimilarity(hairSatAdjust , other.hairSatAdjust) *
+               valueSimilarity(hairLumAdjust , other.hairLumAdjust) *
+               valueSimilarity(spikeLum , other.spikeLum) *
+               valueSimilarity(spikeLum , other.spikeLum) *
+               valueSimilarity(hair , other.hair) *
+               valueSimilarity(armor , other.armor) *
+               valueSimilarity(spikes , other.spikes) *
+               valueSimilarity(fatness , other.fatness) *
+               valueSimilarity(length , other.length));
+
+    }
+
+    private double valueSimilarity(double a, double b) {
+        return 1.5 - Math.abs(b - a);
+    }
+
+    private double hueSimilarity(double a, double b) {
+        return 1.5 - Math.min(Math.abs(b - a), Math.abs(b - (a+1)));
     }
 
     private void initCreatureProperties(Creature creature) {

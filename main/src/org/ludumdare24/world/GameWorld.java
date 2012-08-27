@@ -30,6 +30,8 @@ public class GameWorld {
     private Array<AppleTree> appleTrees = new Array<AppleTree>();
     private Array<FoodEntity> foodEntities = new Array<FoodEntity>();
 
+    private TileMap tileMap;
+
     private Array<Entity> entitiesToRemove = new Array<Entity>();
     private Array<Entity> entitiesToAdd = new Array<Entity>();
 
@@ -53,6 +55,9 @@ public class GameWorld {
             tree.setWorldPos(random.nextFloat() * 1100, random.nextFloat() * 800);
             appleTrees.add(tree);
         }
+
+        // Create tile map
+        tileMap = new TileMap();
     }
 
     public void createEnemyTribes(MainGame game) {
@@ -144,6 +149,9 @@ public class GameWorld {
         for (AppleTree appleTree : appleTrees) {
             gameScreen.addEntity(appleTree);
         }
+
+        // Add tilemap
+        gameScreen.addEntity(tileMap);
     }
 
     public void update(float durationSeconds) {
