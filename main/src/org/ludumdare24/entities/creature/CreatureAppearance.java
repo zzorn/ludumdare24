@@ -45,8 +45,7 @@ public class CreatureAppearance {
     private CreaturePart leftEye;
     private CreaturePart rightEye;
 
-    private double armWaveSpeed = 1.5 * Math.random();
-    private double armWaveSize = 0.5 * Math.random();
+    private double armWaveOffset = 10 * Math.random();
 
     private double totalTime = 0;
 
@@ -189,9 +188,17 @@ public class CreatureAppearance {
     }
 
     public void onUpdate(float timeDelta) {
+        // Behavior
+        double waveSpeed = 0;
+        waveSpeed += creature.isAttacking() ? 4 : 0;
+        waveSpeed += creature.getMovementSpeedFactor();
+
+        double waveSize = creature.getEnergyStatus() * creature.getMovementSpeedFactor();
+        waveSize += creature.isAttacking() ? 0.5 : 0;
+
         // Flap your arms if you are a crazy creature
         totalTime += timeDelta;
-        double armPos = (Math.sin(totalTime * armWaveSpeed * MathTools.Tau) * 0.5 + 0.5) * armWaveSize;
+        double armPos = (Math.sin(armWaveOffset + totalTime * waveSpeed * MathTools.Tau) * 0.5 + 0.5) * MathTools.clampToZeroToOne(waveSize);
         double armAngle = MathTools.mix(armPos, (0.25 + 0.75) * MathTools.Tau, (0.25 + 0.35) * MathTools.Tau);
         leftArm.setAngle(armAngle);
         rightArm.setAngle(MathTools.Tau - armAngle);

@@ -26,15 +26,18 @@ public class Creature extends WorldEntity {
 
     private static final double BASIC_HEALING_PER_SECOND = 3.0;
     private static final double BASIC_BABY_DEVELOPMENT_TIME = 20.0;
-    private static final double BASIC_MOVEMENT_SPEED_PER_SECOND = 1400.0;
-    private static final double BASIC_LIFE_LENGTH_SECONDS = 60.0;
+    private static final double BASIC_MOVEMENT_SPEED_PER_SECOND = 800.0;
+    private static final double BASIC_LIFE_LENGTH_SECONDS = 90.0;
 
     private static final double ENERGY_CONSUMPTION_PER_KG_PER_SECOND = 0.02;
     private static final double ENERGY_NEEDED_TO_PRODUCE_ONE_KG = 1;
 
     private static final double MAX_ARMOR_PROTECTION = 0.5;
     private static final double MATING_BOOST_DURATION_SECONDS = 20;
+    private static final double RAGE_TARGET_BOOST_DURATION_SECONDS = 20;
     private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
+
+    private static final double ATTACK_RANGE = 50.0;
 
     private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 10.0;
     private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
@@ -74,6 +77,8 @@ public class Creature extends WorldEntity {
     private double pregnantEnergyUsagePerSecond = 2;
     private double woundedEnergyUsagePerSecond = 2;
     private double movementEnergyUsagePerSecond = 2;
+    private double attackEnergyUsagePerSecond = 2;
+    private double attackDamagePerSecond = 2;
     private double eatingSpeedEnergyPerSecond = 50;
     private double maxEatingDistance = 60;
     private double sightRange = 300;
@@ -105,9 +110,12 @@ public class Creature extends WorldEntity {
     private double energy = maxEnergy / 2;
     private double ageSeconds = 0;
     private double matingBoostTimeLeft = 0;
+    private double rageTargetBoostTimeLeft = 0;
     private double babyDevelopmentTimeLeft = 0;
     private Creature baby = null;
     private boolean dead = false;
+    private boolean attacking = false;
+    private String currentAction = "Doing nothing";
 
     // Behaviour
     private Array<Behaviour> behaviours = new Array<Behaviour>();
@@ -125,6 +133,7 @@ public class Creature extends WorldEntity {
     private FoodEntity closestFoodEntity = null;
     private Creature closestCreature = null;
     private Creature matingTarget = null;
+    private Creature attackTarget = null;
     private AppleTree closestAppleTree = null;
 
     // Particle effect
@@ -254,11 +263,14 @@ public class Creature extends WorldEntity {
         maxMovementSpeedPerSecond = BASIC_MOVEMENT_SPEED_PER_SECOND * mix(fastMoving, 0.25, 10) * (100.0 / mass);
 
         eatingSpeedEnergyPerSecond = mix(stomach, 20, 80); // TODO: Could make similar eating speed vs absorbed energy tradeoff as above
-        maxEatingDistance = mix(fastMoving, 40, 100);
+        maxEatingDistance          = mix(fastMoving, 40, 100);
+
+        attackEnergyUsagePerSecond = mix(spikes, 0.2, 3);
+        attackDamagePerSecond      = mix(spikes, 5, 20);
 
         sightRange = mix(eyes, 100, 500);
 
-        maxAgeSeconds = BASIC_LIFE_LENGTH_SECONDS * (100.0 / mass); // Fat people live shorter :P
+        maxAgeSeconds = BASIC_LIFE_LENGTH_SECONDS * (100.0 / mass); // Fat trolls live shorter :P
 
         energyReleasedOnDeath = maxEnergy * 0.5;
 
@@ -323,7 +335,7 @@ public class Creature extends WorldEntity {
 
     private void setupBehaviors() {
         // Walk around
-        behaviours.add(new Behaviour("Walk around", this, 4) {
+        behaviours.add(new Behaviour("I'm walking around.", this, 4) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return 0.1;
@@ -337,13 +349,13 @@ public class Creature extends WorldEntity {
         });
 
         // Walk towards move target
-        behaviours.add(new Behaviour("Walk towards move target", this, 5) {
+        behaviours.add(new Behaviour("You called me, I move!", this, 3) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (god != null) {
                     double distanceToGodMoveTarget = god.getMoveTarget().dst(getX(), getY());
                     double distancePull = map(distanceToGodMoveTarget, 0.5 * maxDistanceToGodTarget, 1.5 * maxDistanceToGodTarget, 0, 1);
-                    double recencyPull = god.getMoveTargetPull();
+                    double recencyPull = god.getMoveTargetPull() * 10 * (1.0-godFearingIrreligious);
                     return distancePull + recencyPull;
                 }
                 else return 0;
@@ -356,11 +368,11 @@ public class Creature extends WorldEntity {
         });
 
         // Mate
-        behaviours.add(new Behaviour("Mate", this, 5) {
+        behaviours.add(new Behaviour("Looking for some love!", this, 5) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (!canMate()) return 0;
-                else return matingBoost() + getEnergyStatus();
+                else return getMatingBoost() + getEnergyStatus();
             }
 
             @Override
@@ -382,7 +394,7 @@ public class Creature extends WorldEntity {
         });
 
         // Flock to others
-        behaviours.add(new Behaviour("Flock to other", this, 3) {
+        behaviours.add(new Behaviour("Wait for me!", this, 3) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return Math.random() * 0.5;
@@ -400,8 +412,22 @@ public class Creature extends WorldEntity {
             }
         });
 
+        // Lone panic
+        behaviours.add(new Behaviour("Where is everyone?", this, 4) {
+            @Override
+            public double getImportance(double timeSinceLastAsked) {
+                return closestCreature  == null ? 0.5 : 0;
+            }
+
+            @Override
+            public void onActivated(double activationImportance) {
+                // All alone in the world.  Stand and think about that.
+                standStill();
+            }
+        });
+
         // Overcrowd
-        behaviours.add(new Behaviour("Over Crowded", this, 1) {
+        behaviours.add(new Behaviour("Need some elbow room...", this, 2) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (closestCreature == null) return 0;
@@ -425,8 +451,39 @@ public class Creature extends WorldEntity {
             }
         });
 
+        // Attack
+        behaviours.add(new Behaviour("Take that!", this, 2) {
+            @Override
+            public double getImportance(double timeSinceLastAsked) {
+                if (closestCreature == null) return 0;
+                else {
+                    double rageTarget = closestCreature.getRageTargetBoost() * 10.0;
+                    double wrongRegionRage = closestCreature.getGod() != god ? 0.4 : 0; // Other god! They must die!
+                    double basicAttitude = peacefulAngry * 0.5;
+                    double ods = getHealthStatus() - closestCreature.getHealthStatus();
+                    return rageTarget + (wrongRegionRage + basicAttitude + ods) * getHealthStatus();
+                }
+            }
+
+            @Override
+            public void onActivated(double activationImportance) {
+                if (closestCreature  != null) {
+                    moveTowards(closestCreature.getWorldPos(), mix(walkerRunner, activationImportance / 2, 1));
+                    attackTarget = closestCreature;
+                }
+                else {
+                    standStill();
+                }
+            }
+
+            @Override
+            public void onDeactivated() {
+                attackTarget = null;
+            }
+        });
+
         // Search food
-        behaviours.add(new Behaviour("Search for food", this, 0.5) {
+        behaviours.add(new Behaviour("I'm hungry", this, 0.5) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return creature.getHunger() +  creature.getWounds();
@@ -449,7 +506,7 @@ public class Creature extends WorldEntity {
         });
 
         // Lick wounds
-        behaviours.add(new Behaviour("Lick wounds", this, 1) {
+        behaviours.add(new Behaviour("Ow, this hurts", this, 1) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return creature.getWounds() / 2;
@@ -529,7 +586,7 @@ public class Creature extends WorldEntity {
     }
 
     public double getFatness() {
-        return stomach;
+        return heart + stomach;
     }
 
     public double getLength() {
@@ -590,6 +647,7 @@ public class Creature extends WorldEntity {
 
                 if (currentBehaviour != null) {
                     //System.out.println("currentBehaviour = " + currentBehaviour.getName());
+                    currentAction = currentBehaviour.getName();
                     currentBehaviour.onActivated(highestImportance);
                     timeUntilBehaviourReactivation = currentBehaviour.getReActivationTime() * (0.5 + Math.random());
                 }
@@ -626,6 +684,16 @@ public class Creature extends WorldEntity {
             }
 
 
+        }
+
+        // Attacking
+        if (energy > 0 && attackTarget != null && distanceTo(attackTarget) <= ATTACK_RANGE) {
+            energy -= attackEnergyUsagePerSecond;
+            attackTarget.damage((float) attackDamagePerSecond * timeDelta);
+            attacking = true;
+        }
+        else {
+            attacking = false;
         }
 
         // Healing
@@ -725,8 +793,15 @@ public class Creature extends WorldEntity {
     /**
      * @return 0 for not booster, 1 for full boost.
      */
-    public double matingBoost() {
+    public double getMatingBoost() {
         return clampToZeroToOne(matingBoostTimeLeft / MATING_BOOST_DURATION_SECONDS);
+    }
+
+    /**
+     * @return 0 for not booster, 1 for full boost.
+     */
+    public double getRageTargetBoost() {
+        return clampToZeroToOne(rageTargetBoostTimeLeft / RAGE_TARGET_BOOST_DURATION_SECONDS);
     }
 
     /**
@@ -739,6 +814,10 @@ public class Creature extends WorldEntity {
 
     public void boostMating() {
         matingBoostTimeLeft = MATING_BOOST_DURATION_SECONDS;
+    }
+
+    public void makeRageTarget() {
+        rageTargetBoostTimeLeft = RAGE_TARGET_BOOST_DURATION_SECONDS;
     }
 
     public boolean isWounded() {
@@ -890,5 +969,26 @@ public class Creature extends WorldEntity {
 
     public boolean isObserved() {
         return observed;
+    }
+
+    /**
+     * @return true if this creature is attacking someone else.
+     */
+    public boolean isAttacking() {
+        return attacking;
+    }
+
+    /**
+     * @return how fast moving, 0 = none, 1 = full speed.
+     */
+    public double getMovementSpeedFactor() {
+        return movementSpeedFactor;
+    }
+
+    /**
+     * @return what it is trying to do now.
+     */
+    public String getCurrentAction() {
+        return currentAction;
     }
 }

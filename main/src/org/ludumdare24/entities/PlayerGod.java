@@ -41,7 +41,7 @@ public class PlayerGod extends God {
     private Label observedHealthLabel;
     private Label observedEnergyLabel;
     private Label observedArmorLabel;
-    private Label observedAttackLabel;
+    private Label observedStatusLabel;
     private Label observedBabyLabel;
 
     public PlayerGod(MainGame game) {
@@ -92,20 +92,20 @@ public class PlayerGod extends God {
         observedHealthLabel = new Label("Health: 51", screen2D.getSkin());
         observedEnergyLabel = new Label("Energy: 43", screen2D.getSkin());
         observedArmorLabel = new Label("Armor: 13", screen2D.getSkin());
-        observedAttackLabel = new Label("Attack: 54", screen2D.getSkin());
+        observedStatusLabel = new Label("Status", screen2D.getSkin());
         observedBabyLabel = new Label("Baby due in: 5", screen2D.getSkin());
 
         // Table to show the observations in
         observationTable = new Table();
         observationTable.add(observedNameLabel).left();
         observationTable.row();
+        observationTable.add(observedStatusLabel).left();
+        observationTable.row();
         observationTable.add(observedHealthLabel).left();
         observationTable.row();
         observationTable.add(observedEnergyLabel).left();
         observationTable.row();
         observationTable.add(observedArmorLabel).left();
-        observationTable.row();
-        observationTable.add(observedAttackLabel).left();
         observationTable.row();
         observationTable.add(observedBabyLabel).left();
         observationTable.row();
@@ -269,7 +269,10 @@ public class PlayerGod extends God {
                             if (closestCreature != null) {
                                 selectedCreature = closestCreature ;
                                 changeMana(-Tool.LOVE.getManaCost());
-                                //TODO boost falling in love
+
+                                // Boost falling in love
+                                selectedCreature.boostMating();
+
                                 toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
                                 toolEffect.start();
                                 game.soundService.play(Sounds.LOVE);
@@ -292,7 +295,10 @@ public class PlayerGod extends God {
                             if (closestCreature != null) {
                                 selectedCreature = closestCreature ;
                                 changeMana(-Tool.RAGE.getManaCost());
-                                //TODO get nearby creatures to attack this creature
+
+                                //Get nearby creatures to attack this creature
+                                selectedCreature.makeRageTarget();
+
                                 toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
                                 toolEffect.start();
                                 game.soundService.play(Sounds.RAGE);
@@ -359,17 +365,17 @@ public class PlayerGod extends God {
             observationTable.visible = true;
             observedNameLabel.setText(observedCreature.getName());
             if (observedCreature.isDead()) {
-                observedHealthLabel.setText("Died, R.I.P");
+                observedStatusLabel.setText("Died :(");
+                observedHealthLabel.setText("");
                 observedEnergyLabel.setText("");
                 observedArmorLabel.setText("");
-                observedAttackLabel.setText("");
                 observedBabyLabel.setText("");
             }
             else {
+                observedStatusLabel.setText(observedCreature.getCurrentAction());
                 observedHealthLabel.setText("Health " + (int) observedCreature.getHealth() + " (" + (int) (100*observedCreature.getHealthStatus()) + "%)");
                 observedEnergyLabel.setText("Energy " + (int) observedCreature.getEnergy() + " (" + (int) (100*observedCreature.getEnergyStatus()) + "%)");
-                observedArmorLabel.setText("Armor " + (int) observedCreature.getArmor());
-                observedAttackLabel.setText("Attack " + (int) observedCreature.getSpikes());
+                observedArmorLabel.setText("Armor " + (int) (100*observedCreature.getArmor()) + ", Attack " + (int) (100*observedCreature.getSpikes()));
                 if (observedCreature.isPregnant()) {
                     observedBabyLabel.setText("Baby due in " + (int) observedCreature.getBabyDevelopmentTimeLeft());
                 }
