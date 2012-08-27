@@ -110,34 +110,34 @@ GameFlow Tasks
 // TODOs:
 
 Behaviour
-* Love & babies
-* Rage & attacking
+* Love & babies [DONE]
+* Rage & attacking [DONE]
 
 Follow
-* Show creature name?
-* Show creature age
-* Show creature energy
-* Show creature health % and max
-* Show creature pregnancy %
-* Show armor?
-* Show attack?
-* Focus creature
-* Stop focusing on swipe
-* Next and Previous buttons (and maybe stop focus button? - or just stop focus when using other tool?)
+* Show creature name? [DONE]
+* Show creature age [DONE]
+* Show creature energy [DONE]
+* Show creature health % and max [DONE]
+* Show creature pregnancy % [DONE]
+* Show armor? [DONE]
+* Show attack? [DONE]
+* Focus creature [TODO?]
+* Stop focusing on swipe? [NOT NEEDED?]
+* Next and Previous buttons (and maybe stop focus button? - or just stop focus when using other tool?) [TODO?]
 
 Game
-* Check if all own dead -> loose
-* Check if all other dead -> win
+* Check if all own dead -> loose  [DONE]
+* Check if all other dead -> win  [DONE]
 
 UI
-* Pan
+* Pan [TODO]
 
 Graphics
-* Repeating ground
-  * Multi terrain ground if more time
-* Restricted world size
-* Gauge widget for mana, creature properties
+* Repeating ground  [TODO]
+  * Multi terrain ground if more time  [TODO]
+* Restricted world size  [TODO]
+* Gauge widget for mana, creature properties [DROPPED]
 
 Creatures
-* Calculate max speed, max health, energy usage, etc
-* Inherit behaviour genes
+* Calculate max speed, max health, energy usage, etc [DONE]
+* Inherit behaviour genes [DONE]
