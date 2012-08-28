@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import org.gameflow.utils.ColorUtils;
+import org.gameflow.utils.ImageRef;
 import org.gameflow.utils.MathTools;
 import org.ludumdare24.Mutator;
 
@@ -16,7 +17,7 @@ import org.ludumdare24.Mutator;
  */
 public class CreatureAppearance {
     private static final int BODY_IMAGE_SIZE = 64;
-    private static final float OBSERVATION_SCALING_FACTOR = 3.0f;
+    private static final float OBSERVATION_SCALING_FACTOR = 2.0f;
 
     private static final float ADJUST_DAMPENING = 0.8f;
 
@@ -65,6 +66,7 @@ public class CreatureAppearance {
 
     private ParticleEffect ownerGodGlowEffect = null;
 
+    private ImageRef shadow;
 
     public CreatureAppearance(Creature creature,
                               Color baseColor,
@@ -173,28 +175,28 @@ public class CreatureAppearance {
 
     public void create(TextureAtlas atlas) {
 
-        head = createBodyPart(BodyPartShape.HEAD, false, skinColor, basicShape);
-        torso = createBodyPart(BodyPartShape.TORSO, false, skinColor, basicShape);
-        abdomen = createBodyPart(BodyPartShape.ABDOMEN, false, skinColor, basicShape);
-        leftLeg = createBodyPart(BodyPartShape.LEG, false, skinColor, basicShape);
-        rightLeg = createBodyPart(BodyPartShape.LEG, true, skinColor, basicShape);
-        leftArm  = createBodyPart(BodyPartShape.ARM, false, skinColor, basicShape);
-        rightArm = createBodyPart(BodyPartShape.ARM, true, skinColor, basicShape);
-        leftEye = createBodyPart(BodyPartShape.EYE, false, Color.WHITE, basicShape);
-        rightEye = createBodyPart(BodyPartShape.EYE, true, Color.WHITE, basicShape);
+        head = createBodyPart(BodyPartShape.HEAD, false, skinColor, basicShape, 0);
+        torso = createBodyPart(BodyPartShape.TORSO, false, skinColor, basicShape, 0);
+        abdomen = createBodyPart(BodyPartShape.ABDOMEN, false, skinColor, basicShape, 0);
+        leftLeg = createBodyPart(BodyPartShape.LEG, false, skinColor, basicShape, 30);
+        rightLeg = createBodyPart(BodyPartShape.LEG, true, skinColor, basicShape,  30);
+        leftArm  = createBodyPart(BodyPartShape.ARM, false, skinColor, basicShape,  30);
+        rightArm = createBodyPart(BodyPartShape.ARM, true, skinColor, basicShape,  30);
+        leftEye = createBodyPart(BodyPartShape.EYE, false, Color.WHITE, basicShape, 0);
+        rightEye = createBodyPart(BodyPartShape.EYE, true, Color.WHITE, basicShape, 0);
 
-        float headCenterY = torso.getVisibleH() / 2 + head.getVisibleH() / 2;
-        addPart(head, 0, headCenterY);
-
-        double armHeight   = torso.getVisibleH() / 2 - leftArm.getVisibleH() / 2;
-        double armDistance = torso.getVisibleW() / 2 + leftArm.getVisibleW() / 2;
+        double armHeight   = -15 + torso.getVisibleH() / 2 - leftArm.getVisibleH() / 2;
+        double armDistance = 1.08*torso.getVisibleW() / 2 + leftArm.getVisibleW() / 2;
         addPart(leftArm, -armDistance, armHeight);
         addPart(rightArm, armDistance, armHeight);
         leftArm.setRelativeOrigin(0.65f, 0.9f);
         rightArm.setRelativeOrigin(0.65f, 0.9f);
 
+        float headCenterY = torso.getVisibleH() / 2 + head.getVisibleH() / 2;
+        addPart(head, 0, headCenterY);
 
-        double legHeight   = -torso.getVisibleH() / 2 -abdomen.getVisibleH() / 2 -leftLeg.getVisibleH() / 2;
+
+        double legHeight   = -15 -torso.getVisibleH() / 2 -abdomen.getVisibleH() / 2 -leftLeg.getVisibleH() / 2;
         double legDistance = abdomen.getVisibleW() / 2;// + leftLeg.getVisibleW() / 2;
         addPart(leftLeg, -legDistance, legHeight);
         addPart(rightLeg, legDistance, legHeight);
@@ -219,10 +221,15 @@ public class CreatureAppearance {
             ownerGodGlowEffect.load(Gdx.files.internal("particles/enemyGlow.particles"), atlas);
             ownerGodGlowEffect.start();
         }
+
+        // Shadow
+        shadow = new ImageRef("trollShadow", 0, 1, 1);
     }
 
     public void onUpdate(float timeDelta) {
-        // Behavior
+        totalTime += timeDelta;
+
+        // Reflect behavior
         double waveSpeed = 0;
         waveSpeed += creature.isAttacking() ? 4 : 0;
         waveSpeed += creature.getMovementSpeedFactor();
@@ -230,12 +237,21 @@ public class CreatureAppearance {
         double waveSize = creature.getEnergyStatus() * creature.getMovementSpeedFactor();
         waveSize += creature.isAttacking() ? 0.5 : 0;
 
+        double legFlipSpeed = creature.getMovementSpeedFactor();
+        double legFlipSize = 0.2;
+
         // Flap your arms if you are a crazy creature
-        totalTime += timeDelta;
         double armPos = (Math.sin(armWaveOffset + totalTime * waveSpeed * MathTools.Tau) * 0.5 + 0.5) * MathTools.clampToZeroToOne(waveSize);
         double armAngle = MathTools.mix(armPos, (0.25 + 0.75) * MathTools.Tau, (0.25 + 0.35) * MathTools.Tau);
         leftArm.setAngle(armAngle);
         rightArm.setAngle(MathTools.Tau - armAngle);
+
+        // Flip your legs when you are a strange creature
+        double legPos = (Math.sin(12.3*armWaveOffset + totalTime * legFlipSpeed * MathTools.Tau) * 0.5 + 0.5) * MathTools.clampToZeroToOne(legFlipSize);
+        double legAngle = MathTools.mix(legPos, 1 * MathTools.Tau, 0.8 * MathTools.Tau);
+        leftLeg.setAngle(legAngle);
+        rightLeg.setAngle(MathTools.Tau - legAngle);
+
 
         // Update glow effect
         ownerGodGlowEffect.update(timeDelta);
@@ -243,22 +259,27 @@ public class CreatureAppearance {
 
     public void render(float x, float y, TextureAtlas atlas, SpriteBatch spriteBatch) {
 
+        float scale = creature.isObserved() ? OBSERVATION_SCALING_FACTOR : 1f;
+        float moveUpFudge = 50 * scale;
+
         // Render worship glow
-        ownerGodGlowEffect.setPosition(x, y);
+        ownerGodGlowEffect.setPosition(x, y + moveUpFudge - 10);
         ownerGodGlowEffect.draw(spriteBatch );
 
         // Render creature bodyparts
-        float scale = creature.isObserved() ? OBSERVATION_SCALING_FACTOR : 1f;
         for (CreaturePart part : parts) {
-            part.draw(atlas, spriteBatch, x, y, 0, scale);
+            part.draw(atlas, spriteBatch, x, y + moveUpFudge, 0, scale);
         }
+
+        // Render shadow
+        shadow.render(x - 16, y-8, atlas, spriteBatch);
     }
 
 
-    private CreaturePart createBodyPart(BodyPartShape shape, boolean mirror, Color skinColor, double basicShape) {
+    private CreaturePart createBodyPart(BodyPartShape shape, boolean mirror, Color skinColor, double basicShape, float extraLift) {
         double h = MathTools.mix(length, 0.75, 1.5);
         double w = MathTools.mix(fatness, 0.75, 1.5);
-        return new CreaturePart(shape, mirror, w, h, hair, armor, spikes, skinColor, hairColor, armorColor, spikesColor, basicShape, scale);
+        return new CreaturePart(shape, mirror, w, h, hair, armor, spikes, skinColor, hairColor, armorColor, spikesColor, basicShape, scale, extraLift);
     }
 
     private void addPart(CreaturePart part) {

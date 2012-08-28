@@ -70,45 +70,48 @@ public class MainGame extends GameBase {
 
     public int getHelpPageCount() {
         // NOTE: Remember to update this if you add more help pages!
-        return 8;
+        return 9;
     }
 
     public HelpPageScreen createHelpPage(int index) {
         switch (index) {
             case 1: return createHelpPageWithContent(index, "troll",
-                    "You are the god of a blue species of trolls.",
-                    "Your task is to look out for your worshippers",
-                    "and help them to evolve and survive.",
-                    "But beware!  You are not the only god",
-                    "in this world.");
+                    "You are the god of a tribe of trolls.",
+                    "Nurture and evolve them, and help them",
+                    "vanquish all other trolls in the world!");
             case 2: return createHelpPageWithContent(index, "smiteButtonNotPressScaled",
-                    "With the smite tool you can kill both enemy",
+                    "With the smite spell you can kill both enemy",
                     "trolls and your own worshippers.");
             case 3: return createHelpPageWithContent(index, "heartButtonNotPressScaled",
-                    "With the love button you can help your",
+                    "With the love spell you can help your",
                     "trolls to fall in love, and get children.",
-                    "They can fall in love on their own also.");
+                    "(They do fall in love on their own also.)");
             case 4: return createHelpPageWithContent(index, "moveButtonNotPressScaled",
-                    "With move you can command your nearby creeps",
+                    "With move you can command your trolls",
                     "to go towards the place you click.",
-                    "They will usually obey you",
-                    "but they have a mind of their own too.");
+                    "They will usually obey you, but they",
+                    "may have other matters in mind too.");
             case 5: return createHelpPageWithContent(index, "rageButtonNotPressScaled",
-                    "When you click an enemy with the rage tool",
-                    "your nearby trolls will heedlessly attack the target",
-                    "and fight to the last troll to kill it - ",
-                    "even if it is one of their own.");
+                    "When you click an enemy with the rage spell",
+                    "your nearby trolls will heedlessly attack",
+                    "the target and fight to the last troll to",
+                    "kill it - even if it is one of their own.");
             case 6: return createHelpPageWithContent(index, "foodButtonNotPressScaled",
-                    "With the feed tool you can toss apples from the sky",
-                    "to your faithful followers as a prize,",
+                    "With the food spell you can toss apples from",
+                    "the sky to your faithful followers as a prize,",
                     "or to save them if they are dying in hunger.");
             case 7: return createHelpPageWithContent(index, "watchButtonNotPressScaled",
-                    "Whit the watch tool you can listen and follow",
-                    "one of your trolls.");
-            case 8: return createHelpPageWithContent(index, null,
-                    "Using your tools will drain yor mana.",
-                    "But your mana will recover over time.");
-
+                    "Whit the watch spell you can listen to",
+                    "and observe one of your trolls.",
+                    "The watched troll is shown larger.");
+            case 8: return createHelpPageWithContent(index, "manaStar",
+                    "Using your spell will drain yor mana.",
+                    "But your mana will recover over time,",
+                    "and your own trolls also give you mana.");
+            case 9: return createHelpPageWithContent(index, "troll_icon",
+                    "At the top of the screen you can see.",
+                    "the number of your trolls that are alive",
+                    "as well as the total number of trolls.");
 
     }
 

@@ -7,10 +7,10 @@ public enum Tool {
 
     SMITE(30),
     LOVE(15),
-    MOVE(5),
-    RAGE(20),
-    FEED(10),
-    WATCH(1);
+    MOVE(10),
+    RAGE(25),
+    FEED(15),
+    WATCH(0);
     private final double manaCost;
 
     private Tool(double manaCost) {

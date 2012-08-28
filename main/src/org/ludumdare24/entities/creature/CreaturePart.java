@@ -45,13 +45,15 @@ public class CreaturePart {
     private final float visibleH;
     private final boolean mirror;
     private final double basicShape;
+    private final float extraLift;
     private static final float FIXED_PART_DISTANCE_SCALE = 0.55f;
 
-    public CreaturePart(BodyPartShape shape, boolean mirror, double fatness, double length, double hair, double armor, double spikes, Color baseColor, Color hairColor, Color armorColor, Color spikesColor, double basicShape, float scale) {
+    public CreaturePart(BodyPartShape shape, boolean mirror, double fatness, double length, double hair, double armor, double spikes, Color baseColor, Color hairColor, Color armorColor, Color spikesColor, double basicShape, float scale, float extraLift) {
         this.shape = shape;
         this.mirror = mirror;
         this.spikesColor = spikesColor;
         this.basicShape = basicShape;
+        this.extraLift = extraLift;
         this.fatness = (float) fatness;
         this.length = (float) length;
         this.hair = (float) hair;
@@ -119,7 +121,13 @@ public class CreaturePart {
         if (spikesImage == null) spikesImage = getImage(atlas, shape.getSpikeImageName(spikes));
 
         tempPos.set(basePos);
+        tempPos.mul(scale);
         tempPos.add(x, y);
+
+        // Ugly kludge here!
+        if (scale > 1) {
+            tempPos.add(0, extraLift);
+        }
 
         drawLayer(spriteBatch, baseImage, tempPos, currentAngle, baseColor, scale);
         drawLayer(spriteBatch, armorImage, tempPos, currentAngle, armorColor, scale);

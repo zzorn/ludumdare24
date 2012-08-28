@@ -20,6 +20,8 @@ public class AppleTree extends SimpleWorldEntity {
     private FoodType foodType = FoodType.APPLE;
     private double energySpawnedAtOnce = foodType.getEnergyInOne() * 4.5;
 
+    private ImageRef shadow;
+
     public AppleTree(GameWorld gameWorld) {
         this(gameWorld, new Random());
     }
@@ -38,6 +40,15 @@ public class AppleTree extends SimpleWorldEntity {
     }
 
     @Override
+    protected void onCreate(TextureAtlas atlas) {
+        super.onCreate(atlas);
+
+        // Shadow
+        shadow = new ImageRef("appleTreeShadow", 0, 1, 1);
+
+    }
+
+    @Override
     protected void onUpdate(float timeDelta) {
         timeUntilSpawn -= timeDelta;
 
@@ -49,5 +60,13 @@ public class AppleTree extends SimpleWorldEntity {
             timeUntilSpawn = spawnInterval * (gameWorld.getRandom().nextGaussian() * 0.3 + 1.0);
         }
 
+    }
+
+    @Override
+    public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
+        // Render shadow
+        shadow.render(getX(), getY()-16, atlas, spriteBatch);
+
+        super.render(atlas, spriteBatch);
     }
 }

@@ -110,7 +110,7 @@ public class PlayerGod extends God {
         observationTable.row();
         observationTable.add(observedBabyLabel).left();
         observationTable.row();
-        hud.add(observationTable).left().expandY().colspan(3);
+        hud.add(observationTable).left().top().expandY().colspan(3);
         hud.row();
 
         // Hide initially
@@ -150,21 +150,6 @@ public class PlayerGod extends God {
                 float worldY = Gdx.graphics.getHeight() - y;
 
                 useTool(worldX, worldY);
-                return true;
-            }
-
-            @Override
-            public boolean pan(int x, int y, int deltaX, int deltaY) {
-                // TODO: Move camera
-                System.out.println("PlayerGod.pan");
-                System.out.println("deltaX = " + deltaX);
-                System.out.println("deltaY = " + deltaY);
-                return true;
-            }
-
-            @Override
-            public boolean zoom(float originalDistance, float currentDistance) {
-                // TODO: Zoom camera up to max zoom and down to min zoom
                 return true;
             }
         }));
@@ -312,9 +297,9 @@ public class PlayerGod extends God {
                                 // Get nearby creatures to attack this creature
                                 selectedCreature.makeRageTarget();
 
-                                // Re-evaluate actions of all own creatures
-                                for (Creature creature : getWorshippers()) {
-                                    creature.reEvaluateAction();
+                                // Make everyone rage attack
+                                for (Creature creature : game.getGameWorld().getCreatures()) {
+                                    creature.rageAttackCreature(selectedCreature);
                                 }
 
                                 toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
@@ -396,7 +381,7 @@ public class PlayerGod extends God {
                 observedBabyLabel.setText("");
             }
             else {
-                observedStatusLabel.setText(observedCreature.getCurrentAction());
+                observedStatusLabel.setText("\"" + observedCreature.getCurrentAction() + "\"");
                 observedHealthLabel.setText("Health " + (int) observedCreature.getHealth() + " (" + (int) (100*observedCreature.getHealthStatus()) + "%)");
                 observedEnergyLabel.setText("Energy " + (int) observedCreature.getEnergy() + " (" + (int) (100*observedCreature.getEnergyStatus()) + "%)");
                 observedArmorLabel.setText("Armor " + (int) (100*observedCreature.getArmor()) + ", Attack " + (int) (100*observedCreature.getSpikes()));

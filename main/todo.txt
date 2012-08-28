@@ -121,7 +121,7 @@ Follow
 * Show creature pregnancy % [DONE]
 * Show armor? [DONE]
 * Show attack? [DONE]
-* Focus creature [TODO?]
+* Focus creature [NOT NEEDED]
 * Stop focusing on swipe? [NOT NEEDED?]
 * Next and Previous buttons (and maybe stop focus button? - or just stop focus when using other tool?) [TODO?]
 
@@ -130,16 +130,16 @@ Game
 * Check if all other dead -> win  [DONE]
 
 UI
-* Pan [TODO]
+* Pan [DROPPED]
 
 Graphics
-* Repeating ground  [TODO]
-  * Multi terrain ground if more time  [TODO]
-* Restricted world size  [TODO]
+* Repeating ground  [DONE]
+  * Multi terrain ground if more time  [DROPPED]
+* Restricted world size  [DONE (not movable)]
 * Gauge widget for mana, creature properties [DROPPED]
 
 Creatures
 * Calculate max speed, max health, energy usage, etc [DONE]
 * Inherit behaviour genes [DONE]
 
-* Prefer similar creatures when breeding [TODO]
+* Prefer similar creatures when breeding [DONE]

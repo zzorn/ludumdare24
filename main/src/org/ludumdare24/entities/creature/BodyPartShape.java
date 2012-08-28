@@ -8,9 +8,9 @@ import org.gameflow.utils.MathTools;
 public enum BodyPartShape {
 
     HEAD("head",         48, 64, 0, 3, 3, 3),
-    TORSO("torso",       40, 28, 0, 0, 0, 0),
-    ABDOMEN("abdomen",   30, 28, 0, 0, 0, 0),
-    ARM("arm",           16, 54, 0, 0, 0, 0),
+    TORSO("torso",       40, 28, 0, 3, 3, 0),
+    ABDOMEN("abdomen",   30, 28, 0, 2, 3, 1),
+    ARM("arm",           16, 54, 0, 0, 0, 3),
     LEG("leg",           10, 58, 0, 0, 0, 0),
     EYE("eye",            8,  8, 6, 0, 0, 0),
 

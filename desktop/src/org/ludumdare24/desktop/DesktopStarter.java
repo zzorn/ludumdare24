@@ -11,10 +11,10 @@ public class DesktopStarter {
     public static void main(String[] args) {
 
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-        cfg.title = "Troll God";
+        cfg.title = "Troll Spirit";
         cfg.useGL20 = false;
         cfg.width = 1200;
-        cfg.height = 760;
+        cfg.height = 800;
 
         new LwjglApplication(new MainGame(), cfg);
     }

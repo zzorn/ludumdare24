@@ -290,4 +290,8 @@ public class GameWorld {
     public boolean canAddCreatures() {
         return creatures.size < MAX_CREATURES_COUNT;
     }
+
+    public Array<Creature> getCreatures() {
+        return creatures;
+    }
 }

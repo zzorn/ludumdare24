@@ -44,6 +44,7 @@ public class Creature extends WorldEntity {
     private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
     private static final double MATURITY_AGE = 0.2;
     private static final double MATING_DISTANCE = 37;
+    private static final double RAGE_ATTACK_RADIUS = 700;
 
     private final MainGame game;
     private final GameWorld gameWorld;
@@ -267,9 +268,9 @@ public class Creature extends WorldEntity {
         maxEatingDistance          = mix(fastMoving, 40, 100);
 
         attackEnergyUsagePerSecond = mix(spikes, 0.2, 3);
-        attackDamagePerSecond      = mix(spikes, 5, 20);
+        attackDamagePerSecond      = mix(spikes, 10, 60);
 
-        sightRange = mix(eyes, 100, 500);
+        sightRange = mix(eyes, 100, RAGE_ATTACK_RADIUS);
 
         maxAgeSeconds = BASIC_LIFE_LENGTH_SECONDS * (100.0 / mass); // Fat trolls live shorter :P
 
@@ -322,8 +323,8 @@ public class Creature extends WorldEntity {
      * @return a new family name for this troll.
      */
     private String createFamilyName() {
-        return randomString("Stone", "Cave", "Tree", "Boulder", "Hill", "Mound", "Grave", "Valley", "Root", "Un", "Buk", "Ruk") +
-               randomString("hollow", "root", "nest", "home", "shade", "side", "rest", "brock", "rak", "digger", "lifter", "roller", "", "", "", "");
+        return randomString("Stone", "Apple", "Cave", "Tree", "Boulder", "Hill", "Mound", "Grave", "Valley", "Root", "Un", "Buk", "Ruk") +
+               randomString("hollow", "root", "nest", "home", "shade", "side", "rest", "brock", "rak", "jack", "digger", "lifter", "roller", "", "", "", "");
     }
 
     /**
@@ -336,7 +337,7 @@ public class Creature extends WorldEntity {
 
     private void setupBehaviors() {
         // Walk around
-        behaviours.add(new Behaviour("I'm walking around.", this, 4) {
+        behaviours.add(new Behaviour(randomString("I'm walking around.", "Having a stroll over here."), this, 4) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return 0.1;
@@ -349,8 +350,22 @@ public class Creature extends WorldEntity {
             }
         });
 
+        behaviours.add(new Behaviour(randomString("I'm heading over to that apple tree", "Where there are apple trees, there are apples!", "Looking for a tree"), this, 4) {
+            @Override
+            public double getImportance(double timeSinceLastAsked) {
+                if (closestAppleTree == null) return 0;
+                else return claustrofobicTreeHugger * Math.random();
+            }
+
+            @Override
+            public void onActivated(double activationImportance) {
+                // Random jog
+                if (closestAppleTree != null) moveTowards(closestAppleTree.getWorldPos(), walkerRunner);
+            }
+        });
+
         // Walk towards move target
-        behaviours.add(new Behaviour("You called me, I move!", this, 3) {
+        behaviours.add(new Behaviour(randomString("You called me, I move!", "Dabu?", "Zug Zug", "Stop ordering me around!"), this, 3) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (god != null) {
@@ -369,7 +384,7 @@ public class Creature extends WorldEntity {
         });
 
         // Mate
-        behaviours.add(new Behaviour("Looking for some love!", this, 5) {
+        behaviours.add(new Behaviour(randomString("Looking for some love!", "Seen any hot troll mothers around?"), this, 5) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (!canMate() || closestCreature == null) return 0;
@@ -399,7 +414,7 @@ public class Creature extends WorldEntity {
             public void onActivated(double activationImportance) {
                 if (closestCreature != null) {
                     matingTarget = closestCreature;
-                    moveTowards(closestCreature.getWorldPos(), 0.5);
+                    moveTowards(closestCreature.getWorldPos(), walkerRunner);
                 }
                 else {
                     standStill();
@@ -413,7 +428,7 @@ public class Creature extends WorldEntity {
         });
 
         // Flock to others
-        behaviours.add(new Behaviour("Wait for me!", this, 3) {
+        behaviours.add(new Behaviour(randomString("Wait for me!", "Wait for me!", "Where are you going guys?"), this, 3) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return Math.random() * 0.5;
@@ -422,7 +437,7 @@ public class Creature extends WorldEntity {
             @Override
             public void onActivated(double activationImportance) {
                 if (closestCreature  != null) {
-                    moveTowards(closestCreature.getWorldPos(), 0.2);
+                    moveTowards(closestCreature.getWorldPos(), walkerRunner);
                 }
                 else {
                     // All alone in the world.  Stand and think about that.
@@ -432,7 +447,7 @@ public class Creature extends WorldEntity {
         });
 
         // Lone panic
-        behaviours.add(new Behaviour("Where is everyone?", this, 4) {
+        behaviours.add(new Behaviour(randomString("Where is everyone?", "I'm feeling lonely", "Am I the last of my species?"), this, 4) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return closestCreature  == null ? 0.5 : 0;
@@ -446,7 +461,7 @@ public class Creature extends WorldEntity {
         });
 
         // Overcrowd
-        behaviours.add(new Behaviour("Need some elbow room...", this, 2) {
+        behaviours.add(new Behaviour(randomString("Need some elbow room...", "Too crowded here.", "Need some air"), this, 2) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (closestCreature == null) return 0;
@@ -461,7 +476,7 @@ public class Creature extends WorldEntity {
             public void onActivated(double activationImportance) {
                 if (closestCreature  != null) {
                     //moveInRandomDirection(0.3 + activationImportance);
-                    moveAwayFrom(closestCreature.getWorldPos(), activationImportance);
+                    moveAwayFrom(closestCreature.getWorldPos(), activationImportance + walkerRunner);
                 }
                 else {
                     // All alone in the world.  Stand and think about that.
@@ -471,7 +486,7 @@ public class Creature extends WorldEntity {
         });
 
         // Attack
-        behaviours.add(new Behaviour("Take that!", this, 2) {
+        behaviours.add(new Behaviour(randomString("Take that!", "Raaaugh!", "Fear my spikes!", "This calls for violence!"), this, 2) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (closestCreature == null) return 0;
@@ -502,7 +517,7 @@ public class Creature extends WorldEntity {
         });
 
         // Search food
-        behaviours.add(new Behaviour("I'm hungry", this, 0.5) {
+        behaviours.add(new Behaviour(randomString("I'm hungry", "An apple would taste good", "When's lunch?", "I'm starving over here"), this, 0.5) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return creature.getHunger() +  creature.getWounds();
@@ -519,13 +534,13 @@ public class Creature extends WorldEntity {
                 }
                 else {
                     // Search for food
-                    moveInRandomDirection(0.5);
+                    moveInRandomDirection(0.5 * walkerRunner);
                 }
             }
         });
 
         // Lick wounds
-        behaviours.add(new Behaviour("Ow, this hurts", this, 1) {
+        behaviours.add(new Behaviour(randomString("Ow, this hurts", "I'm almost dead!", "Ouch!", "Ow ow ow"), this, 1) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 return creature.getWounds() / 2;
@@ -534,7 +549,7 @@ public class Creature extends WorldEntity {
             @Override
             public void onActivated(double actiavationImportance) {
                 // Random crawl
-                moveInRandomDirection(0.2);
+                moveInRandomDirection(0.2 + Math.random() * walkerRunner);
             }
         });
 
@@ -1017,5 +1032,20 @@ public class Creature extends WorldEntity {
      */
     public void reEvaluateAction() {
         doActionRePrioritation = true;
+    }
+
+    @Override
+    public float getDrawOrder() {
+        // Lift forward if observed
+        float drawOrder = super.getDrawOrder();
+        if (isObserved()) drawOrder += 200;
+        return drawOrder;
+    }
+
+    public void rageAttackCreature(Creature target) {
+        if (distanceTo(target) < RAGE_ATTACK_RADIUS && target != this) {
+            attackTarget = target;
+            moveTowards(target.getWorldPos(), 1);
+        }
     }
 }

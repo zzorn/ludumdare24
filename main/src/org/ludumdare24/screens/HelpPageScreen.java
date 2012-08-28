@@ -35,14 +35,6 @@ public class HelpPageScreen extends Screen2D {
         Table table = new Table(getSkin());
         table.setFillParent(true);
 
-        // Return button
-        table.add(createButton("Return", new ClickListener() {
-            public void click(Actor actor, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-                game.soundService.play(Sounds.UI_ACCEPT);
-            }
-        })).expandX().top().left();
-
         // Prew button
         if (helpPageIndex>1) {
             table.add(createButton("Previous", new ClickListener() {
@@ -50,7 +42,15 @@ public class HelpPageScreen extends Screen2D {
                     game.setScreen(game.createHelpPage(helpPageIndex - 1));
                     game.soundService.play(Sounds.UI_CLICK);
                 }
-            })).expandX().top().right();
+            })).expandX().top().left();
+        }
+        else {
+            table.add(createButton("Return", new ClickListener() {
+                public void click(Actor actor, float x, float y) {
+                    game.setScreen(new MainMenuScreen(game));
+                    game.soundService.play(Sounds.UI_ACCEPT);
+                }
+            })).expandX().top().left();
         }
 
 
@@ -63,6 +63,15 @@ public class HelpPageScreen extends Screen2D {
                 }
             })).expandX().top().right();
         }
+        else {
+            table.add(createButton("Return", new ClickListener() {
+                public void click(Actor actor, float x, float y) {
+                    game.setScreen(new MainMenuScreen(game));
+                    game.soundService.play(Sounds.UI_ACCEPT);
+                }
+            })).expandX().top().right();
+        }
+
         table.row();
 
         // Image
@@ -82,6 +91,7 @@ public class HelpPageScreen extends Screen2D {
         if (lastHelpCell != null) {
             lastHelpCell.expand();
         }
+
 
         // Add to screen
         getStage().addActor(table);

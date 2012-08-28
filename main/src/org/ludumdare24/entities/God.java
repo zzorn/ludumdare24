@@ -13,7 +13,7 @@ import org.ludumdare24.entities.creature.Creature;
  */
 public class God extends Entity {
 
-    private static final double MANA_REGEN_PER_FOLLOWER = 0.25;
+    private static final double MANA_REGEN_PER_FOLLOWER = 0.75;
 
     private double maxMana = 100;
     private double mana = 100;

@@ -29,13 +29,13 @@ public class CreditScreen extends Screen2D {
         table.setFillParent(true);
 
         // Toggle sounds enabled checkbox
-        table.add(new Label("Troll God was made by:", getSkin())).padBottom(30);
+        table.add(new Label("Troll Spirit was made by", getSkin())).padBottom(10);
         table.row();
-        table.add(new Label("Zzorn & Shiera  ", getSkin())).padBottom(10);
+        table.add(new Label("zzorn & Shiera  ", getSkin())).padBottom(10);
         table.row();
         table.add(new Label("For Ludumdare 24  ", getSkin())).padBottom(10);
         table.row();
-        table.add(new Label("August 2012", getSkin())).padBottom(20);
+        table.add(new Label("in August 2012", getSkin())).padBottom(20);
         table.row();
 
 
