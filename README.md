@@ -12,11 +12,30 @@ vanquish all other trolls in the world!
 Platforms
 =========
 
-Cross platform executable Jar and Android.
+Cross platform executable Jar (Win/Linux/OSX) and Android APK.
 
 
-Instructions
-============
+Launching instructions
+======================
+
+Linux (Ubuntu)
+- Make sure the jar is executable (right click jar,
+  properties -> permissions -> check executable).
+- Right click, Open with -> select your JVM
+  (Sun JVM is best supported).
+
+Windows / OSX
+- Make sure you have Java installed
+- Refer to your operating system vendor for Java application
+  launching instructions (Seriously though, should probably work
+  with double clicking or similar, as long as you have Java installed).
+
+Android
+- Scan the QR code in the screenshots below, open link.
+
+
+PLaying Instructions
+====================
 
 At your disposal you have a number of spells:
 
@@ -60,10 +79,18 @@ Credits
 
 Crated by zzorn and Shiera for Ludumdare 24 Game Jam, in August 2012.
 
+Libraries used:
+* LibGDX ( http://libgdx.badlogicgames.com/ )
+* Our own basecode ( https://github.com/zzorn/libgdxbasecode )
+
+Tools used
+* Bfxr ( http://www.bfxr.net )
+* LibGDX Particle effect editor ( http://code.google.com/p/libgdx/wiki/ParticleEditor )
+* Gimp
+
 
 Contact
 =======
 
 zzorn @ iki.fi
-
 
