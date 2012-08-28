@@ -69,7 +69,7 @@ But your mana will recover over time,
 and the more trolls you have, the
 faster it will recover
 
-At the top of the screen you can see.
+At the top of the screen you can see
 the number of your trolls that are alive
 as well as the total number of trolls.
 
