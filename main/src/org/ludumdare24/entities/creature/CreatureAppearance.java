@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import org.gameflow.utils.ColorUtils;
 import org.gameflow.utils.ImageRef;
-import org.gameflow.utils.MathTools;
 import org.ludumdare24.Mutator;
+
+import static org.gameflow.utils.MathTools.*;
+import static org.gameflow.utils.MathTools.clamp;
 
 
 /**
@@ -20,10 +22,14 @@ public class CreatureAppearance {
     private static final float OBSERVATION_SCALING_FACTOR = 2.0f;
 
     private static final float ADJUST_DAMPENING = 0.8f;
+    private static final float MIN_LUM = 0.15f;
+    private static final float MAX_LUM = 0.85f;
 
     private final Creature creature;
 
     private float scale = 0.5f;
+
+    private double hatStyle;
 
     private double basicShape;
 
@@ -47,6 +53,7 @@ public class CreatureAppearance {
     private CreaturePart head;
     private CreaturePart leftEye;
     private CreaturePart rightEye;
+    private CreaturePart hatPart;
 
     private double armWaveOffset = 10 * Math.random();
 
@@ -70,7 +77,8 @@ public class CreatureAppearance {
 
     public CreatureAppearance(Creature creature,
                               Color baseColor,
-                              Mutator mutator) {
+                              Mutator mutator,
+                              double hatStyle) {
         this.creature = creature;
 
         initCreatureProperties(creature);
@@ -85,6 +93,7 @@ public class CreatureAppearance {
         baseHue = ColorUtils.hue(baseColor);
         baseSat = ColorUtils.sat(baseColor);
         baseLum = ColorUtils.lum(baseColor);
+        this.hatStyle = hatStyle;
 
         buildColors();
     }
@@ -98,7 +107,7 @@ public class CreatureAppearance {
 
         baseHue = mutator.mutate(mother.baseHue, true);
         baseSat = mutator.mutate(mother.baseSat);
-        baseLum = mutator.mutate(mother.baseLum);
+        baseLum = clamp(mutator.mutate(mother.baseLum), MIN_LUM, MAX_LUM);
         armorHueAdjust = mutator.mutate(mother.armorHueAdjust, true) * ADJUST_DAMPENING;
         armorSatAdjust = mutator.mutate(mother.armorSatAdjust, false, true) * ADJUST_DAMPENING;
         armorLumAdjust = mutator.mutate(mother.armorLumAdjust, false, true) * ADJUST_DAMPENING;
@@ -106,6 +115,7 @@ public class CreatureAppearance {
         hairSatAdjust = mutator.mutate(mother.hairSatAdjust, false, true) * ADJUST_DAMPENING;
         hairLumAdjust = mutator.mutate(mother.hairLumAdjust, false, true) * ADJUST_DAMPENING;
         spikeLum = mutator.mutate(mother.spikeLum);
+        this.hatStyle = mother.hatStyle;
 
         buildColors();
     }
@@ -120,7 +130,7 @@ public class CreatureAppearance {
 
         baseHue = mutator.mix(mother.baseHue, father.baseHue, true);
         baseSat = mutator.mix(mother.baseSat, father.baseSat);
-        baseLum = mutator.mix(mother.baseLum, father.baseLum);
+        baseLum = clamp(mutator.mix(mother.baseLum, father.baseLum), MIN_LUM, MAX_LUM);
         armorHueAdjust = mutator.mix(mother.armorHueAdjust, father.armorHueAdjust, true) * ADJUST_DAMPENING;
         armorSatAdjust = mutator.mix(mother.armorSatAdjust, father.armorSatAdjust, false, true) * ADJUST_DAMPENING;
         armorLumAdjust = mutator.mix(mother.armorLumAdjust, father.armorLumAdjust, false, true) * ADJUST_DAMPENING;
@@ -128,6 +138,7 @@ public class CreatureAppearance {
         hairSatAdjust = mutator.mix(mother.hairSatAdjust, father.hairSatAdjust, false, true) * ADJUST_DAMPENING;
         hairLumAdjust = mutator.mix(mother.hairLumAdjust, father.hairLumAdjust, false, true) * ADJUST_DAMPENING;
         spikeLum = mutator.mix(mother.spikeLum, father.spikeLum);
+        this.hatStyle = mother.hatStyle;
 
         buildColors();
     }
@@ -136,23 +147,26 @@ public class CreatureAppearance {
      * @return 0 not very similar at all, 1 very similar.
      */
     public double similarity(CreatureAppearance other) {
-        return MathTools.clampToZeroToOne(
-               hueSimilarity(baseHue, other.baseHue) *
-               valueSimilarity(baseSat, other.baseSat) *
-               valueSimilarity(baseLum , other.baseLum) *
-               hueSimilarity(armorHueAdjust, other.armorHueAdjust) *
-               valueSimilarity(armorSatAdjust , other.armorSatAdjust) *
-               valueSimilarity(armorLumAdjust , other.armorLumAdjust) *
-               hueSimilarity(hairHueAdjust , other.hairHueAdjust) *
-               valueSimilarity(hairSatAdjust , other.hairSatAdjust) *
-               valueSimilarity(hairLumAdjust , other.hairLumAdjust) *
-               valueSimilarity(spikeLum , other.spikeLum) *
-               valueSimilarity(spikeLum , other.spikeLum) *
-               valueSimilarity(hair , other.hair) *
-               valueSimilarity(armor , other.armor) *
-               valueSimilarity(spikes , other.spikes) *
-               valueSimilarity(fatness , other.fatness) *
-               valueSimilarity(length , other.length));
+        return clampToZeroToOne(
+                hueSimilarity(baseHue, other.baseHue) *
+                        hueSimilarity(baseHue, other.baseHue) *
+                        hueSimilarity(baseHue, other.baseHue) *
+                        hueSimilarity(baseHue, other.baseHue) *
+                        valueSimilarity(baseSat, other.baseSat) *
+                        valueSimilarity(baseSat, other.baseSat) *
+                        valueSimilarity(baseLum, other.baseLum) *
+                        valueSimilarity(baseLum, other.baseLum) *
+                        valueSimilarity(baseLum, other.baseLum) *
+                        hueSimilarity(armorHueAdjust, other.armorHueAdjust) *
+                        valueSimilarity(armorLumAdjust, other.armorLumAdjust) *
+                        hueSimilarity(hairHueAdjust, other.hairHueAdjust) *
+                        valueSimilarity(hairLumAdjust, other.hairLumAdjust) *
+                        valueSimilarity(fatness, other.fatness) *
+                        valueSimilarity(length, other.length) *
+                        valueSimilarity(hatStyle, other.hatStyle) * // Having the same hat is important
+                        valueSimilarity(hatStyle, other.hatStyle) *
+                        valueSimilarity(hatStyle, other.hatStyle) *
+                        valueSimilarity(hatStyle, other.hatStyle));
 
     }
 
@@ -184,6 +198,7 @@ public class CreatureAppearance {
         rightArm = createBodyPart(BodyPartShape.ARM, true, skinColor, basicShape,  30);
         leftEye = createBodyPart(BodyPartShape.EYE, false, Color.WHITE, basicShape, 0);
         rightEye = createBodyPart(BodyPartShape.EYE, true, Color.WHITE, basicShape, 0);
+        hatPart = createBodyPart(BodyPartShape.HAT, true, Color.WHITE, hatStyle, 0);
 
         double armHeight   = -15 + torso.getVisibleH() / 2 - leftArm.getVisibleH() / 2;
         double armDistance = 1.08*torso.getVisibleW() / 2 + leftArm.getVisibleW() / 2;
@@ -210,6 +225,7 @@ public class CreatureAppearance {
         addPart(leftEye, -eyeXOffs, headCenterY);
         addPart(rightEye, eyeXOffs, headCenterY);
 
+        addPart(hatPart, 0, torso.getVisibleH() / 2 + head.getVisibleH());
 
         // Owner god glow effect
         ownerGodGlowEffect = new ParticleEffect();
@@ -241,16 +257,16 @@ public class CreatureAppearance {
         double legFlipSize = 0.2;
 
         // Flap your arms if you are a crazy creature
-        double armPos = (Math.sin(armWaveOffset + totalTime * waveSpeed * MathTools.Tau) * 0.5 + 0.5) * MathTools.clampToZeroToOne(waveSize);
-        double armAngle = MathTools.mix(armPos, (0.25 + 0.75) * MathTools.Tau, (0.25 + 0.35) * MathTools.Tau);
+        double armPos = (Math.sin(armWaveOffset + totalTime * waveSpeed * Tau) * 0.5 + 0.5) * clampToZeroToOne(waveSize);
+        double armAngle = mix(armPos, (0.25 + 0.75) * Tau, (0.25 + 0.35) * Tau);
         leftArm.setAngle(armAngle);
-        rightArm.setAngle(MathTools.Tau - armAngle);
+        rightArm.setAngle(Tau - armAngle);
 
         // Flip your legs when you are a strange creature
-        double legPos = (Math.sin(12.3*armWaveOffset + totalTime * legFlipSpeed * MathTools.Tau) * 0.5 + 0.5) * MathTools.clampToZeroToOne(legFlipSize);
-        double legAngle = MathTools.mix(legPos, 1 * MathTools.Tau, 0.8 * MathTools.Tau);
+        double legPos = (Math.sin(12.3*armWaveOffset + totalTime * legFlipSpeed * Tau) * 0.5 + 0.5) * clampToZeroToOne(legFlipSize);
+        double legAngle = mix(legPos, 1 * Tau, 0.8 * Tau);
         leftLeg.setAngle(legAngle);
-        rightLeg.setAngle(MathTools.Tau - legAngle);
+        rightLeg.setAngle(Tau - legAngle);
 
 
         // Update glow effect
@@ -277,8 +293,8 @@ public class CreatureAppearance {
 
 
     private CreaturePart createBodyPart(BodyPartShape shape, boolean mirror, Color skinColor, double basicShape, float extraLift) {
-        double h = MathTools.mix(length, 0.75, 1.5);
-        double w = MathTools.mix(fatness, 0.75, 1.5);
+        double h = mix(length, 0.75, 1.5);
+        double w = mix(fatness, 0.75, 1.5);
         return new CreaturePart(shape, mirror, w, h, hair, armor, spikes, skinColor, hairColor, armorColor, spikesColor, basicShape, scale, extraLift);
     }
 

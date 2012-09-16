@@ -57,6 +57,7 @@ public class Creature extends WorldEntity {
     // Appearance
     private CreatureAppearance appearance;
     private double basicShape = 0.5;
+    private double hat = 0.5;
 
     // Physical attributes
     private double heart = Math.random();        // Increases mass, max health, affects torso size
@@ -102,7 +103,7 @@ public class Creature extends WorldEntity {
 
 
     // Derived mental attributes
-    private double minDistanceToOthers = 60;
+    private double minDistanceToOthers = 100;
     private double maxDistanceToGodTarget = 300;
 
 
@@ -145,7 +146,7 @@ public class Creature extends WorldEntity {
 
 
 
-    public Creature(MainGame game, GameWorld gameWorld, God god, Mutator mutator) {
+    public Creature(MainGame game, GameWorld gameWorld, God god, Mutator mutator, double hat) {
         this.gameWorld = gameWorld;
         this.god = god;
         this.game = game;
@@ -162,8 +163,9 @@ public class Creature extends WorldEntity {
         calculateDerivedAttributes();
 
         // Appearance
+        this.hat = hat;
         Color color = god != null ? god.getColor() : mutator.randomizeColor();
-        appearance = new CreatureAppearance(this, color, mutator);
+        appearance = new CreatureAppearance(this, color, mutator, this.hat);
 
         setupBehaviors();
 
@@ -184,6 +186,7 @@ public class Creature extends WorldEntity {
         calculateDerivedAttributes();
 
         // Appearance
+        hat = parent.hat;
         appearance = new CreatureAppearance(this, parent.getAppearance(), mutator);
 
         setupBehaviors();
@@ -205,6 +208,7 @@ public class Creature extends WorldEntity {
         calculateDerivedAttributes();
 
         // Appearance
+        hat = mother.hat;
         appearance = new CreatureAppearance(this, mother.getAppearance(), father.getAppearance(), mutator);
 
         setupBehaviors();
@@ -277,7 +281,7 @@ public class Creature extends WorldEntity {
         energyReleasedOnDeath = maxEnergy * 0.5;
 
         // Derived mental attributes
-        minDistanceToOthers = mix(loneWolfGroupAnimal, 300, 40);
+        minDistanceToOthers = mix(loneWolfGroupAnimal, 400, 60);
         maxDistanceToGodTarget = mix(godFearingIrreligious, 100, 1000);
     }
 
@@ -315,16 +319,16 @@ public class Creature extends WorldEntity {
      */
     private String createFirstName() {
         return randomString("Tryg", "Un", "Bur", "Hur", "Lur", "Mur", "Nir", "Gar", "Bal", "Bar", "Tur", "Mun") +
-               randomString("am", "um", "ul", "uk", "ul", "", "", "", "")+
-               randomString("dir", "dir", "dik", "dil", "bar", "mur", "ko", "ro", "do", "go", "", "");
+               randomString("am", "um", "ul", "uk", "ul", "du", "di", "ni", "", "", "", "", "", "", "", "")+
+               randomString("dir", "dir", "dik", "dil", "bar", "mur", "ko", "ro", "do", "go", "", "", "", "", "");
     }
 
     /**
      * @return a new family name for this troll.
      */
     private String createFamilyName() {
-        return randomString("Stone", "Apple", "Cave", "Tree", "Boulder", "Hill", "Mound", "Grave", "Valley", "Root", "Un", "Buk", "Ruk") +
-               randomString("hollow", "root", "nest", "home", "shade", "side", "rest", "brock", "rak", "jack", "digger", "lifter", "roller", "", "", "", "");
+        return randomString("Stone", "Apple", "Bone", "Troll", "Cave", "Tree", "Boulder", "Hill", "Mound", "Grave", "Valley", "Root", "Un", "Buk", "Ruk") +
+               randomString("hollow", "root", "nest", "home", "shade", "side", "rest", "brock", "rak", "jack", "digger", "lifter", "roller", "eater", "gnawer", "muncher", "murr", "durr", "hurr", "dor", "dir", "", "", "", "", "");
     }
 
     /**
@@ -428,10 +432,17 @@ public class Creature extends WorldEntity {
         });
 
         // Flock to others
-        behaviours.add(new Behaviour(randomString("Wait for me!", "Wait for me!", "Where are you going guys?"), this, 3) {
+        behaviours.add(new Behaviour(randomString("Wait for me!", "Wait for me!", "Where are you going guys?", "Hey mates, lets hang out", "Lets hang out"), this, 3) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
-                return Math.random() * 0.5;
+                double importance = Math.random() * 0.2;
+
+                // Prefer similar
+                if (closestCreature != null) {
+                    importance += closestCreature.getAppearance().similarity(getAppearance()) - 0.6;
+                }
+
+                return importance;
             }
 
             @Override
@@ -461,14 +472,21 @@ public class Creature extends WorldEntity {
         });
 
         // Overcrowd
-        behaviours.add(new Behaviour(randomString("Need some elbow room...", "Too crowded here.", "Need some air"), this, 2) {
+        behaviours.add(new Behaviour(randomString("Need some elbow room...", "Too crowded here.", "Need some air", "I don't like this crowd", "Heading off", "I'm off"), this, 2) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (closestCreature == null) return 0;
                 else {
+                    double importance = 0;
+
                     double distanceToClosest = distanceTo(closestCreature);
-                    if (distanceToClosest > minDistanceToOthers) return 0;
-                    else return (minDistanceToOthers - distanceToClosest) / minDistanceToOthers;
+                    if (distanceToClosest > minDistanceToOthers) importance = 0;
+                    else importance = (minDistanceToOthers - distanceToClosest) / minDistanceToOthers;
+
+                    // Avoid different trolls
+                    importance += 0.5 - closestCreature.getAppearance().similarity(getAppearance());
+
+                    return importance;
                 }
             }
 
@@ -486,16 +504,17 @@ public class Creature extends WorldEntity {
         });
 
         // Attack
-        behaviours.add(new Behaviour(randomString("Take that!", "Raaaugh!", "Fear my spikes!", "This calls for violence!"), this, 2) {
+        behaviours.add(new Behaviour(randomString("Take that!", "Raaaugh!", "Fear my spikes!", "This calls for violence!", "It has come to this!"), this, 2) {
             @Override
             public double getImportance(double timeSinceLastAsked) {
                 if (closestCreature == null) return 0;
                 else {
                     double rageTarget = closestCreature.getRageTargetBoost() * 10.0;
                     double wrongRegionRage = closestCreature.getGod() != god ? 0.4 : 0; // Other god! They must die!
+                    double difference = 0.6 - closestCreature.getAppearance().similarity(getAppearance());
                     double basicAttitude = peacefulAngry * 0.3;
                     double ods = getHealthStatus() - closestCreature.getHealthStatus();
-                    return rageTarget + (wrongRegionRage + basicAttitude + ods) * getHealthStatus();
+                    return rageTarget + (wrongRegionRage + basicAttitude + ods + difference) * getHealthStatus();
                 }
             }
 
