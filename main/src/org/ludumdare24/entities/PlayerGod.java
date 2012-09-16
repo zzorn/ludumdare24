@@ -16,7 +16,7 @@ import org.ludumdare24.Sounds;
 import org.ludumdare24.entities.creature.Creature;
 import org.ludumdare24.screens.GameOverScreen;
 import org.ludumdare24.screens.MainMenuScreen;
-import org.ludumdare24.screens.WinScreen;
+import org.ludumdare24.screens.NextLevelScreen;
 import org.ludumdare24.world.FoodType;
 
 /**
@@ -412,7 +412,7 @@ public class PlayerGod extends God {
 
         // Check win / loose conditions
         if (getNumberOfWorshippers() >= numberOfAllTrolls) {
-            game.setScreen(new WinScreen(game));
+            game.setScreen(new NextLevelScreen(game));
         }
         else if (getNumberOfWorshippers() <= 0) {
             game.setScreen(new GameOverScreen(game));

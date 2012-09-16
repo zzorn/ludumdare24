@@ -13,15 +13,15 @@ import org.ludumdare24.Sounds;
 /**
  *
  */
-public class WinScreen extends Screen2D {
+public class NextLevelScreen extends Screen2D {
 
 
     private final MainGame game;
     private ParticleEffect winParticle=null;
-    private ParticleEffect hatParticle=null;
 
 
-    public WinScreen(MainGame game) {
+
+    public NextLevelScreen(MainGame game) {
         super(game.getAtlas(), game.getUiScale());
         this.game =game;
     }
@@ -33,23 +33,27 @@ public class WinScreen extends Screen2D {
         winParticle.start();
         winParticle.setPosition(Gdx.graphics.getWidth()/2,0);
 
-        hatParticle = new ParticleEffect();
-        hatParticle.load(Gdx.files.internal("particles/hats.particle"), getAtlas());
-        hatParticle.start();
-        hatParticle.setPosition(Gdx.graphics.getWidth()/2,0);
 
 
         Table table = new Table(getSkin());
 
 
-        table.add(new Label("You Won the whole Game!", getSkin())).padBottom(30);
+        table.add(new Label("You Won this Level!", getSkin())).padBottom(30);
         table.row();
 
-        table.add(new Label("Your trolls are the only ones left alive in the hole word!", getSkin())).left();
+        table.add(new Label("Your trolls are the only ones left alive!", getSkin())).left();
         table.row();
 
 
+        table.add(createButton("Proceed to the next level", new ClickListener() {
+            public void click(Actor actor, float x, float y) {
+                // Add some more enemies to play against
+                game.getGameWorld().createEnemyTribes(game);
 
+                game.setScreen(new GameScreen(game));
+                game.soundService.play(Sounds.UI_CLICK);
+            }
+        })).fillX().padBottom(10);
 
         // Options
         table.row();
@@ -87,7 +91,7 @@ public class WinScreen extends Screen2D {
     @Override
     public void onTopLayerRender() {
         winParticle.draw(getBatch());
-        hatParticle.draw(getBatch());
+
 
     }
 
@@ -95,8 +99,7 @@ public class WinScreen extends Screen2D {
 
     @Override
     protected void onUpdate(float deltaSeconds) {
-        winParticle.update(deltaSeconds);
-        hatParticle.update(deltaSeconds);
+     winParticle.update(deltaSeconds);
     }
 
     @Override
