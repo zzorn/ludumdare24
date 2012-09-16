@@ -13,11 +13,11 @@ import org.ludumdare24.entities.creature.Creature;
  */
 public class God extends Entity {
 
-    private static final double MANA_REGEN_PER_FOLLOWER = 0.75;
+    private static final double MANA_REGEN_PER_FOLLOWER = 0.1;
 
     private double maxMana = 100;
     private double mana = 100;
-    private double manaRegenerationPerSecond = 5;
+    private double manaRegenerationPerSecond = 1;
     private Vector2 moveTarget = new Vector2();
     private double moveTargetPullTimeLeft = 0;
     private double moveTargetPullTimeSeconds = 10;
