@@ -9,7 +9,7 @@ public enum Tool {
     LOVE(15),
     MOVE(7),
     RAGE(20),
-    FEED(15),
+    FEED(12),
     WATCH(0);
     private final double manaCost;
 
