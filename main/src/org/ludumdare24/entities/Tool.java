@@ -7,8 +7,8 @@ public enum Tool {
 
     SMITE(30),
     LOVE(15),
-    MOVE(10),
-    RAGE(25),
+    MOVE(7),
+    RAGE(20),
     FEED(15),
     WATCH(0);
     private final double manaCost;
