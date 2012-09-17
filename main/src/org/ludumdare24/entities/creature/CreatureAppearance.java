@@ -56,6 +56,7 @@ public class CreatureAppearance {
     private CreaturePart hatPart;
 
     private double armWaveOffset = 10 * Math.random();
+    private double legWaveOffset = 10 * Math.random();
 
     private double totalTime = 0;
 
@@ -225,7 +226,7 @@ public class CreatureAppearance {
         addPart(leftEye, -eyeXOffs, headCenterY);
         addPart(rightEye, eyeXOffs, headCenterY);
 
-        addPart(hatPart, 0, torso.getVisibleH() / 2 + head.getVisibleH());
+        addPart(hatPart, 0, torso.getVisibleH() / 2 + head.getVisibleH() * 0.9);
 
         // Owner god glow effect
         ownerGodGlowEffect = new ParticleEffect();
@@ -253,7 +254,7 @@ public class CreatureAppearance {
         double waveSize = creature.getEnergyStatus() * creature.getMovementSpeedFactor();
         waveSize += creature.isAttacking() ? 0.5 : 0;
 
-        double legFlipSpeed = creature.getMovementSpeedFactor();
+        double legFlipSpeed = 3 * creature.getMovementSpeedFactor();
         double legFlipSize = 0.2;
 
         // Flap your arms if you are a crazy creature
@@ -263,7 +264,7 @@ public class CreatureAppearance {
         rightArm.setAngle(Tau - armAngle);
 
         // Flip your legs when you are a strange creature
-        double legPos = (Math.sin(12.3*armWaveOffset + totalTime * legFlipSpeed * Tau) * 0.5 + 0.5) * clampToZeroToOne(legFlipSize);
+        double legPos = (Math.sin(12.3*legWaveOffset + totalTime * legFlipSpeed * Tau) * 0.5 + 0.5) * clampToZeroToOne(legFlipSize);
         double legAngle = mix(legPos, 1 * Tau, 0.8 * Tau);
         leftLeg.setAngle(legAngle);
         rightLeg.setAngle(Tau - legAngle);

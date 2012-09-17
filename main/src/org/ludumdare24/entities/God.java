@@ -45,12 +45,24 @@ public class God extends Entity {
         return maxMana;
     }
 
+    public void changeMaxMana(double delta) {
+        maxMana += delta;
+    }
+
+    public void changeManaRegenerationPerSecond(double delta) {
+        manaRegenerationPerSecond += delta;
+    }
+
     public double getMana() {
         return mana;
     }
 
     public void changeMana(double change) {
         mana += change;
+    }
+
+    public void setMana(double mana) {
+        this.mana = mana;
     }
 
     protected void updateMana(float deltaTime) {

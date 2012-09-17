@@ -3,7 +3,6 @@ package org.ludumdare24;
 import com.badlogic.gdx.graphics.Color;
 import org.gameflow.utils.ColorUtils;
 import org.gameflow.utils.MathTools;
-import sun.plugin2.util.ColorUtil;
 
 import java.util.Random;
 
@@ -43,6 +42,10 @@ public class Mutator {
 
     public double randomize() {
         return random.nextDouble();
+    }
+
+    public double randomize(double min, double max) {
+        return MathTools.mix(random.nextDouble(), min, max);
     }
 
     public double randomizeMinusOneToOne() {

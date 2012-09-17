@@ -13,7 +13,7 @@ public enum BodyPartShape {
     ARM("arm",           16, 54, 0, 0, 0, 3),
     LEG("leg",           10, 58, 0, 0, 0, 0),
     EYE("eye",            8,  8, 6, 0, 0, 0),
-    HAT("hat",           64, 64, 4, 0, 0, 0),
+    HAT("hat",           64, 55, 4, 0, 0, 0),
     ;
 
     private final String imageName;

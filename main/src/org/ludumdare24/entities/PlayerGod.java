@@ -17,12 +17,18 @@ import org.ludumdare24.entities.creature.Creature;
 import org.ludumdare24.screens.GameOverScreen;
 import org.ludumdare24.screens.MainMenuScreen;
 import org.ludumdare24.screens.NextLevelScreen;
+import org.ludumdare24.screens.WinScreen;
 import org.ludumdare24.world.FoodType;
+import org.ludumdare24.world.GameWorld;
 
 /**
  * The god that is the players character.
  */
 public class PlayerGod extends God {
+
+    public static final double MANA_GAIN_ON_LEVELUP = 10;
+    public static final double MANA_REGEN_INCREASE_ON_LEVELUP = 0.15;
+
 
     private static final int SMITE_DAMAGE = 1000;
     private Label manaLabel;
@@ -44,6 +50,8 @@ public class PlayerGod extends God {
     private Label observedArmorLabel;
     private Label observedStatusLabel;
     private Label observedBabyLabel;
+    private Label tooltipLabel;
+    private Label manaNotice;
 
     public PlayerGod(MainGame game) {
         super("particles/ownGlow.particles", new Color(0.2f, 0.5f, 0.8f, 1f));
@@ -68,14 +76,14 @@ public class PlayerGod extends God {
         manaTable.add(new Image(atlas.findRegion("manaStar")) );
         manaLabel = new Label("Mana", screen2D.getSkin());
         manaTable.add(manaLabel);
-        hud.add(manaTable).expand().top().left();
+        hud.add(manaTable).expandX().top().left();
 
         // Follower count
         Table followerTable = new Table();
         followerTable.add(new Image(atlas.findRegion("troll_icon")) );
         followerLabel = new Label("Trolls", screen2D.getSkin());
         followerTable.add(followerLabel);
-        hud.add(followerTable).expand().top();
+        hud.add(followerTable).expandX().top();
 
         // Menu button
         hud.add(screen2D.createButton("Menu", new ClickListener() {
@@ -83,16 +91,16 @@ public class PlayerGod extends God {
                 game.setScreen(new MainMenuScreen(game));
                 game.soundService.play(Sounds.UI_ACCEPT);
             }
-        })).expand().top().right();
+        })).expandX().top().right();
 
         hud.row();
 
 
         // Labels used to show info about an observed troll
         observedNameLabel = new Label("Igor Trollowitch", screen2D.getSkin());
+        observedArmorLabel = new Label("Armor: 13", screen2D.getSkin());
         observedHealthLabel = new Label("Health: 51", screen2D.getSkin());
         observedEnergyLabel = new Label("Energy: 43", screen2D.getSkin());
-        observedArmorLabel = new Label("Armor: 13", screen2D.getSkin());
         observedStatusLabel = new Label("Status", screen2D.getSkin());
         observedBabyLabel = new Label("Baby due in: 5", screen2D.getSkin());
 
@@ -100,22 +108,31 @@ public class PlayerGod extends God {
         observationTable = new Table();
         observationTable.add(observedNameLabel).left();
         observationTable.row();
+        observationTable.add(observedArmorLabel).left();
+        observationTable.row();
         observationTable.add(observedStatusLabel).left();
         observationTable.row();
         observationTable.add(observedHealthLabel).left();
         observationTable.row();
         observationTable.add(observedEnergyLabel).left();
         observationTable.row();
-        observationTable.add(observedArmorLabel).left();
-        observationTable.row();
         observationTable.add(observedBabyLabel).left();
         observationTable.row();
-        hud.add(observationTable).left().top().expandY().colspan(3);
+        hud.add(observationTable).top().left().expandY().colspan(3);
         hud.row();
 
         // Hide initially
         observationTable.visible = false;
 
+        // Mana notice label
+        manaNotice = new Label("", screen2D.getSkin());
+        hud.add(manaNotice).bottom().center().colspan(3);
+        hud.row();
+
+        // Tooltip
+        tooltipLabel = new Label("", screen2D.getSkin());
+        hud.add(tooltipLabel).bottom().center().colspan(3);
+        hud.row();
 
         // Action buttons
         Table buttons = new Table();
@@ -128,7 +145,7 @@ public class PlayerGod extends God {
         buttons.add(createToolButton(Tool.FEED, "foodButton", buttonGroup, screen2D));
         buttons.add(createToolButton(Tool.WATCH, "watchButton", buttonGroup, screen2D));
 
-        hud.add(buttons).expand().bottom().colspan(3);
+        hud.add(buttons).bottom().colspan(3);
 
         // Add HUD to screen
         screen2D.getStage().addActor(hud);
@@ -161,6 +178,7 @@ public class PlayerGod extends God {
                 game.soundService.play(Sounds.UI_CLICK);
                 ((Button)actor).setChecked(true);
                 changeTool(tool);
+                tooltipLabel.setText(tool.getHelpText());
             }
         });
         buttonGroup.add(button);
@@ -173,6 +191,7 @@ public class PlayerGod extends God {
     }
 
     private void changeTool(Tool tool) {
+        if (manaNotice != null) manaNotice.setText("");
         currentTool = tool;
         if (currentTool != null) {
             /*
@@ -219,14 +238,16 @@ public class PlayerGod extends God {
 
     private void useTool(float x, float y) {
 
-
         if (currentTool != null) {
 
-
-             if (currentTool.getManaCost() > getMana()) {game.soundService.play(Sounds.OOM);}
-
-             if (currentTool.getManaCost() <= getMana() ){
-                 selectedCreature = null;
+            if (currentTool.getManaCost() > getMana()) {
+                // Not enough mana
+                game.soundService.play(Sounds.OOM);
+                manaNotice.setText("Not enough mana!  Need " + currentTool.getManaCost() + " for " + currentTool.getName());
+            }
+            else {
+                manaNotice.setText("");
+                selectedCreature = null;
                  Creature closestCreature = game.getGameWorld().getClosestCreature(x, y, null);
 
 
@@ -257,19 +278,17 @@ public class PlayerGod extends God {
 
                     case LOVE:
                         closestCreature = game.getGameWorld().getClosestCreatureOfGod(x, y, this);
-                        if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
-                            if (closestCreature != null) {
-                                selectedCreature = closestCreature ;
-                                changeMana(-Tool.LOVE.getManaCost());
+                        if (closestCreature != null && MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
+                            selectedCreature = closestCreature ;
+                            changeMana(-Tool.LOVE.getManaCost());
 
-                                // Boost falling in love
-                                selectedCreature.boostMating();
-                                selectedCreature.reEvaluateAction();
+                            // Boost falling in love
+                            selectedCreature.boostMating();
+                            selectedCreature.reEvaluateAction();
 
-                                toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
-                                toolEffect.start();
-                                game.soundService.play(Sounds.LOVE);
-                            }
+                            toolEffect.load(Gdx.files.internal("particles/love.particle"), atlas);
+                            toolEffect.start();
+                            game.soundService.play(Sounds.LOVE);
                         }
                         break;
 
@@ -289,23 +308,24 @@ public class PlayerGod extends God {
                         break;
 
                     case RAGE:
-                        if (MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
-                            if (closestCreature != null) {
-                                selectedCreature = closestCreature ;
-                                changeMana(-Tool.RAGE.getManaCost());
+                        // Select creature of other god
+                        closestCreature = game.getGameWorld().getClosestCreatureOfGod(x, y, null);
+                        if (closestCreature != null && MathTools.distance(closestCreature.getWorldPos().x , closestCreature.getWorldPos().y, x, y )<100){
+                            selectedCreature = closestCreature ;
+                            changeMana(-Tool.RAGE.getManaCost());
 
-                                // Get nearby creatures to attack this creature
-                                selectedCreature.makeRageTarget();
+                            // Get nearby creatures to attack this creature
+                            selectedCreature.makeRageTarget();
 
-                                // Make everyone rage attack
-                                for (Creature creature : game.getGameWorld().getCreatures()) {
-                                    creature.rageAttackCreature(selectedCreature);
-                                }
-
-                                toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
-                                toolEffect.start();
-                                game.soundService.play(Sounds.RAGE);
+                            // Make own trolls rage attack
+                            for (Creature creature : getWorshippers() /*game.getGameWorld().getCreatures() */ ) {
+                                creature.reEvaluateAction();
+                                creature.rageAttackCreature(selectedCreature);
                             }
+
+                            toolEffect.load(Gdx.files.internal("particles/raged.particle"), atlas);
+                            toolEffect.start();
+                            game.soundService.play(Sounds.RAGE);
                         }
                         break;
                     case FEED:
@@ -354,6 +374,7 @@ public class PlayerGod extends God {
         if (observedCreature != null) {
             observedCreature.setObserved(false);
             observedCreature = null;
+            tooltipLabel.setText("");
         }
     }
 
@@ -367,7 +388,7 @@ public class PlayerGod extends God {
 
         // Show followers
         int numberOfAllTrolls = game.getGameWorld().getNumberOfCreatures();
-        followerLabel.setText("Trolls " + getNumberOfWorshippers() + "/" + numberOfAllTrolls);
+        followerLabel.setText("Own trolls " + getNumberOfWorshippers() + "  Other trolls " + (numberOfAllTrolls - getNumberOfWorshippers()));
 
         // Show observation data if needed
         if (observedCreature != null) {
@@ -384,7 +405,10 @@ public class PlayerGod extends God {
                 observedStatusLabel.setText("\"" + observedCreature.getCurrentAction() + "\"");
                 observedHealthLabel.setText("Health " + (int) observedCreature.getHealth() + " (" + (int) (100*observedCreature.getHealthStatus()) + "%)");
                 observedEnergyLabel.setText("Energy " + (int) observedCreature.getEnergy() + " (" + (int) (100*observedCreature.getEnergyStatus()) + "%)");
-                observedArmorLabel.setText("Armor " + (int) (100*observedCreature.getArmor()) + ", Attack " + (int) (100*observedCreature.getSpikes()));
+                observedArmorLabel.setText(
+                        "Armor " + (int) (100*observedCreature.getArmor()) + ", " +
+                        "Attack " + (int) (100*observedCreature.getSpikes()) + ", " +
+                        "Movement " + (int) (100*observedCreature.getLength()) + "");
                 if (observedCreature.isPregnant()) {
                     observedBabyLabel.setText("Baby due in " + (int) observedCreature.getBabyDevelopmentTimeLeft());
                 }
@@ -412,7 +436,25 @@ public class PlayerGod extends God {
 
         // Check win / loose conditions
         if (getNumberOfWorshippers() >= numberOfAllTrolls) {
-            game.setScreen(new NextLevelScreen(game));
+            final int currentLevel = game.getGameWorld().getLevel();
+            if (currentLevel >= GameWorld.MAX_LEVEL) {
+                // Game completed
+                game.setScreen(new WinScreen(game));
+            }
+            else {
+                final int newLevel = currentLevel + 1;
+
+                // Increase max mana and mana regen, and set to full mana
+                changeMaxMana(MANA_GAIN_ON_LEVELUP);
+                changeManaRegenerationPerSecond(MANA_REGEN_INCREASE_ON_LEVELUP);
+                setMana(getMaxMana());
+
+                // Add some more enemies to play against
+                game.getGameWorld().setupLevel(game, newLevel);
+
+                // Show level cleared & start next level screen
+                game.setScreen(new NextLevelScreen(game, newLevel));
+            }
         }
         else if (getNumberOfWorshippers() <= 0) {
             game.setScreen(new GameOverScreen(game));

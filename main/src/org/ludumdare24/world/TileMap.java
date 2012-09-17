@@ -20,21 +20,24 @@ public class TileMap extends Entity {
     private float grassTileSizeY = 200;
 
     private int[] tiles;
-    private int tileCount = 4;
+    private final int tileCount;
+    private final int level;
+    private final Level levelData;
 
 
+    public TileMap(int level, Level levelData) {
+        this.level = level;
+        this.levelData = levelData;
+        this.tileCount = levelData.getTerrainTextureCount();
 
-    public TileMap() {
-        this(WORLD_SIZE_X, WORLD_SIZE_Y);
-    }
-
-    public TileMap(int worldSizeX, int worldSizeY) {
-        this.worldSizeX = worldSizeX;
-        this.worldSizeY = worldSizeY;
+        grassTileSizeX = 200 * levelData.getTerrainScaleX();
+        grassTileSizeY = 200 * levelData.getTerrainScaleY();
+        this.worldSizeX = (int)(20 / levelData.getTerrainScaleX());
+        this.worldSizeY = (int)(20 / levelData.getTerrainScaleY());
 
         tiles = new int[worldSizeX * worldSizeY];
         for (int i = 0; i < worldSizeX * worldSizeY; i++) {
-            tiles[i] = (int) ((tileCount-1) * Math.random());
+            tiles[i] = (int) Math.floor(tileCount * Math.random());
         }
 
         tileRegions = new TextureAtlas.AtlasRegion[tileCount];
@@ -42,6 +45,7 @@ public class TileMap extends Entity {
             tileRegions[i] = null;
         }
     }
+
 
     @Override
     protected void onCreate(TextureAtlas atlas) {
@@ -54,7 +58,7 @@ public class TileMap extends Entity {
     @Override
     public void render(TextureAtlas atlas, SpriteBatch spriteBatch) {
         for (int i = 0; i < tileCount; i++) {
-            if (tileRegions[i] == null) tileRegions[i] = atlas.findRegion("grassterrain" + (i + 1));
+            if (tileRegions[i] == null) tileRegions[i] = atlas.findRegion(levelData.getTerrainTexture() + (i + 1));
         }
 
         // Grass

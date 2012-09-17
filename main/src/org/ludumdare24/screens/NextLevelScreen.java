@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import org.gameflow.screen.Screen2D;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Sounds;
+import org.ludumdare24.world.Level;
 
 /**
  *
@@ -17,13 +18,15 @@ public class NextLevelScreen extends Screen2D {
 
 
     private final MainGame game;
+    private final int level;
     private ParticleEffect winParticle=null;
 
 
 
-    public NextLevelScreen(MainGame game) {
+    public NextLevelScreen(MainGame game, int level) {
         super(game.getAtlas(), game.getUiScale());
         this.game =game;
+        this.level = level;
     }
 
     @Override
@@ -33,22 +36,22 @@ public class NextLevelScreen extends Screen2D {
         winParticle.start();
         winParticle.setPosition(Gdx.graphics.getWidth()/2,0);
 
+        final Level prevLevelData = game.getGameWorld().getLevelDataForLevel(level - 1);
+        final Level levelData = game.getGameWorld().getLevelDataForLevel(level);
 
 
         Table table = new Table(getSkin());
 
 
-        table.add(new Label("You Won this Level!", getSkin())).padBottom(30);
+        table.add(new Label("You completed level "+(level - 1)+" '" + prevLevelData.getName()+ "'!", getSkin())).padBottom(30);
         table.row();
 
         table.add(new Label("Your trolls are the only ones left alive!", getSkin())).left();
         table.row();
 
 
-        table.add(createButton("Proceed to the next level", new ClickListener() {
+        table.add(createButton("Proceed to level " + level + " '"+levelData.getName()+"'", new ClickListener() {
             public void click(Actor actor, float x, float y) {
-                // Add some more enemies to play against
-                game.getGameWorld().createEnemyTribes(game);
 
                 game.setScreen(new GameScreen(game));
                 game.soundService.play(Sounds.UI_CLICK);
@@ -62,7 +65,7 @@ public class NextLevelScreen extends Screen2D {
                 // Clear the game world so we can't resume it.
                 game.clearGameWorld();
                 game.setScreen(new MainMenuScreen(game));
-                game.soundService.play(Sounds.UI_CLICK);
+                game.soundService.play(Sounds.UI_ACCEPT);
             }
         })).fillX().padBottom(10);
 

@@ -16,6 +16,7 @@ import org.ludumdare24.entities.God;
 import org.ludumdare24.entities.WorldEntity;
 import org.ludumdare24.world.FoodType;
 import org.ludumdare24.world.GameWorld;
+import org.ludumdare24.world.Level;
 
 import static org.gameflow.utils.MathTools.*;
 
@@ -34,17 +35,17 @@ public class Creature extends WorldEntity {
 
     private static final double MAX_ARMOR_PROTECTION = 0.5;
     private static final double MATING_BOOST_DURATION_SECONDS = 20;
-    private static final double RAGE_TARGET_BOOST_DURATION_SECONDS = 20;
+    private static final double RAGE_TARGET_BOOST_DURATION_SECONDS = 30;
     private static final double BEHAVIOUR_CHECK_INTERVAL_SECONDS = 1.0;
 
-    private static final double ATTACK_RANGE = 50.0;
+    private static final double ATTACK_RANGE = 55.0;
 
     private static final double DAMAGE_FROM_NO_ENERGY_PER_SECOND = 10.0;
     private static final double DAMAGE_FROM_OLD_AGE_PER_SECOND = 10.0;
     private static final double NO_ENERGY_MOVEMENT_SLOWDOWN = 0.25;
     private static final double MATURITY_AGE = 0.2;
     private static final double MATING_DISTANCE = 37;
-    private static final double RAGE_ATTACK_RADIUS = 400;
+    private static final double RAGE_ATTACK_RADIUS = 500;
 
     private final MainGame game;
     private final GameWorld gameWorld;
@@ -80,9 +81,9 @@ public class Creature extends WorldEntity {
     private double woundedEnergyUsagePerSecond = 2;
     private double movementEnergyUsagePerSecond = 2;
     private double attackEnergyUsagePerSecond = 2;
-    private double attackDamagePerSecond = 2;
+    private double attackDamagePerSecond = 20;
     private double eatingSpeedEnergyPerSecond = 50;
-    private double maxEatingDistance = 60;
+    private double maxEatingDistance = 50;
     private double sightRange = 300;
     private double maxAgeSeconds = 60;
     private double babyDevelopmentTime = 20;
@@ -146,18 +147,39 @@ public class Creature extends WorldEntity {
 
 
 
-    public Creature(MainGame game, GameWorld gameWorld, God god, Mutator mutator, double hat) {
+    public Creature(MainGame game, GameWorld gameWorld, God god, Mutator mutator, double hat, Level levelData) {
         this.gameWorld = gameWorld;
         this.god = god;
         this.game = game;
 
-        // Randomize basic attributes
+        // Create basic attributes based on level or player
+        if (levelData == null) {
+            // Players start creature
+            armor      = mutator.randomize(0.2, 0.5);
+            spikes     = mutator.randomize(0.2, 0.5);
+            fastMoving = mutator.randomize(0.4, 0.6);
+            heart      = mutator.randomize(0.3, 0.6);
+            stomach    = mutator.randomize(0.3, 0.6);
+        }
+        else {
+            // Enemies on level
+            armor      = levelData.getEnemyArmor();
+            spikes     = levelData.getEnemyAttack();
+            fastMoving = levelData.getEnemySpeed();
+            stomach    = levelData.getEnemySize();
+            heart      = levelData.getEnemyThoughness();
+        }
+
+        // Mutate basic attributes
+        armor      = mutator.mutate(armor);
+        spikes     = mutator.mutate(spikes);
+        fastMoving = mutator.mutate(fastMoving);
+        heart      = mutator.mutate(heart);
+        stomach    = mutator.mutate(stomach);
+
+        // Some appearance attributes
         basicShape = mutator.randomize();
         hair       = mutator.randomize();
-        armor      = mutator.randomize();
-        spikes     = mutator.randomize();
-        heart      = mutator.randomize();
-        stomach    = mutator.randomize();
 
         // Derive
         calculateDerivedAttributes();
@@ -269,10 +291,10 @@ public class Creature extends WorldEntity {
         maxMovementSpeedPerSecond = BASIC_MOVEMENT_SPEED_PER_SECOND * mix(fastMoving, 0.25, 10) * (100.0 / mass);
 
         eatingSpeedEnergyPerSecond = mix(stomach, 20, 80); // TODO: Could make similar eating speed vs absorbed energy tradeoff as above
-        maxEatingDistance          = mix(fastMoving, 40, 100);
+        maxEatingDistance          = mix(fastMoving, 40, 60);
 
         attackEnergyUsagePerSecond = mix(spikes, 0.2, 3);
-        attackDamagePerSecond      = mix(spikes, 10, 60);
+        attackDamagePerSecond      = mix(spikes, 30, 100);
 
         sightRange = mix(eyes, 100, RAGE_ATTACK_RADIUS);
 
@@ -509,7 +531,7 @@ public class Creature extends WorldEntity {
             public double getImportance(double timeSinceLastAsked) {
                 if (closestCreature == null) return 0;
                 else {
-                    double rageTarget = closestCreature.getRageTargetBoost() * 10.0;
+                    double rageTarget = closestCreature.getRageTargetBoost() * 20.0;
                     double wrongRegionRage = closestCreature.getGod() != god ? 0.4 : 0; // Other god! They must die!
                     double difference = 0.6 - closestCreature.getAppearance().similarity(getAppearance());
                     double basicAttitude = peacefulAngry * 0.3;
@@ -1033,7 +1055,7 @@ public class Creature extends WorldEntity {
     }
 
     /**
-     * @return how fast moving, 0 = none, 1 = full speed.
+     * @return how fast currently moving, 0 = none, 1 = full speed.
      */
     public double getMovementSpeedFactor() {
         return movementSpeedFactor;

@@ -1,9 +1,9 @@
 package org.ludumdare24.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import org.gameflow.entity.Entity;
-import org.gameflow.utils.MathTools;
 import org.ludumdare24.MainGame;
 import org.ludumdare24.Mutator;
 import org.ludumdare24.entities.*;
@@ -11,6 +11,8 @@ import org.ludumdare24.entities.creature.Creature;
 import org.ludumdare24.screens.GameScreen;
 
 import java.util.Random;
+
+import static org.gameflow.utils.MathTools.*;
 
 /**
  *
@@ -20,9 +22,21 @@ public class GameWorld {
     private static final int MAX_CREATURES_COUNT = 300;
     private static final int FOOD_SPREAD = 15;
     private static final int MAX_FOOD_ENTITIES_COUNT = 100;
+
+    public static final int MAX_LEVEL = 10;
+
+
     private final int initialPlayerCreatureCount = 5;
-    private final int initialUngodlyCreatureCount = 7;
-    private final int initialTreeCount = 20;
+
+    private final int initialUngodlyCreatureCount = 5;
+    private final int finalUngodlyCreatureCount = 20;
+    private final int initialUngodlyTribeCount = 1;
+    private final int finalUngodlyTribeCount = 5;
+
+    private final int initialTreeCount = 30;
+    private final int finalTreeCount = 5;
+
+    private int level = 1;
 
     private PlayerGod player;
 
@@ -35,68 +49,134 @@ public class GameWorld {
     private Array<Entity> entitiesToRemove = new Array<Entity>();
     private Array<Entity> entitiesToAdd = new Array<Entity>();
 
+    private Array<Level> levels = new Array<Level>();
+
     private Array<WorldListener> worldListeners = new Array<WorldListener>();
     private Random random = new Random();
 
     private Mutator mutator = new Mutator(random);
 
+    public GameWorld() {
+        levels.add(new Level("Home Forest",    5,   5, 200, "grassterrain",  4, 2, 1,   1, 5, 0.5, 0.8, 0.2, 0.8, 0.4));
+        levels.add(new Level("Over the Hills", 4,   3,  50, "hillterrain",   4, 2, 1.5,   2, 4, 0.6, 0.5, 0.5, 0.7, 0.5));
+        levels.add(new Level("Dry Savannah",   6,   1,  10, "desertterrain", 4, 1, 1,   3, 6, 0.7, 0.5, 0.5, 0.7, 0.5));
+
+        levels.add(new Level("Apple Valley",   3,   6, 100, "grassterrain",  4, 2, 1,   4, 7, 0.7, 0.5, 0.5, 0.4, 0.7));
+        levels.add(new Level("Rabbit Hills",   7,   1,  20, "hillterrain",   4, 2, 1.5,   7, 5, 0.8, 0.5, 0.5, 0.6, 0.5));
+        levels.add(new Level("Skull Hollow",   1,   3,  40, "desertterrain", 4, 1, 1,   3, 10, 0.7, 0.5, 1, 1, 0.3));
+
+        levels.add(new Level("Cloud Forest",   7,   3,  15, "grassterrain",   4, 2, 2,   5, 15, 0.6, 0.5, 0.5, 0.5, 0.5));
+        levels.add(new Level("Desert Tribes", 20,   1,  15, "desertterrain",  4, 3, 2,   10, 7, 0.8, 1, 0.5, 0.5, 1));
+        levels.add(new Level("Horde Hill",     2,   4, 120, "hillterrain",   4, 2, 1.5,   1, 100, 0.7, 0.5, 0.5, 0.5, 0.5));
+
+        levels.add(new Level("Troll Country",  4,   4,  50, "grassterrain", 4, 1.5, 0.75,   4, 20, 1, 1, 1, 0.7, 0.5));
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public Level getLevelData() {
+        return levels.get(level - 1);
+    }
+
+    public Level getLevelDataForLevel(int l) {
+        return levels.get(l - 1);
+    }
+
     public void create(MainGame game) {
         // Create player
         player = new PlayerGod(game);
 
-        createTribe(game, 400, 200, player, initialPlayerCreatureCount, Math.random() * 0.8 + 0.2);
+        final int w = Gdx.graphics.getWidth();
+        final int h = Gdx.graphics.getHeight();
 
-        createEnemyTribes(game);
+        int cx = w / 2;
+        int cy = h / 2;
 
+        createTribe(game, cx, cy, player, initialPlayerCreatureCount, Math.random() * 0.8 + 0.2, getLevelData());
+
+        setupLevel(game, 1);
+
+    }
+
+    public void setupLevel(MainGame game, int level) {
+
+        this.level = level;
+
+        Level levelData = getLevelData();
+
+        final int w = Gdx.graphics.getWidth();
+        final int h = Gdx.graphics.getHeight();
+
+        // Create tribes
+        float cx = w / 2;
+        float cy = h / 2;
+
+        float distanceFactor = 0.75f;
+
+        int tribeCount = levelData.getTribeCount();
+        for (int i = 0; i < tribeCount; i++) {
+            final float a = (float) Math.random() * TauFloat;
+            float tribeX = cx + (float) Math.cos(a) * distanceFactor * cx;
+            float tribeY = cy + (float) Math.sin(a) * distanceFactor * cy;
+            int memberCount = levelData.getTribeHeadCount();
+            createTribe(game, tribeX, tribeY, null, memberCount, 0, levelData);
+        }
 
         // Create some trees
-        for (int i = 0; i < initialTreeCount; i++) {
-            AppleTree tree = new AppleTree(this, random);
-            tree.setWorldPos(random.nextFloat() * 1100, random.nextFloat() * 800);
-            appleTrees.add(tree);
+        appleTrees.clear();
+        for (int group = 0; group < levelData.getTreeGroups(); group++) {
+            float groupCenterX = cx + (random.nextFloat() - 0.5f) * w * 0.8f;
+            float groupCenterY = cy + (random.nextFloat() - 0.5f) * h * 0.8f;
+            for (int i = 0; i < levelData.getTreeGroupTreeCount(); i++) {
+                float treeX = groupCenterX + (float) (random.nextGaussian() * levelData.getTreeGroupSize());
+                float treeY = groupCenterY + (float) (0.75f * random.nextGaussian() * levelData.getTreeGroupSize());
+
+                AppleTree tree = new AppleTree(this, random);
+                tree.setWorldPos(treeX, treeY);
+                appleTrees.add(tree);
+            }
         }
 
         // Create tile map
-        tileMap = new TileMap();
+        tileMap = new TileMap(level, levelData);
+
     }
 
-    public void createEnemyTribes(MainGame game) {
-        float cx = 400;
-        float cy = 220;
-
-        float d = 2.8f;
-
-        createTribe(game, cx, cy + cy*d, null, initialUngodlyCreatureCount, 0);
-        createTribe(game, cx, cy - cy*d, null, initialUngodlyCreatureCount, 0);
-        createTribe(game, cx + cx*d, cy, null, initialUngodlyCreatureCount, 0);
-        createTribe(game, cx - cx*d, cy, null, initialUngodlyCreatureCount, 0);
-    }
-
-    private void createTribe(MainGame game, float x, float y, God god, int tribeSize, final double hat) {
+    private void createTribe(MainGame game, float x, float y, God god, int tribeSize, final double hat, Level levelData) {
 
         // Place move target
         if (god != null) god.placeMoveTarget(x, y);
 
         // Tribe mother
-        Creature tribeMother = createCreature(game, god, x, y, null, hat);
+        Creature tribeMother = createCreature(game, god, x, y, null, hat, levelData);
 
         // Spawn members based on mother
         for (int i = 0; i < tribeSize; i++) {
-            createCreature(game, god, x, y, tribeMother, hat);
+            createCreature(game, god, x, y, tribeMother, hat, levelData);
         }
     }
 
-    private Creature createCreature(MainGame game, God god, float x, float y, Creature mother, double hat) {
+    private Creature createCreature(MainGame game, God god, float x, float y, Creature mother, double hat, Level levelData) {
 
         Creature creature;
         if (mother == null) {
-            creature = new Creature(game, this, god, mutator, hat);
+            if (god == null) {
+                // Adjust enemy properties based on level
+                creature = new Creature(game, this, god, mutator, hat, levelData);
+            }
+            else {
+                // Randomize players creatures
+                creature = new Creature(game, this, god, mutator, hat, null);
+            }
+
         } else {
             creature = new Creature(game, this, mutator, mother);
         }
 
-        float x2 = x + (float)(random.nextGaussian() * 50);
-        float y2 = y + (float )(random.nextGaussian() * 35);
+        float x2 = x + (float)(random.nextGaussian() * 120);
+        float y2 = y + (float )(random.nextGaussian() * 80);
         creature.setWorldPos(x2, y2);
 
         addEntity(creature);
@@ -189,7 +269,7 @@ public class GameWorld {
         for (Creature entity : creatures) {
             if (entity.getGod() == god) {
                 Vector2 worldPos = entity.getWorldPos();
-                float distance = MathTools.distanceSquared(worldPos.x, worldPos.y, x, y);
+                float distance = distanceSquared(worldPos.x, worldPos.y, x, y);
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     closestEntity = entity;
@@ -222,7 +302,7 @@ public class GameWorld {
     private WorldEntity findClosestEntity(float x, float y, WorldEntity exceptThis, Array<? extends WorldEntity> entities, float withinDistance) {
         WorldEntity closestEntity = findClosestEntity(x, y, exceptThis, entities);
         if (closestEntity != null) {
-            float distance = MathTools.distance(closestEntity.getX(), closestEntity.getY(), x, y);
+            float distance = distance(closestEntity.getX(), closestEntity.getY(), x, y);
             if (distance > withinDistance) return null; // Too far away
         }
         return closestEntity;
@@ -234,7 +314,7 @@ public class GameWorld {
         for (WorldEntity entity : entities) {
             if (entity != exceptThis) {
                 Vector2 worldPos = entity.getWorldPos();
-                float distance = MathTools.distanceSquared(worldPos.x, worldPos.y, x, y);
+                float distance = distanceSquared(worldPos.x, worldPos.y, x, y);
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     closestEntity = entity;

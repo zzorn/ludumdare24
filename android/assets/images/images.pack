@@ -5,595 +5,651 @@ filter: Nearest,Nearest
 repeat: none
 grassterrain2
   rotate: false
-  xy: 0, 763
+  xy: 0, 767
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 grassterrain4
   rotate: false
-  xy: 0, 505
+  xy: 0, 509
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 grassterrain3
   rotate: false
-  xy: 256, 763
+  xy: 256, 767
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 grassterrain1
   rotate: false
-  xy: 0, 247
+  xy: 0, 251
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+desertterrain2
+  rotate: false
+  xy: 256, 637
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 watch
   rotate: false
-  xy: 256, 633
+  xy: 512, 895
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+desertterrain3
+  rotate: false
+  xy: 0, 121
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 appleTree2
   rotate: false
-  xy: 512, 891
+  xy: 256, 507
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 appleTree3
   rotate: false
-  xy: 0, 117
+  xy: 384, 637
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+hillterrain3
+  rotate: false
+  xy: 512, 765
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+hillterrain1
+  rotate: false
+  xy: 640, 895
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+desertterrain1
+  rotate: false
+  xy: 128, 121
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+hillterrain4
+  rotate: false
+  xy: 256, 377
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+hillterrain2
+  rotate: false
+  xy: 384, 507
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 appleTree1
   rotate: false
-  xy: 256, 503
+  xy: 512, 635
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 appleTree4
   rotate: false
-  xy: 384, 633
+  xy: 640, 765
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-troll
+desertterrain4
   rotate: false
-  xy: 512, 763
-  size: 87, 126
-  orig: 87, 126
+  xy: 768, 895
+  size: 128, 128
+  orig: 128, 128
   offset: 0, 0
   index: -1
 appleTreeShadow
   rotate: false
-  xy: 640, 955
+  xy: 896, 959
   size: 128, 64
   orig: 128, 64
   offset: 0, 0
   index: -1
+troll
+  rotate: false
+  xy: 256, 249
+  size: 87, 126
+  orig: 87, 126
+  offset: 0, 0
+  index: -1
 eatenFood
   rotate: false
-  xy: 0, 51
+  xy: 0, 55
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 skull
   rotate: false
-  xy: 128, 181
+  xy: 384, 441
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye1
   rotate: false
-  xy: 256, 437
+  xy: 512, 569
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 boxy
   rotate: false
-  xy: 384, 567
+  xy: 640, 699
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_spikes1
   rotate: false
-  xy: 512, 697
+  xy: 768, 829
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arm_spikes1
   rotate: false
-  xy: 768, 955
+  xy: 256, 183
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 hat3
   rotate: false
-  xy: 64, 51
+  xy: 64, 55
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_hair3
   rotate: false
-  xy: 128, 115
+  xy: 448, 441
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso_armor3
   rotate: false
-  xy: 192, 181
+  xy: 512, 503
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 foot
   rotate: false
-  xy: 256, 371
+  xy: 576, 569
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 blood
   rotate: false
-  xy: 320, 437
+  xy: 640, 633
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso_armor1
   rotate: false
-  xy: 384, 501
+  xy: 704, 699
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arm_spikes3
   rotate: false
-  xy: 448, 567
+  xy: 768, 763
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_armor2
   rotate: false
-  xy: 512, 631
+  xy: 832, 829
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 hat1
   rotate: false
-  xy: 832, 955
+  xy: 896, 893
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso
   rotate: false
-  xy: 192, 115
+  xy: 960, 893
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso_armor2
   rotate: false
-  xy: 256, 305
+  xy: 128, 55
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye4
   rotate: false
-  xy: 320, 371
+  xy: 576, 503
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_armor1
   rotate: false
-  xy: 384, 435
+  xy: 640, 567
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen_hair2
   rotate: false
-  xy: 448, 501
+  xy: 704, 633
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 heartRed
   rotate: false
-  xy: 512, 565
+  xy: 768, 697
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen
   rotate: false
-  xy: 896, 955
+  xy: 832, 763
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye
   rotate: false
-  xy: 960, 955
+  xy: 896, 827
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye2
   rotate: false
-  xy: 256, 239
+  xy: 960, 827
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso_hair2
   rotate: false
-  xy: 320, 305
+  xy: 192, 55
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sun
   rotate: false
-  xy: 384, 369
+  xy: 256, 117
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 handfoot
   rotate: false
-  xy: 448, 435
+  xy: 704, 567
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 meatFood
   rotate: false
-  xy: 512, 499
+  xy: 768, 631
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 star
   rotate: false
-  xy: 256, 173
+  xy: 832, 697
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arm
   rotate: false
-  xy: 320, 239
+  xy: 896, 761
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen_armor1
   rotate: false
-  xy: 384, 303
+  xy: 960, 761
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smiteExplo
   rotate: false
-  xy: 448, 369
+  xy: 832, 631
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 snowflake2
   rotate: false
-  xy: 512, 433
+  xy: 896, 695
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen_armor3
   rotate: false
-  xy: 320, 173
+  xy: 960, 695
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_hair2
   rotate: false
-  xy: 384, 237
+  xy: 384, 375
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 rage
   rotate: false
-  xy: 448, 303
+  xy: 448, 375
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye3
   rotate: false
-  xy: 512, 367
+  xy: 512, 437
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_spikes2
   rotate: false
-  xy: 448, 237
+  xy: 576, 437
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen_armor2
   rotate: false
-  xy: 512, 301
+  xy: 640, 501
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 leg
   rotate: false
-  xy: 640, 889
+  xy: 704, 501
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen_spikes1
   rotate: false
-  xy: 704, 889
+  xy: 768, 565
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_spikes3
   rotate: false
-  xy: 768, 889
+  xy: 832, 565
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_hair1
   rotate: false
-  xy: 832, 889
+  xy: 896, 629
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 hat4
   rotate: false
-  xy: 896, 889
+  xy: 960, 629
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye6
   rotate: false
-  xy: 960, 889
+  xy: 640, 435
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head
   rotate: false
-  xy: 128, 49
+  xy: 704, 435
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 hat2
   rotate: false
-  xy: 192, 49
+  xy: 768, 499
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso_hair1
   rotate: false
-  xy: 256, 107
+  xy: 832, 499
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 head_armor3
   rotate: false
-  xy: 320, 107
+  xy: 896, 563
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 abdomen_hair1
   rotate: false
-  xy: 384, 171
+  xy: 960, 563
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 food
   rotate: false
-  xy: 448, 171
+  xy: 768, 433
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bone
   rotate: false
-  xy: 512, 235
+  xy: 832, 433
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 smite
   rotate: false
-  xy: 384, 105
+  xy: 896, 497
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 arm_spikes2
   rotate: false
-  xy: 448, 105
+  xy: 960, 497
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 eye5
   rotate: false
-  xy: 512, 169
+  xy: 896, 431
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 torso_hair3
   rotate: false
-  xy: 512, 103
+  xy: 960, 431
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 heart
   rotate: false
-  xy: 256, 41
+  xy: 256, 51
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-trollShadow
-  rotate: false
-  xy: 320, 73
-  size: 64, 32
-  orig: 64, 32
-  offset: 0, 0
-  index: -1
 foodButtonPressScaled
   rotate: false
-  xy: 0, 1
+  xy: 512, 387
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 smiteButtonNotPressScaled
   rotate: false
-  xy: 48, 1
+  xy: 0, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
+trollShadow
+  rotate: false
+  xy: 560, 403
+  size: 64, 32
+  orig: 64, 32
+  offset: 0, 0
+  index: -1
 watchButtonNotPressScaled
   rotate: false
-  xy: 320, 23
+  xy: 48, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 watchButtonPressScaled
   rotate: false
-  xy: 384, 55
+  xy: 96, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 moveButtonPressScaled
   rotate: false
-  xy: 432, 55
+  xy: 144, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 rageButtonPressScaled
   rotate: false
-  xy: 576, 713
+  xy: 192, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 smiteButtonPressScaled
   rotate: false
-  xy: 576, 663
+  xy: 240, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 moveButtonNotPressScaled
   rotate: false
-  xy: 576, 613
+  xy: 288, 1
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 heartButtonPressScaled
   rotate: false
-  xy: 576, 563
+  xy: 320, 199
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 foodButtonNotPressScaled
   rotate: false
-  xy: 576, 513
+  xy: 320, 149
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 heartButtonNotPressScaled
   rotate: false
-  xy: 576, 463
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-rageButtonNotPressScaled
-  rotate: false
-  xy: 576, 413
+  xy: 320, 99
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 particle
   rotate: false
-  xy: 96, 17
+  xy: 343, 343
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+rageButtonNotPressScaled
+  rotate: false
+  xy: 343, 293
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
 troll_icon
   rotate: false
-  xy: 480, 71
+  xy: 320, 65
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 manaStar
   rotate: false
-  xy: 599, 857
+  xy: 343, 259
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 smile
   rotate: false
-  xy: 576, 379
+  xy: 352, 65
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
