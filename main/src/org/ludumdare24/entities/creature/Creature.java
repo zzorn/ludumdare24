@@ -461,7 +461,7 @@ public class Creature extends WorldEntity {
 
                 // Prefer similar
                 if (closestCreature != null) {
-                    importance += closestCreature.getAppearance().similarity(getAppearance()) - 0.6;
+                    importance += closestCreature.getAppearance().similarity(getAppearance()) - 0.65;
                 }
 
                 return importance;
@@ -519,8 +519,13 @@ public class Creature extends WorldEntity {
                     moveAwayFrom(closestCreature.getWorldPos(), activationImportance + walkerRunner);
                 }
                 else {
-                    // All alone in the world.  Stand and think about that.
-                    standStill();
+                    if (Math.random() < 0.4) {
+                        // All alone in the world.  Stand and think about that.
+                        standStill();
+                    }
+                    else {
+                        moveInRandomDirection(0.1 + Math.random() * walkerRunner);
+                    }
                 }
             }
         });
